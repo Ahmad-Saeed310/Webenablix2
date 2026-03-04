@@ -1,0 +1,58 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: webenablix_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: webenablix
+      POSTGRES_USER: webenablix_user
+      POSTGRES_PASSWORD: webenablix_pass
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U webenablix_user -d webenablix"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: webenablix_backend
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      NODE_ENV: production
+      PORT: 8001
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: webenablix
+      DB_USER: webenablix_user
+      DB_PASSWORD: webenablix_pass
+      JWT_SECRET: change_this_in_production_to_a_long_random_string
+      FRONTEND_URL: http://localhost:3000
+    ports:
+      - "8001:8001"
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: webenablix_frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    environment:
+      VITE_BACKEND_URL: http://localhost:8001
+    ports:
+      - "3000:3000"
+
+volumes:
+  postgres_data:
