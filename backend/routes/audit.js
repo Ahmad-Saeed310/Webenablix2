@@ -70,6 +70,19 @@ router.post(
 
       const { id, created_at } = result.rows[0];
 
+      // Keep users.sites_count in sync with distinct URLs this user has scanned
+      if (userId) {
+        await pool.query(
+          `UPDATE users
+           SET sites_count = (
+             SELECT COUNT(DISTINCT url) FROM audits WHERE user_id = $1
+           ),
+           updated_at = NOW()
+           WHERE id = $1`,
+          [userId]
+        );
+      }
+
       return res.status(201).json({ id, created_at, ...auditData });
     } catch (err) {
       if (err.message === 'Invalid URL format') {
@@ -81,21 +94,36 @@ router.post(
   }
 );
 
-// GET /api/audits - List recent audits
-router.get('/', async (req, res) => {
+// GET /api/audits - List audits (filtered to current user when authenticated)
+router.get('/', optionalAuth, async (req, res) => {
   const limit = parseInt(req.query.limit) || 10;
   const offset = parseInt(req.query.offset) || 0;
+  const userId = req.user?.sub || null;
 
   try {
-    const result = await pool.query(
-      `SELECT id, url, audit_type, accessibility_score, seo_score, performance_score,
-              mobile_score, security_score, overall_score, lawsuit_risk, wcag_level,
-              total_issues, critical_issues, warnings, scan_successful, created_at
-       FROM audits
-       ORDER BY created_at DESC
-       LIMIT $1 OFFSET $2`,
-      [limit, offset]
-    );
+    let result;
+    if (userId) {
+      result = await pool.query(
+        `SELECT id, url, audit_type, accessibility_score, seo_score, performance_score,
+                mobile_score, security_score, overall_score, lawsuit_risk, wcag_level,
+                total_issues, critical_issues, warnings, scan_successful, created_at
+         FROM audits
+         WHERE user_id = $1
+         ORDER BY created_at DESC
+         LIMIT $2 OFFSET $3`,
+        [userId, limit, offset]
+      );
+    } else {
+      result = await pool.query(
+        `SELECT id, url, audit_type, accessibility_score, seo_score, performance_score,
+                mobile_score, security_score, overall_score, lawsuit_risk, wcag_level,
+                total_issues, critical_issues, warnings, scan_successful, created_at
+         FROM audits
+         ORDER BY created_at DESC
+         LIMIT $1 OFFSET $2`,
+        [limit, offset]
+      );
+    }
     return res.json(result.rows);
   } catch (err) {
     console.error('List audits error:', err);

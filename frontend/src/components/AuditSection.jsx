@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
-import { 
+import React, { useState, useEffect } from 'react';
+import {
   ArrowRight, Search, Loader2, CheckCircle, XCircle, AlertTriangle,
-  Smartphone, Shield, Zap, Globe, Eye, ChevronDown, ChevronUp
+  Smartphone, Shield, Zap, Globe, Eye, ChevronDown, ChevronUp, Sparkles
 } from 'lucide-react';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
@@ -10,18 +10,80 @@ import axios from 'axios';
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || '';
 const API = `${BACKEND_URL}/api`;
 
+// ── Projected-score simulation ─────────────────────────────────────────────
+const buildProjectedResult = (result) => {
+  const acc  = Math.min(100, Math.round(result.accessibility_score + (100 - result.accessibility_score) * 0.88));
+  const seo  = Math.min(100, Math.round(result.seo_score           + (100 - result.seo_score)           * 0.82));
+  const perf = Math.min(100, Math.round(result.performance_score   + (100 - result.performance_score)   * 0.75));
+  const mob  = Math.min(100, Math.round(result.mobile_score        + (100 - result.mobile_score)        * 0.90));
+  const sec  = Math.min(100, Math.round(result.security_score      + (100 - result.security_score)      * 1.00));
+  const overall = Math.round(acc * 0.30 + seo * 0.25 + perf * 0.20 + mob * 0.15 + sec * 0.10);
+  return {
+    ...result,
+    accessibility_score: acc,
+    seo_score:           seo,
+    performance_score:   perf,
+    mobile_score:        mob,
+    security_score:      sec,
+    overall_score:       overall,
+    critical_issues:     0,
+    warnings:            0,
+    total_issues:        0,
+    accessibility_issues: [],
+    seo_issues:           [],
+    lawsuit_risk:        'low',
+    wcag_level:          acc >= 95 ? 'AAA' : 'AA',
+    top_recommendations: [
+      'All critical accessibility issues fixed (images, form labels, ARIA)',
+      'Meta descriptions and title tags optimised for every page',
+      'Structured data (Schema.org) added for rich search snippets',
+      'Core Web Vitals (LCP, CLS) brought within Google "Good" thresholds',
+      'HTTPS, HSTS, and Content Security Policy fully configured',
+    ],
+    mobile_friendliness: {
+      ...result.mobile_friendliness,
+      is_mobile_friendly:      true,
+      viewport_configured:     true,
+      text_readable:           true,
+      tap_targets_sized:       true,
+      content_wider_than_screen: false,
+    },
+    security: {
+      has_https:      true,
+      has_hsts:       true,
+      has_csp:        true,
+      mixed_content:  false,
+      security_score: sec,
+    },
+  };
+};
+
+// Delta badge shown in Webenablix view
+const DeltaBadge = ({ current, projected }) => {
+  const delta = projected - current;
+  if (delta <= 0) return null;
+  return (
+    <span className="text-[10px] font-bold text-emerald-600 bg-emerald-100 rounded-full px-1.5 py-0.5 leading-none">
+      +{delta}
+    </span>
+  );
+};
+
 // Score Badge Component
-const ScoreBadge = ({ score, label }) => {
+const ScoreBadge = ({ score, label, delta }) => {
   let colorClasses = 'bg-red-100 text-red-600 ring-red-500';
   if (score >= 80) colorClasses = 'bg-emerald-100 text-emerald-600 ring-emerald-500';
   else if (score >= 60) colorClasses = 'bg-yellow-100 text-yellow-600 ring-yellow-500';
-  
+
   return (
     <div className="flex flex-col items-center">
       <div className={`w-16 h-16 rounded-full flex items-center justify-center ring-4 ${colorClasses}`}>
         <span className="font-bold text-xl">{score}</span>
       </div>
       <span className="text-xs text-gray-500 mt-2 text-center">{label}</span>
+      {delta != null && delta > 0 && (
+        <DeltaBadge current={score - delta} projected={score} />
+      )}
     </div>
   );
 };
@@ -222,24 +284,73 @@ const Section = ({ title, icon: Icon, children, defaultOpen }) => {
 };
 
 // Full Audit Results
-const FullAuditResults = ({ result }) => {
+const FullAuditResults = ({ result, originalResult, view, onToggle }) => {
   const accIssues = result.accessibility_issues || [];
   const seoIssues = result.seo_issues || [];
   const recs = result.top_recommendations || [];
-  
+  const isWebenablix = view === 'webenablix';
+
+  const overallDelta  = isWebenablix ? result.overall_score       - originalResult.overall_score       : 0;
+  const accDelta      = isWebenablix ? result.accessibility_score  - originalResult.accessibility_score  : 0;
+  const seoDelta      = isWebenablix ? result.seo_score            - originalResult.seo_score            : 0;
+  const perfDelta     = isWebenablix ? result.performance_score    - originalResult.performance_score    : 0;
+  const mobDelta      = isWebenablix ? result.mobile_score         - originalResult.mobile_score         : 0;
+  const secDelta      = isWebenablix ? result.security_score       - originalResult.security_score       : 0;
+
   return (
     <div className="mt-12 max-w-5xl mx-auto">
+
+      {/* ── View Toggle ──────────────────────────────────────── */}
+      <div className="flex justify-center mb-5">
+        <div className="inline-flex rounded-full bg-white/10 backdrop-blur-sm border border-white/20 p-1 gap-1">
+          <button
+            onClick={() => onToggle('current')}
+            className={`px-5 py-2 rounded-full text-sm font-semibold transition-all duration-200 ${
+              !isWebenablix
+                ? 'bg-white text-[#2563EB] shadow'
+                : 'text-white/70 hover:text-white'
+            }`}
+          >
+            Current State
+          </button>
+          <button
+            onClick={() => onToggle('webenablix')}
+            className={`flex items-center gap-1.5 px-5 py-2 rounded-full text-sm font-semibold transition-all duration-200 ${
+              isWebenablix
+                ? 'bg-[#2563EB] text-white shadow-lg shadow-blue-500/40'
+                : 'text-white/70 hover:text-white'
+            }`}
+          >
+            <Sparkles className="w-3.5 h-3.5" />
+            With Webenablix
+          </button>
+        </div>
+      </div>
+
+      {/* Webenablix info bar */}
+      {isWebenablix && (
+        <div className="flex items-center gap-2 justify-center mb-4 text-emerald-300 text-sm">
+          <CheckCircle className="w-4 h-4" />
+          <span>Projected scores after Webenablix remediates all detected issues</span>
+        </div>
+      )}
+
       <div className="bg-white rounded-2xl shadow-2xl overflow-hidden">
         {/* Header */}
-        <div className="bg-gradient-to-r from-[#2563EB] to-[#3B82F6] p-6 text-white">
+        <div className={`p-6 text-white ${isWebenablix ? 'bg-gradient-to-r from-emerald-600 to-teal-500' : 'bg-gradient-to-r from-[#2563EB] to-[#3B82F6]'}`}>
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div>
-              <p className="text-sm opacity-80">Comprehensive Audit Report</p>
+              <p className="text-sm opacity-80">{isWebenablix ? 'Projected Report — With Webenablix' : 'Comprehensive Audit Report'}</p>
               <p className="text-lg font-semibold truncate max-w-md">{result.url}</p>
             </div>
             <div className="flex items-center gap-4">
               <div className="text-center">
                 <p className="text-4xl font-bold">{result.overall_score}</p>
+                {overallDelta > 0 && (
+                  <p className="text-xs font-bold bg-white/20 rounded-full px-2 py-0.5 mt-1">
+                    +{overallDelta} pts vs current
+                  </p>
+                )}
                 <p className="text-xs opacity-80">Overall Score</p>
               </div>
               <div className="h-12 w-px bg-white/30" />
@@ -250,86 +361,123 @@ const FullAuditResults = ({ result }) => {
             </div>
           </div>
         </div>
-        
+
         {/* Score Cards */}
         <div className="p-6 border-b">
           <div className="flex flex-wrap justify-center gap-6">
-            <ScoreBadge score={result.accessibility_score} label="Accessibility" />
-            <ScoreBadge score={result.seo_score} label="SEO" />
-            <ScoreBadge score={result.performance_score} label="Performance" />
-            <ScoreBadge score={result.mobile_score} label="Mobile" />
-            <ScoreBadge score={result.security_score} label="Security" />
+            <ScoreBadge score={result.accessibility_score} label="Accessibility" delta={accDelta} />
+            <ScoreBadge score={result.seo_score}           label="SEO"           delta={seoDelta} />
+            <ScoreBadge score={result.performance_score}   label="Performance"   delta={perfDelta} />
+            <ScoreBadge score={result.mobile_score}        label="Mobile"        delta={mobDelta} />
+            <ScoreBadge score={result.security_score}      label="Security"      delta={secDelta} />
           </div>
         </div>
-        
+
         {/* Quick Stats */}
         <div className="grid grid-cols-3 border-b">
           <div className="p-4 text-center border-r">
-            <p className="text-3xl font-bold text-red-500">{result.critical_issues}</p>
+            {isWebenablix ? (
+              <>
+                <p className="text-3xl font-bold text-emerald-500 flex items-center justify-center gap-1">
+                  0 <CheckCircle className="w-6 h-6" />
+                </p>
+                <p className="text-xs text-gray-400 line-through">{originalResult.critical_issues} critical</p>
+              </>
+            ) : (
+              <p className="text-3xl font-bold text-red-500">{result.critical_issues}</p>
+            )}
             <p className="text-sm text-gray-500">Critical Issues</p>
           </div>
           <div className="p-4 text-center border-r">
-            <p className="text-3xl font-bold text-yellow-500">{result.warnings}</p>
+            {isWebenablix ? (
+              <>
+                <p className="text-3xl font-bold text-emerald-500 flex items-center justify-center gap-1">
+                  0 <CheckCircle className="w-6 h-6" />
+                </p>
+                <p className="text-xs text-gray-400 line-through">{originalResult.warnings} warnings</p>
+              </>
+            ) : (
+              <p className="text-3xl font-bold text-yellow-500">{result.warnings}</p>
+            )}
             <p className="text-sm text-gray-500">Warnings</p>
           </div>
           <div className="p-4 text-center">
-            <p className="text-3xl font-bold text-gray-700">{result.total_issues}</p>
+            {isWebenablix ? (
+              <>
+                <p className="text-3xl font-bold text-emerald-500 flex items-center justify-center gap-1">
+                  0 <CheckCircle className="w-6 h-6" />
+                </p>
+                <p className="text-xs text-gray-400 line-through">{originalResult.total_issues} total</p>
+              </>
+            ) : (
+              <p className="text-3xl font-bold text-gray-700">{result.total_issues}</p>
+            )}
             <p className="text-sm text-gray-500">Total Issues</p>
           </div>
         </div>
-        
+
         {/* Recommendations */}
         {recs.length > 0 && (
-          <div className="p-6 bg-blue-50 border-b">
+          <div className={`p-6 border-b ${isWebenablix ? 'bg-emerald-50' : 'bg-blue-50'}`}>
             <h3 className="font-semibold text-gray-800 mb-3 flex items-center gap-2">
-              <Zap className="w-5 h-5 text-[#2563EB]" />
-              Top Recommendations
+              {isWebenablix ? <Sparkles className="w-5 h-5 text-emerald-600" /> : <Zap className="w-5 h-5 text-[#2563EB]" />}
+              {isWebenablix ? 'What Webenablix Fixes For You' : 'Top Recommendations'}
             </h3>
             <div className="space-y-2">
               {recs.slice(0, 5).map((rec, i) => (
                 <div key={`rec-${i}`} className="flex items-start gap-2 text-sm text-gray-700">
-                  <span className="w-5 h-5 bg-[#2563EB] text-white rounded-full flex items-center justify-center text-xs flex-shrink-0">{i + 1}</span>
+                  <span className={`w-5 h-5 rounded-full flex items-center justify-center text-xs flex-shrink-0 text-white ${isWebenablix ? 'bg-emerald-500' : 'bg-[#2563EB]'}`}>
+                    {isWebenablix ? '✓' : i + 1}
+                  </span>
                   {rec}
                 </div>
               ))}
             </div>
           </div>
         )}
-        
+
         {/* Detailed Sections */}
         <div className="p-6 space-y-4">
           <Section title="Core Web Vitals (Google)" icon={Zap} defaultOpen={true}>
             <CoreWebVitalsSection vitals={result.core_web_vitals} />
           </Section>
-          
+
           <Section title={`Accessibility Issues (${accIssues.length})`} icon={Eye}>
             <div className="space-y-3">
-              {accIssues.length === 0 && <p className="text-emerald-600 text-center py-4">No accessibility issues found!</p>}
+              {accIssues.length === 0 && (
+                <p className="text-emerald-600 text-center py-4 font-medium">
+                  {isWebenablix ? '✓ All accessibility issues resolved by Webenablix' : 'No accessibility issues found!'}
+                </p>
+              )}
               {accIssues.slice(0, 8).map((issue, i) => (
                 <IssueDisplay key={`acc-${i}`} issue={issue} idx={i} />
               ))}
               {accIssues.length > 8 && <p className="text-sm text-gray-500 text-center">+ {accIssues.length - 8} more issues</p>}
             </div>
           </Section>
-          
+
           <Section title={`SEO Issues (${seoIssues.length})`} icon={Globe}>
             <div className="space-y-3">
-              {seoIssues.length === 0 && <p className="text-emerald-600 text-center py-4">No SEO issues found!</p>}
+              {seoIssues.length === 0 && (
+                <p className="text-emerald-600 text-center py-4 font-medium">
+                  {isWebenablix ? '✓ All SEO issues resolved by Webenablix' : 'No SEO issues found!'}
+                </p>
+              )}
               {seoIssues.slice(0, 6).map((issue, i) => (
                 <IssueDisplay key={`seo-${i}`} issue={issue} idx={i} />
               ))}
               {seoIssues.length > 6 && <p className="text-sm text-gray-500 text-center">+ {seoIssues.length - 6} more issues</p>}
             </div>
           </Section>
-          
+
           <Section title="Mobile Friendliness" icon={Smartphone}>
             <MobileSection mobile={result.mobile_friendliness} />
           </Section>
-          
+
           <Section title="Structured Data (Schema.org)" icon={Globe}>
             <StructuredDataSection data={result.structured_data} />
           </Section>
-          
+
           <Section title="Security Analysis" icon={Shield}>
             <SecuritySection security={result.security} />
           </Section>
@@ -345,6 +493,16 @@ const AuditSection = () => {
   const [loading, setLoading] = useState(false);
   const [auditResult, setAuditResult] = useState(null);
   const [error, setError] = useState(null);
+  const [activeView, setActiveView] = useState('current');
+
+  // Reset to "Current State" whenever a new audit result arrives
+  useEffect(() => {
+    setActiveView('current');
+  }, [auditResult]);
+
+  const displayResult = auditResult && activeView === 'webenablix'
+    ? buildProjectedResult(auditResult)
+    : auditResult;
 
   const handleAudit = async () => {
     if (!websiteUrl.trim()) {
@@ -360,7 +518,15 @@ const AuditSection = () => {
       const response = await axios.post(`${API}/audit`, { url: websiteUrl, audit_type: 'full' });
       setAuditResult(response.data);
     } catch (err) {
-      setError(err.response?.data?.detail || 'Failed to audit website. Please try again.');
+      if (err.response?.data?.detail) {
+        setError(err.response.data.detail);
+      } else if (err.code === 'ERR_NETWORK' || err.code === 'ECONNREFUSED') {
+        setError('Cannot connect to server. Please ensure the backend is running on port 8001.');
+      } else if (err.code === 'ECONNABORTED') {
+        setError('Request timed out. The website may be slow or unreachable.');
+      } else {
+        setError(`Failed to audit website: ${err.message || 'Please try again.'}`);
+      }
     } finally {
       setLoading(false);
     }
@@ -384,7 +550,7 @@ const AuditSection = () => {
           <p className="text-white/70 text-lg mb-8 max-w-2xl mx-auto">
             Analyze accessibility, SEO, Core Web Vitals, mobile-friendliness, and security
           </p>
-          
+
           <div className="max-w-2xl mx-auto">
             <div className="flex flex-col sm:flex-row gap-4">
               <div className="relative flex-1">
@@ -399,7 +565,7 @@ const AuditSection = () => {
                 />
                 <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/60" />
               </div>
-              <Button 
+              <Button
                 onClick={handleAudit}
                 disabled={loading}
                 className="h-14 px-8 bg-[#2563EB] hover:bg-[#1d4ed8] text-white rounded-full font-semibold flex items-center gap-2 whitespace-nowrap disabled:opacity-50"
@@ -414,7 +580,14 @@ const AuditSection = () => {
             {error && <p className="mt-4 text-red-400 text-sm">{error}</p>}
           </div>
 
-          {auditResult && <FullAuditResults result={auditResult} />}
+          {displayResult && (
+            <FullAuditResults
+              result={displayResult}
+              originalResult={auditResult}
+              view={activeView}
+              onToggle={setActiveView}
+            />
+          )}
         </div>
       </div>
     </section>

@@ -11,15 +11,20 @@ const createTables = async () => {
       CREATE TABLE IF NOT EXISTS users (
         id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
         email VARCHAR(255) UNIQUE NOT NULL,
-        password_hash VARCHAR(255) NOT NULL,
+        password_hash VARCHAR(255),
         name VARCHAR(255) NOT NULL,
         company VARCHAR(255),
         plan VARCHAR(50) DEFAULT 'free',
         sites_count INTEGER DEFAULT 0,
+        google_id VARCHAR(255),
         created_at TIMESTAMPTZ DEFAULT NOW(),
         updated_at TIMESTAMPTZ DEFAULT NOW()
       )
     `);
+
+    // Allow existing users tables to support Google OAuth (idempotent alterations)
+    await client.query(`ALTER TABLE users ALTER COLUMN password_hash DROP NOT NULL`).catch(() => {});
+    await client.query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS google_id VARCHAR(255)`);
 
     // Audits table
     await client.query(`

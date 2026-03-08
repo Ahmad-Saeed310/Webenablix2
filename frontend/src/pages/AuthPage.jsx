@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { GoogleLogin } from '@react-oauth/google';
 import { Button } from '../components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
 import { Input } from '../components/ui/input';
@@ -61,6 +62,32 @@ const AuthPage = () => {
       localStorage.setItem('webenablix_token', data.access_token);
       localStorage.setItem('webenablix_user', JSON.stringify(data.user));
 
+      navigate('/dashboard');
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleGoogleSuccess = async (credentialResponse) => {
+    setLoading(true);
+    setError('');
+    try {
+      const res = await fetch(`${API_URL}/api/auth/google`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ credential: credentialResponse.credential }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.detail || 'Google sign-in failed');
+      }
+
+      localStorage.setItem('webenablix_token', data.access_token);
+      localStorage.setItem('webenablix_user', JSON.stringify(data.user));
       navigate('/dashboard');
     } catch (err) {
       setError(err.message);
@@ -209,9 +236,9 @@ const AuthPage = () => {
                       </div>
                     )}
                     
-                    <Button 
-                      type="submit" 
-                      className="w-full" 
+                    <Button
+                      type="submit"
+                      className="w-full"
                       size="lg"
                       disabled={loading}
                     >
@@ -225,6 +252,21 @@ const AuthPage = () => {
                       )}
                     </Button>
                   </form>
+
+                  <div className="mt-4 flex items-center gap-3">
+                    <div className="flex-1 border-t border-gray-200" />
+                    <span className="text-xs text-gray-400">or continue with</span>
+                    <div className="flex-1 border-t border-gray-200" />
+                  </div>
+
+                  <div className="mt-4 flex justify-center">
+                    <GoogleLogin
+                      onSuccess={handleGoogleSuccess}
+                      onError={() => setError('Google sign-in failed. Please try again.')}
+                      useOneTap={false}
+                      width="100%"
+                    />
+                  </div>
                   
                   <div className="mt-6 text-center">
                     <button
