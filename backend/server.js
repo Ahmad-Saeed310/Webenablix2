@@ -31,12 +31,13 @@ app.use(
 );
 
 // ── Routes ───────────────────────────────────────────────────
-app.use('/api/auth', require('./routes/auth'));
-app.use('/api/audit', require('./routes/audit'));
-app.use('/api/audits', require('./routes/audit'));
-app.use('/api/leads', require('./routes/leads'));
+app.use('/api/auth',    require('./routes/auth'));
+app.use('/api/audit',   require('./routes/audit'));
+app.use('/api/audits',  require('./routes/audit'));
+app.use('/api/leads',   require('./routes/leads'));
 app.use('/api/contact', require('./routes/contact'));
-app.use('/api/status', require('./routes/status'));
+app.use('/api/status',  require('./routes/status'));
+app.use('/api/preview', require('./routes/preview'));
 
 // Stats endpoint (shortcut)
 app.get('/api/stats', async (req, res) => {

@@ -373,6 +373,118 @@ const scanWebsite = async (url) => {
     firstContentfulPaint: Math.round(loadTime * 800), // rough estimate ms
   };
 
+  // ---- DOM Analysis (rich element-level breakdown) ----
+  const headingLevels = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'];
+  const headings = {};
+  headingLevels.forEach((tag) => {
+    const items = [];
+    $(tag).each((_, el) => {
+      items.push($(el).text().trim().substring(0, 100));
+    });
+    headings[tag] = { count: items.length, items };
+  });
+
+  // All images with alt status — resolve to absolute URLs so the browser can load them
+  const pageOrigin = (() => { try { const u = new URL(url); return u.origin; } catch { return ''; } })();
+  const resolveUrl = (src) => {
+    if (!src) return '';
+    if (src.startsWith('data:')) return src; // inline data-URI, keep as-is
+    try { return new URL(src, url).href; } catch { return src; }
+  };
+
+  const totalImages = $('img').length;
+  const allImages = [];
+  $('img').each((i, el) => {
+    const alt = $(el).attr('alt');
+    const rawSrc = $(el).attr('src') || $(el).attr('data-src') || $(el).attr('data-lazy-src') || '';
+    const resolvedSrc = resolveUrl(rawSrc);
+    const width  = $(el).attr('width')  || null;
+    const height = $(el).attr('height') || null;
+    const loading = $(el).attr('loading') || null;
+    allImages.push({
+      index:    i + 1,
+      src:      resolvedSrc.substring(0, 400),
+      rawSrc:   rawSrc.substring(0, 200),
+      alt:      alt !== undefined && alt !== null ? alt : null,
+      hasAlt:   alt !== undefined && alt !== null,
+      isEmpty:  alt === '',
+      width,
+      height,
+      loading,
+    });
+  });
+
+  // All links with text status
+  const totalLinks = $('a').length;
+  const allLinks = [];
+  $('a').each((i, el) => {
+    const text = $(el).text().trim().substring(0, 80);
+    const href = ($(el).attr('href') || '').substring(0, 100);
+    const ariaLabel = $(el).attr('aria-label') || '';
+    const hasText = !!(text || ariaLabel);
+    allLinks.push({ index: i + 1, href, text: text || ariaLabel, hasText });
+  });
+
+  // All buttons
+  const totalButtons = $('button').length;
+  const allButtons = [];
+  $('button').each((i, el) => {
+    const text = $(el).text().trim().substring(0, 80);
+    const ariaLabel = $(el).attr('aria-label') || '';
+    const hasText = !!(text || ariaLabel);
+    allButtons.push({ index: i + 1, text: text || ariaLabel, hasText });
+  });
+
+  // All form inputs
+  const inputSelector =
+    'input:not([type="hidden"]):not([type="submit"]):not([type="button"]):not([type="reset"])';
+  const totalInputs = $(inputSelector).length;
+  const allInputs = [];
+  $(inputSelector).each((i, el) => {
+    const id = $(el).attr('id');
+    const ariaLabel = $(el).attr('aria-label');
+    const ariaLabelledBy = $(el).attr('aria-labelledby');
+    const type = $(el).attr('type') || 'text';
+    const hasLabel =
+      !!(ariaLabel || ariaLabelledBy || (id && $(`label[for="${id}"]`).length > 0));
+    allInputs.push({ index: i + 1, type, id: id || null, hasLabel });
+  });
+
+  // Meta / head tags
+  const htmlLangAttr = $('html').attr('lang') || null;
+  const viewportContent = $('meta[name="viewport"]').attr('content') || null;
+  const canonicalHref = $('link[rel="canonical"]').attr('href') || null;
+  const ogTitle = $('meta[property="og:title"]').attr('content') || null;
+  const ogDescription = $('meta[property="og:description"]').attr('content') || null;
+  const ogImage = $('meta[property="og:image"]').attr('content') || null;
+  const twitterCard = $('meta[name="twitter:card"]').attr('content') || null;
+  const robotsMeta = $('meta[name="robots"]').attr('content') || null;
+  const faviconHref =
+    $('link[rel="icon"], link[rel="shortcut icon"]').first().attr('href') || null;
+
+  const domAnalysis = {
+    page_title: pageTitle || null,
+    page_title_length: pageTitle ? pageTitle.length : 0,
+    meta_description: metaDesc || null,
+    meta_description_length: metaDesc ? metaDesc.length : 0,
+    html_lang: htmlLangAttr,
+    viewport: viewportContent,
+    canonical: canonicalHref,
+    og_title: ogTitle,
+    og_description: ogDescription,
+    og_image: ogImage,
+    twitter_card: twitterCard,
+    robots: robotsMeta,
+    favicon: faviconHref,
+    headings,
+    images: { total: totalImages, items: allImages.slice(0, 50) },
+    links: { total: totalLinks, empty_count: emptyLinks, items: allLinks.slice(0, 30) },
+    buttons: { total: totalButtons, empty_count: emptyButtons, items: allButtons.slice(0, 20) },
+    inputs: { total: totalInputs, unlabeled_count: unlabeledInputs, items: allInputs.slice(0, 20) },
+    duplicate_ids: duplicateIds.slice(0, 10),
+    has_skip_link: hasSkipLink,
+  };
+
   return {
     scan_successful: scanSuccessful,
     page_title: pageTitle || null,
@@ -383,6 +495,7 @@ const scanWebsite = async (url) => {
     performance_metrics: performanceMetrics,
     mobile_issues: mobileIssues,
     security_issues: securityIssues,
+    dom_analysis: domAnalysis,
   };
 };
 
