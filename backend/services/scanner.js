@@ -6,8 +6,12 @@
 const axios = require('axios');
 const cheerio = require('cheerio');
 const { URL } = require('url');
+const https = require('https');
 
 const SCAN_TIMEOUT = 30000; // 30 seconds
+
+// Allow self-signed / untrusted certs so we can scan any public site
+const httpsAgent = new https.Agent({ rejectUnauthorized: false });
 
 /**
  * Validate URL format
@@ -35,6 +39,7 @@ const scanWebsite = async (url) => {
   try {
     const response = await axios.get(url, {
       timeout: SCAN_TIMEOUT,
+      httpsAgent,
       headers: {
         'User-Agent':
           'Mozilla/5.0 (compatible; WebenablixBot/1.0; +https://webenablix.com/bot)',
