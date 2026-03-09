@@ -23,6 +23,8 @@ import FreeCheckerPage from './pages/FreeCheckerPage';
 import AuthPage from './pages/AuthPage';
 import DashboardPage from './pages/DashboardPage';
 import AdminPage from './pages/AdminPage';
+import BlogsPage from './pages/BlogsPage';
+import BlogPostPage from './pages/BlogPostPage';
 
 const HomePage = () => {
   const [showCookieConsent, setShowCookieConsent] = useState(true);
@@ -89,7 +91,8 @@ function App() {
         <Route path="/installation/*" element={<InstallationsPage />} />
         <Route path="/docs" element={<SimplePage title="Documentation" />} />
         <Route path="/about" element={<SimplePage title="About Us" />} />
-        <Route path="/blogs" element={<SimplePage title="Blog & Insights" />} />
+        <Route path="/blogs" element={<BlogsPage />} />
+        <Route path="/blogs/:id" element={<BlogPostPage />} />
         <Route path="/agency" element={<SimplePage title="Agency Partners" />} />
       </Routes>
     </BrowserRouter>
