@@ -22,6 +22,7 @@ import AuditPage from './pages/AuditPage';
 import FreeCheckerPage from './pages/FreeCheckerPage';
 import AuthPage from './pages/AuthPage';
 import DashboardPage from './pages/DashboardPage';
+import AdminPage from './pages/AdminPage';
 
 const HomePage = () => {
   const [showCookieConsent, setShowCookieConsent] = useState(true);
@@ -73,6 +74,7 @@ function App() {
         <Route path="/login" element={<AuthPage />} />
         <Route path="/register" element={<AuthPage />} />
         <Route path="/dashboard" element={<DashboardPage />} />
+        <Route path="/admin" element={<AdminPage />} />
         <Route path="/pricing" element={<PricingPage />} />
         <Route path="/products" element={<ProductsPage />} />
         <Route path="/products/widget" element={<WidgetPage />} />
