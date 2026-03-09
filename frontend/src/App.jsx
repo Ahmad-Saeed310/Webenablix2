@@ -29,14 +29,15 @@ import BlogPostPage from './pages/BlogPostPage';
 const HomePage = () => {
   const [showCookieConsent, setShowCookieConsent] = useState(true);
   const [showReportModal, setShowReportModal] = useState(false);
+  const [heroScanUrl, setHeroScanUrl] = useState('');
 
   return (
     <div className="min-h-screen bg-white">
       <Header />
       <main>
-        <HeroSection />
+        <HeroSection onScanRequest={(url) => setHeroScanUrl(url + '?t=' + Date.now())} />
         <FeaturesSection />
-        <AuditSection />
+        <AuditSection externalUrl={heroScanUrl} />
         <WhyAccessibilitySection />
         <WidgetSection />
         <TrustedBySection />

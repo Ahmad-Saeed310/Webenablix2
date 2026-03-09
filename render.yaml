@@ -1,0 +1,20 @@
+services:
+  - type: web
+    name: webenablix-backend
+    env: node
+    region: oregon
+    rootDir: backend
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: DATABASE_URL
+        value: postgresql://postgres:Supabase%23123@db.rgpfruyoydmamdeuqknq.supabase.co:5432/postgres
+      - key: JWT_SECRET
+        generateValue: true
+      - key: FRONTEND_URL
+        sync: false   # Set this to your Vercel URL after deploying frontend

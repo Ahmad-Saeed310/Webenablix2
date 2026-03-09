@@ -1476,7 +1476,7 @@ const LivePageInspector = ({ url }) => {
 };
 
 // Main Audit Section
-const AuditSection = () => {
+const AuditSection = ({ externalUrl }) => {
   const [websiteUrl, setWebsiteUrl] = useState('');
   const [loading, setLoading] = useState(false);
   const [auditResult, setAuditResult] = useState(null);
@@ -1488,22 +1488,43 @@ const AuditSection = () => {
     setActiveView('current');
   }, [auditResult]);
 
+  // When Hero section submits a URL, prefill and auto-run
+  useEffect(() => {
+    if (!externalUrl) return;
+    setWebsiteUrl(externalUrl);
+    // Small delay so state is committed before we call handleAudit via the ref trick
+    setTriggerExternal(true);
+  }, [externalUrl]);
+
+  const [triggerExternal, setTriggerExternal] = useState(false);
+
   const displayResult = auditResult && activeView === 'webenablix'
     ? buildProjectedResult(auditResult)
     : auditResult;
+
+  // Fire audit when external trigger is set
+  useEffect(() => {
+    if (triggerExternal && websiteUrl) {
+      setTriggerExternal(false);
+      handleAudit();
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [triggerExternal, websiteUrl]);
 
   const handleAudit = async () => {
     if (!websiteUrl.trim()) {
       setError('Please enter a website URL');
       return;
     }
+    let normalizedUrl = websiteUrl.trim();
+    if (!/^https?:\/\//i.test(normalizedUrl)) normalizedUrl = 'https://' + normalizedUrl;
 
     setLoading(true);
     setError(null);
     setAuditResult(null);
 
     try {
-      const response = await axios.post(`${API}/audit`, { url: websiteUrl, audit_type: 'full' });
+      const response = await axios.post(`${API}/audit`, { url: normalizedUrl, audit_type: 'full' });
       setAuditResult(response.data);
     } catch (err) {
       if (err.response?.data?.detail) {
@@ -1521,7 +1542,7 @@ const AuditSection = () => {
   };
 
   return (
-    <section className="py-20 lg:py-28 bg-gradient-to-br from-[#1e3a5f] to-[#0f172a] relative overflow-hidden">
+    <section id="audit-section" className="py-20 lg:py-28 bg-gradient-to-br from-[#1e3a5f] to-[#0f172a] relative overflow-hidden">
       <div className="absolute inset-0">
         <div className="absolute top-0 left-0 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl" />
         <div className="absolute bottom-0 right-0 w-96 h-96 bg-blue-400/10 rounded-full blur-3xl" />
@@ -1543,7 +1564,7 @@ const AuditSection = () => {
             <div className="flex flex-col sm:flex-row gap-4">
               <div className="relative flex-1">
                 <Input
-                  type="url"
+                  type="text"
                   placeholder="Enter your website URL (e.g., example.com)"
                   value={websiteUrl}
                   onChange={(e) => setWebsiteUrl(e.target.value)}
