@@ -1,6 +1,7 @@
 version: '3.8'
 
 services:
+  # ── PostgreSQL ─────────────────────────────────────────────────────────────
   postgres:
     image: postgres:15-alpine
     container_name: webenablix_db
@@ -19,6 +20,7 @@ services:
       timeout: 5s
       retries: 5
 
+  # ── Backend ────────────────────────────────────────────────────────────────
   backend:
     build:
       context: ./backend
@@ -31,28 +33,29 @@ services:
     environment:
       NODE_ENV: production
       PORT: 8001
-      DB_HOST: postgres
-      DB_PORT: 5432
-      DB_NAME: webenablix
-      DB_USER: webenablix_user
-      DB_PASSWORD: webenablix_pass
+      DATABASE_URL: postgresql://webenablix_user:webenablix_pass@postgres:5432/webenablix
       JWT_SECRET: change_this_in_production_to_a_long_random_string
+      ADMIN_USERNAME: admin
+      ADMIN_PASSWORD: admin@webenablix
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID:-}
       FRONTEND_URL: http://localhost:3000
     ports:
       - "8001:8001"
 
+  # ── Frontend ───────────────────────────────────────────────────────────────
   frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile
+      args:
+        VITE_BACKEND_URL: ""        # Empty = nginx proxy to backend container
+        VITE_GOOGLE_CLIENT_ID: ${VITE_GOOGLE_CLIENT_ID:-}
     container_name: webenablix_frontend
     restart: unless-stopped
     depends_on:
       - backend
-    environment:
-      VITE_BACKEND_URL: http://localhost:8001
     ports:
-      - "3000:3000"
+      - "3000:80"
 
 volumes:
   postgres_data:

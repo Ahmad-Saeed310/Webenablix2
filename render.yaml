@@ -1,20 +1,33 @@
 services:
+  # ── Backend (Node.js / Express) ─────────────────────────────────────────────
   - type: web
     name: webenablix-backend
     env: node
     region: oregon
     rootDir: backend
-    buildCommand: npm install
-    startCommand: npm start
+    buildCommand: npm ci --omit=dev
+    startCommand: node db/migrate.js && node server.js
     healthCheckPath: /health
+    autoDeploy: true
     envVars:
       - key: NODE_ENV
         value: production
       - key: PORT
         value: 10000
+      # DATABASE_URL — paste your Supabase / Render Postgres connection string
       - key: DATABASE_URL
-        value: postgresql://postgres:Supabase%23123@db.rgpfruyoydmamdeuqknq.supabase.co:5432/postgres
+        sync: false
+      # JWT secret — click "Generate" in Render dashboard
       - key: JWT_SECRET
         generateValue: true
+      # Admin credentials — override in Render dashboard Environment tab
+      - key: ADMIN_USERNAME
+        value: admin
+      - key: ADMIN_PASSWORD
+        sync: false  # Set a strong password in the Render dashboard
+      # Google OAuth
+      - key: GOOGLE_CLIENT_ID
+        sync: false
+      # CORS — set to your Netlify frontend URL after first deploy
       - key: FRONTEND_URL
-        sync: false   # Set this to your Vercel URL after deploying frontend
+        sync: false   # e.g. https://webenablix.netlify.app

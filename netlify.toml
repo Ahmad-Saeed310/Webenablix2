@@ -1,0 +1,16 @@
+# Netlify build & deployment configuration
+# Docs: https://docs.netlify.com/configure-builds/file-based-configuration/
+
+[build]
+  # Directory to run the build command from (relative to repo root)
+  base    = "frontend"
+  # Build command
+  command = "npm install && npm run build"
+  # Directory that contains the built site
+  publish = "dist"
+
+# SPA fallback — redirect all routes to index.html so React Router works
+[[redirects]]
+  from   = "/*"
+  to     = "/index.html"
+  status = 200
