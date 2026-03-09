@@ -143,4 +143,75 @@ router.delete('/users/:id', requireAdmin, async (req, res) => {
   }
 });
 
+// ── Blog Management ───────────────────────────────────────────
+
+// GET /api/admin/blogs
+router.get('/blogs', requireAdmin, async (req, res) => {
+  try {
+    const result = await pool.query(
+      `SELECT * FROM blogs ORDER BY created_at DESC`
+    );
+    return res.json({ blogs: result.rows });
+  } catch (err) {
+    console.error('Admin get blogs error:', err);
+    return res.status(500).json({ detail: 'Internal server error' });
+  }
+});
+
+// POST /api/admin/blogs
+router.post('/blogs', requireAdmin, async (req, res) => {
+  const { title, excerpt, category, category_color, read_time, date, author, author_role, image_url, content, is_featured } = req.body;
+  if (!title) return res.status(400).json({ detail: 'Title is required' });
+  try {
+    // If marking as featured, unset existing featured post
+    if (is_featured) {
+      await pool.query(`UPDATE blogs SET is_featured = false WHERE is_featured = true`);
+    }
+    const result = await pool.query(
+      `INSERT INTO blogs (title, excerpt, category, category_color, read_time, date, author, author_role, image_url, content, is_featured)
+       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11)
+       RETURNING *`,
+      [title, excerpt || '', category || '', category_color || 'blue', read_time || '', date || '', author || '', author_role || '', image_url || '', content || '', !!is_featured]
+    );
+    return res.status(201).json({ blog: result.rows[0] });
+  } catch (err) {
+    console.error('Admin create blog error:', err);
+    return res.status(500).json({ detail: 'Internal server error' });
+  }
+});
+
+// PUT /api/admin/blogs/:id
+router.put('/blogs/:id', requireAdmin, async (req, res) => {
+  const { title, excerpt, category, category_color, read_time, date, author, author_role, image_url, content, is_featured } = req.body;
+  if (!title) return res.status(400).json({ detail: 'Title is required' });
+  try {
+    // If marking as featured, unset existing featured post (except this one)
+    if (is_featured) {
+      await pool.query(`UPDATE blogs SET is_featured = false WHERE is_featured = true AND id != $1`, [req.params.id]);
+    }
+    const result = await pool.query(
+      `UPDATE blogs SET title=$1, excerpt=$2, category=$3, category_color=$4, read_time=$5, date=$6,
+       author=$7, author_role=$8, image_url=$9, content=$10, is_featured=$11, updated_at=NOW()
+       WHERE id=$12 RETURNING *`,
+      [title, excerpt || '', category || '', category_color || 'blue', read_time || '', date || '', author || '', author_role || '', image_url || '', content || '', !!is_featured, req.params.id]
+    );
+    if (result.rows.length === 0) return res.status(404).json({ detail: 'Blog not found' });
+    return res.json({ blog: result.rows[0] });
+  } catch (err) {
+    console.error('Admin update blog error:', err);
+    return res.status(500).json({ detail: 'Internal server error' });
+  }
+});
+
+// DELETE /api/admin/blogs/:id
+router.delete('/blogs/:id', requireAdmin, async (req, res) => {
+  try {
+    await pool.query('DELETE FROM blogs WHERE id = $1', [req.params.id]);
+    return res.json({ success: true });
+  } catch (err) {
+    console.error('Admin delete blog error:', err);
+    return res.status(500).json({ detail: 'Internal server error' });
+  }
+});
+
 module.exports = router;

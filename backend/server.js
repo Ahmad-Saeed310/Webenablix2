@@ -43,6 +43,7 @@ app.use('/api/contact', require('./routes/contact'));
 app.use('/api/status',  require('./routes/status'));
 app.use('/api/preview', require('./routes/preview'));
 app.use('/api/admin',   require('./routes/admin'));
+app.use('/api/blogs',   require('./routes/blogs'));
 
 // Stats endpoint (shortcut)
 app.get('/api/stats', async (req, res) => {

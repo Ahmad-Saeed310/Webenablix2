@@ -92,6 +92,26 @@ const createTables = async () => {
       )
     `);
 
+    // Blogs table
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS blogs (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        title TEXT NOT NULL,
+        excerpt TEXT,
+        category VARCHAR(100),
+        category_color VARCHAR(50) DEFAULT 'blue',
+        read_time VARCHAR(50),
+        date VARCHAR(50),
+        author VARCHAR(255),
+        author_role VARCHAR(255),
+        image_url TEXT,
+        content TEXT,
+        is_featured BOOLEAN DEFAULT false,
+        created_at TIMESTAMPTZ DEFAULT NOW(),
+        updated_at TIMESTAMPTZ DEFAULT NOW()
+      )
+    `);
+
     await client.query('COMMIT');
     console.log('✅ Database tables created successfully');
   } catch (err) {

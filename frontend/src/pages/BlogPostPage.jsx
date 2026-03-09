@@ -6,7 +6,9 @@ import {
 } from 'lucide-react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
-import { BLOG_POSTS, } from './BlogsPage';
+import { BLOG_POSTS, normalizeApiPost } from './BlogsPage';
+
+const API_URL = import.meta.env.VITE_BACKEND_URL || '';
 
 // ── Tiny Markdown-ish renderer ────────────────────────────────────────────────
 // Supports: ## headings, **bold**, `code`, ```code blocks```, tables, lists, paragraphs
@@ -222,9 +224,25 @@ const ReadingProgress = ({ progress }) => {
 const BlogPostPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const post = BLOG_POSTS.find((p) => p.id === id);
+  const [post, setPost] = useState(() => BLOG_POSTS.find((p) => p.id === id) || null);
+  const [loading, setLoading] = useState(!BLOG_POSTS.find((p) => p.id === id));
   const [progress, setProgress] = useState(0);
   const articleRef = useRef(null);
+
+  // If not found in static data, try the API
+  useEffect(() => {
+    if (!BLOG_POSTS.find((p) => p.id === id)) {
+      setLoading(true);
+      fetch(`${API_URL}/api/blogs/${id}`)
+        .then((r) => r.json())
+        .then((data) => {
+          if (data.blog) setPost(normalizeApiPost(data.blog));
+          else setPost(null);
+        })
+        .catch(() => setPost(null))
+        .finally(() => setLoading(false));
+    }
+  }, [id]);
 
   // Reading progress tracking
   useEffect(() => {
@@ -247,6 +265,16 @@ const BlogPostPage = () => {
     window.scrollTo({ top: 0, behavior: 'instant' });
     setProgress(0);
   }, [id]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50">
+        <Header />
+        <main className="pt-24 pb-20 text-center text-gray-400">Loading...</main>
+        <Footer />
+      </div>
+    );
+  }
 
   if (!post) {
     return (

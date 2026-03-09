@@ -4,6 +4,24 @@ import { ChevronLeft, ChevronRight, Clock, Calendar, Tag, ArrowRight } from 'luc
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 
+const API_URL = import.meta.env.VITE_BACKEND_URL || '';
+
+// Normalize a DB blog row to the same shape as BLOG_POSTS entries
+export const normalizeApiPost = (b) => ({
+  id: b.id,
+  title: b.title,
+  excerpt: b.excerpt || '',
+  category: b.category || '',
+  categoryColor: b.category_color || 'blue',
+  readTime: b.read_time || '',
+  date: b.date || '',
+  author: b.author || '',
+  authorRole: b.author_role || '',
+  image: b.image_url || '',
+  content: b.content || '',
+  is_featured: b.is_featured,
+});
+
 // ── Blog Data ─────────────────────────────────────────────────────────────────
 export const BLOG_POSTS = [
   {
@@ -410,7 +428,20 @@ const BlogsPage = () => {
   const [index, setIndex] = useState(0);
   const trackRef = useRef(null);
   const [cardWidth, setCardWidth] = useState(320 + 24); // 320px card + 24px gap
-  const maxIndex = Math.max(0, BLOG_POSTS.length - VISIBLE);
+  const [apiPosts, setApiPosts] = useState([]);
+
+  // Fetch dynamic blogs from backend; combine with static ones
+  useEffect(() => {
+    fetch(`${API_URL}/api/blogs`)
+      .then((r) => r.json())
+      .then((data) => setApiPosts((data.blogs || []).map(normalizeApiPost)))
+      .catch(() => {});
+  }, []);
+
+  // Merge: DB posts (featured first) then static posts
+  const allPosts = [...apiPosts, ...BLOG_POSTS];
+
+  const maxIndex = Math.max(0, allPosts.length - VISIBLE);
 
   useEffect(() => {
     const update = () => {
@@ -424,12 +455,9 @@ const BlogsPage = () => {
     return () => window.removeEventListener('resize', update);
   }, []);
 
-  const prev = () => setIndex((i) => Math.max(0, i - 1));
-  const next = () => setIndex((i) => Math.min(maxIndex, i + 1));
-
-  // Featured post = first post, carousel = rest
-  const featured = BLOG_POSTS[0];
-  const rest = BLOG_POSTS.slice(1);
+  // Featured post: first explicitly featured, otherwise first post
+  const featured = allPosts.find((p) => p.is_featured) || allPosts[0];
+  const rest = allPosts.filter((p) => p.id !== featured?.id);
   const restMax = Math.max(0, rest.length - VISIBLE);
   const [restIndex, setRestIndex] = useState(0);
 
@@ -550,7 +578,7 @@ const BlogsPage = () => {
               {['Compliance', 'Legal', 'Development', 'Design', 'Business'].map((topic) => {
                 const colorKey = { Compliance: 'blue', Legal: 'red', Development: 'green', Design: 'purple', Business: 'orange' }[topic];
                 const cc = CATEGORY_COLORS[colorKey];
-                const count = BLOG_POSTS.filter((p) => p.category === topic).length;
+                const count = allPosts.filter((p) => p.category === topic).length;
                 return (
                   <div key={topic} className={`rounded-2xl p-5 text-center border ${cc.bg} border-transparent`}>
                     <div className={`text-2xl font-bold ${cc.text}`}>{count}</div>
