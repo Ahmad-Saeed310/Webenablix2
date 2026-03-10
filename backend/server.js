@@ -8,42 +8,20 @@ const app = express();
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 
-const allowedOrigins = [
-  process.env.FRONTEND_URL,
-  'http://localhost:3000',
-  'http://localhost:3001',
-  'http://127.0.0.1:3000',
-  'http://127.0.0.1:3001',
-].filter(Boolean);
-
 app.use(
   cors({
-    origin: (origin, callback) => {
-      // Allow requests with no origin (e.g. curl, mobile apps, same-origin proxy)
-      if (!origin) return callback(null, true);
-      if (allowedOrigins.includes(origin)) return callback(null, true);
-      // Allow any localhost port in development
-      if (/^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin)) return callback(null, true);
-      // Allow Vercel preview and production deployments
-      if (/^https:\/\/[a-z0-9-]+(\.vercel\.app)$/.test(origin)) return callback(null, true);
-      // Allow Render deployments
-      if (/^https:\/\/[a-z0-9-]+(\.onrender\.com)$/.test(origin)) return callback(null, true);
-      callback(null, false);
-    },
+    origin: process.env.FRONTEND_URL || 'http://localhost:3000',
     credentials: true,
   })
 );
 
 // ── Routes ───────────────────────────────────────────────────
-app.use('/api/auth',    require('./routes/auth'));
-app.use('/api/audit',   require('./routes/audit'));
-app.use('/api/audits',  require('./routes/audit'));
-app.use('/api/leads',   require('./routes/leads'));
+app.use('/api/auth', require('./routes/auth'));
+app.use('/api/audit', require('./routes/audit'));
+app.use('/api/audits', require('./routes/audit'));
+app.use('/api/leads', require('./routes/leads'));
 app.use('/api/contact', require('./routes/contact'));
-app.use('/api/status',  require('./routes/status'));
-app.use('/api/preview', require('./routes/preview'));
-app.use('/api/admin',   require('./routes/admin'));
-app.use('/api/blogs',   require('./routes/blogs'));
+app.use('/api/status', require('./routes/status'));
 
 // Stats endpoint (shortcut)
 app.get('/api/stats', async (req, res) => {

@@ -22,22 +22,18 @@ import AuditPage from './pages/AuditPage';
 import FreeCheckerPage from './pages/FreeCheckerPage';
 import AuthPage from './pages/AuthPage';
 import DashboardPage from './pages/DashboardPage';
-import AdminPage from './pages/AdminPage';
-import BlogsPage from './pages/BlogsPage';
-import BlogPostPage from './pages/BlogPostPage';
 
 const HomePage = () => {
   const [showCookieConsent, setShowCookieConsent] = useState(true);
   const [showReportModal, setShowReportModal] = useState(false);
-  const [heroScanUrl, setHeroScanUrl] = useState('');
 
   return (
     <div className="min-h-screen bg-white">
       <Header />
       <main>
-        <HeroSection onScanRequest={(url) => setHeroScanUrl(url + '?t=' + Date.now())} />
+        <HeroSection />
         <FeaturesSection />
-        <AuditSection externalUrl={heroScanUrl} />
+        <AuditSection />
         <WhyAccessibilitySection />
         <WidgetSection />
         <TrustedBySection />
@@ -77,7 +73,6 @@ function App() {
         <Route path="/login" element={<AuthPage />} />
         <Route path="/register" element={<AuthPage />} />
         <Route path="/dashboard" element={<DashboardPage />} />
-        <Route path="/admin" element={<AdminPage />} />
         <Route path="/pricing" element={<PricingPage />} />
         <Route path="/products" element={<ProductsPage />} />
         <Route path="/products/widget" element={<WidgetPage />} />
@@ -92,8 +87,7 @@ function App() {
         <Route path="/installation/*" element={<InstallationsPage />} />
         <Route path="/docs" element={<SimplePage title="Documentation" />} />
         <Route path="/about" element={<SimplePage title="About Us" />} />
-        <Route path="/blogs" element={<BlogsPage />} />
-        <Route path="/blogs/:id" element={<BlogPostPage />} />
+        <Route path="/blogs" element={<SimplePage title="Blog & Insights" />} />
         <Route path="/agency" element={<SimplePage title="Agency Partners" />} />
       </Routes>
     </BrowserRouter>

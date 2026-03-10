@@ -24,7 +24,7 @@ const DashboardPage = () => {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const [sites, setSites] = useState([]);
-  const [stats, setStats] = useState({ total_audits: 0, average_score: 0, sites_count: 0 });
+  const [stats, setStats] = useState({ total_audits: 0, average_score: 0 });
   const [newSiteUrl, setNewSiteUrl] = useState('');
   const [loading, setLoading] = useState(true);
   const [scanning, setScanning] = useState(null);
@@ -44,22 +44,17 @@ const DashboardPage = () => {
   }, [navigate]);
 
   const fetchData = async () => {
-    const token = getToken();
-    const authHeader = token ? { Authorization: `Bearer ${token}` } : {};
-
     try {
-      // User-specific stats
-      const statsRes = await fetch(`${API_URL}/api/auth/stats`, { headers: authHeader });
+      const statsRes = await fetch(`${API_URL}/api/stats`);
       if (statsRes.ok) {
         setStats(await statsRes.json());
       }
-
-      // User's own audits only
-      const auditsRes = await fetch(`${API_URL}/api/audits?limit=10`, { headers: authHeader });
+      
+      const auditsRes = await fetch(`${API_URL}/api/audits?limit=5`);
       if (auditsRes.ok) {
         const audits = await auditsRes.json();
         setRecentAudits(audits);
-
+        
         const uniqueSites = [...new Set(audits.map(a => a.url))].map(url => {
           const siteAudits = audits.filter(a => a.url === url);
           const latestAudit = siteAudits[0];
@@ -72,14 +67,6 @@ const DashboardPage = () => {
         });
         setSites(uniqueSites.slice(0, 5));
       }
-
-      // Refresh user object so sites_count stays current
-      const meRes = await fetch(`${API_URL}/api/auth/me`, { headers: authHeader });
-      if (meRes.ok) {
-        const freshUser = await meRes.json();
-        localStorage.setItem('webenablix_user', JSON.stringify(freshUser));
-        setUser(freshUser);
-      }
     } catch (error) {
       console.error('Error fetching data:', error);
     } finally {
@@ -90,20 +77,16 @@ const DashboardPage = () => {
   const handleAddSite = async (e) => {
     e.preventDefault();
     if (!newSiteUrl.trim()) return;
-
+    
     setScanning(newSiteUrl);
-
+    
     try {
-      const token = getToken();
       const res = await fetch(`${API_URL}/api/audit`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          ...(token ? { Authorization: `Bearer ${token}` } : {}),
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ url: newSiteUrl })
       });
-
+      
       if (res.ok) {
         setNewSiteUrl('');
         fetchData();
@@ -212,7 +195,7 @@ const DashboardPage = () => {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-gray-500">Sites Monitored</p>
-                  <p className="text-2xl font-bold">{stats.sites_count}</p>
+                  <p className="text-2xl font-bold">{sites.length}</p>
                 </div>
                 <Globe className="h-8 w-8 text-purple-500 opacity-50" />
               </div>

@@ -7,11 +7,16 @@ This guide will walk you through deploying Webenablix **completely free** (withi
 ## Overview
 
 We'll use 3 free services:
-- **Netlify** → Frontend (React app)
-- **Render** → Backend (Node.js API)
+- **Netlify or Vercel** → Frontend (React app)
+- **Railway or Render** → Backend (Node.js API) - **Railway recommended (easier, truly free)**
 - **Supabase** → Database (PostgreSQL)
 
 **Total time:** ~20 minutes
+
+### Backend Hosting Options:
+- **Railway** (Recommended) - $5 free credit/month, ~500 hours runtime, no credit card required initially
+- **Render** - 750 hours/month but may require verification
+- **Vercel** - Can host both frontend + backend as serverless functions
 
 ---
 
@@ -71,7 +76,84 @@ Replace `YOUR_USERNAME` with your GitHub username.
 
 ---
 
-## Step 3: Deploy Backend (Render)
+## Step 3: Deploy Backend
+
+### Option A: Railway (Recommended - Easier & Truly Free)
+
+#### 3A.1 Create Account
+1. Go to [railway.app](https://railway.app)
+2. Click **Login** → **Login with GitHub**
+3. Authorize Railway
+
+#### 3A.2 Create New Project
+1. Click **New Project**
+2. Select **Deploy from GitHub repo**
+3. Choose your `webenablix` repository
+4. Railway will detect it's a Node.js app
+
+#### 3A.3 Configure Service
+1. Click on the service card
+2. Go to **Settings** tab
+3. Set these values:
+   - **Root Directory:** `backend`
+   - **Build Command:** `npm install`
+   - **Start Command:** `node db/migrate.js && node server.js`
+   - **Port:** Auto-detected (will use PORT env var)
+
+#### 3A.4 Add Environment Variables
+1. Go to **Variables** tab
+2. Click **New Variable** for each:
+
+| Key | Value | Notes |
+|-----|-------|-------|
+| `DATABASE_URL` | Your Supabase connection string | From Step 2.3 |
+| `JWT_SECRET` | Generate random 64 chars | See command below |
+| `ADMIN_USERNAME` | `admin` | Or your choice |
+| `ADMIN_PASSWORD` | Choose strong password | Save this! |
+| `GOOGLE_CLIENT_ID` | Your Google OAuth ID | Optional (Step 6) |
+| `FRONTEND_URL` | Leave empty for now | Add in Step 5 |
+| `NODE_ENV` | `production` | |
+
+**Generate JWT_SECRET:** Run in your local terminal:
+```bash
+node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
+```
+
+#### 3A.5 Deploy
+1. Railway auto-deploys on save
+2. Go to **Deployments** tab → wait for ✅ Success
+3. Go to **Settings** → scroll to **Networking** → click **Generate Domain**
+4. **Copy your Railway URL** (e.g., `https://webenablix-backend-production.up.railway.app`)
+
+**Your backend is live!** ✅
+
+---
+
+### Option B: Render (Alternative)
+
+#### 3B.1 Create Account
+1. Go to [render.com](https://render.com)
+2. Click **Get Started** → Sign in with GitHub
+3. Authorize Render
+
+#### 3B.2 Create Web Service
+1. Click **New +** → **Web Service**
+2. Find `webenablix` repository → click **Connect**
+3. Render auto-detects from `render.yaml`
+4. Click **Apply**
+
+#### 3B.3 Set Environment Variables
+1. Go to **Environment** tab
+2. Add each variable (same as Railway above)
+
+#### 3B.4 Deploy
+1. Click **Manual Deploy** → **Deploy latest commit**
+2. Wait 3-5 minutes
+3. **Copy your Render URL**
+
+---
+
+## Step 3 (Old - Render)
 
 ### 3.1 Create Account
 1. Go to [render.com](https://render.com)
@@ -221,13 +303,15 @@ Your app is now live at:
 
 ## 📊 Free Tier Limits
 
-| Service | Free Tier |
-|---------|-----------|
-| **Netlify** | 100 GB bandwidth/month, unlimited sites |
-| **Render** | 750 hours/month (your backend will sleep after 15 min inactivity, wakes on request) |
-| **Supabase** | 500 MB database, 2 GB bandwidth, unlimited API requests |
+| Service | Free Tier | Notes |
+|---------|-----------|-------|
+| **Railway** | $5 credit/month (~500 hours) | No sleep, always-on if credit remains |
+| **Render** | 750 hours/month | Sleeps after 15 min inactivity |
+| **Netlify** | 100 GB bandwidth/month | Unlimited sites |
+| **Vercel** | 100 GB bandwidth/month | Serverless functions: 100 GB-hours |
+| **Supabase** | 500 MB database, 2 GB bandwidth | Pauses after 1 week inactivity |
 
-**Note:** Render free tier services "sleep" after 15 minutes of inactivity. The first request after sleep takes ~30 seconds to wake up.
+**Note:** Railway typically provides better performance and no sleep issues compared to Render's free tier.
 
 ---
 

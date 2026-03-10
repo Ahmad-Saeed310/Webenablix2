@@ -1,11 +1,17 @@
 version: '3.8'
 
+networks:
+  webenablix-network:
+    driver: bridge
+
 services:
   # ── PostgreSQL ─────────────────────────────────────────────────────────────
   postgres:
     image: postgres:15-alpine
     container_name: webenablix_db
     restart: unless-stopped
+    networks:
+      - webenablix-network
     environment:
       POSTGRES_DB: webenablix
       POSTGRES_USER: webenablix_user
@@ -27,6 +33,8 @@ services:
       dockerfile: Dockerfile
     container_name: webenablix_backend
     restart: unless-stopped
+    networks:
+      - webenablix-network
     depends_on:
       postgres:
         condition: service_healthy
@@ -52,6 +60,8 @@ services:
         VITE_GOOGLE_CLIENT_ID: ${VITE_GOOGLE_CLIENT_ID:-}
     container_name: webenablix_frontend
     restart: unless-stopped
+    networks:
+      - webenablix-network
     depends_on:
       - backend
     ports:

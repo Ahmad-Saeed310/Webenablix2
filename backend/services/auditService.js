@@ -261,7 +261,6 @@ const performAudit = async (url, auditType = 'full') => {
     images_without_alt: scanResult.images_without_alt || [],
     scan_successful: scanResult.scan_successful,
     scan_duration: scanDuration,
-    dom_analysis: scanResult.dom_analysis || null,
   };
 };
 

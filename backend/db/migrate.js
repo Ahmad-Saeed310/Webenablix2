@@ -11,20 +11,15 @@ const createTables = async () => {
       CREATE TABLE IF NOT EXISTS users (
         id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
         email VARCHAR(255) UNIQUE NOT NULL,
-        password_hash VARCHAR(255),
+        password_hash VARCHAR(255) NOT NULL,
         name VARCHAR(255) NOT NULL,
         company VARCHAR(255),
         plan VARCHAR(50) DEFAULT 'free',
         sites_count INTEGER DEFAULT 0,
-        google_id VARCHAR(255),
         created_at TIMESTAMPTZ DEFAULT NOW(),
         updated_at TIMESTAMPTZ DEFAULT NOW()
       )
     `);
-
-    // Allow existing users tables to support Google OAuth (idempotent alterations)
-    await client.query(`ALTER TABLE users ALTER COLUMN password_hash DROP NOT NULL`).catch(() => {});
-    await client.query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS google_id VARCHAR(255)`);
 
     // Audits table
     await client.query(`
@@ -89,26 +84,6 @@ const createTables = async () => {
         id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
         client_name VARCHAR(255) NOT NULL,
         timestamp TIMESTAMPTZ DEFAULT NOW()
-      )
-    `);
-
-    // Blogs table
-    await client.query(`
-      CREATE TABLE IF NOT EXISTS blogs (
-        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-        title TEXT NOT NULL,
-        excerpt TEXT,
-        category VARCHAR(100),
-        category_color VARCHAR(50) DEFAULT 'blue',
-        read_time VARCHAR(50),
-        date VARCHAR(50),
-        author VARCHAR(255),
-        author_role VARCHAR(255),
-        image_url TEXT,
-        content TEXT,
-        is_featured BOOLEAN DEFAULT false,
-        created_at TIMESTAMPTZ DEFAULT NOW(),
-        updated_at TIMESTAMPTZ DEFAULT NOW()
       )
     `);
 
