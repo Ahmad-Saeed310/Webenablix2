@@ -28,6 +28,6 @@ services:
       # Google OAuth
       - key: GOOGLE_CLIENT_ID
         sync: false
-      # CORS — set to your Netlify frontend URL after first deploy
+      # CORS — primary frontend domain
       - key: FRONTEND_URL
-        sync: false   # e.g. https://webenablix.netlify.app
+        value: https://ahmadsaeed.me
