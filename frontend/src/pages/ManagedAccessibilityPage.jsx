@@ -1,19 +1,42 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
-  ArrowRight, Award, BarChart3, Bell, BookOpen, Check, CheckCircle2,
-  ClipboardList, FileText, Globe, HeadphonesIcon, MessageCircle,
-  RefreshCw, Shield, ShieldCheck, Sparkles, Star, TrendingUp,
-  UserCheck, Users, Zap, ArrowUpRight, Briefcase, Gavel, Lightbulb
-} from 'lucide-react';
-import { Button } from '../components/ui/button';
-import Header from '../components/Header';
-import Footer from '../components/Footer';
+  ArrowRight,
+  Award,
+  BarChart3,
+  Bell,
+  BookOpen,
+  Check,
+  CheckCircle2,
+  ClipboardList,
+  FileText,
+  Globe,
+  HeadphonesIcon,
+  MessageCircle,
+  RefreshCw,
+  Shield,
+  ShieldCheck,
+  Sparkles,
+  Star,
+  TrendingUp,
+  UserCheck,
+  Users,
+  Zap,
+  ArrowUpRight,
+  Briefcase,
+  Gavel,
+  Lightbulb,
+} from "lucide-react";
+import { Button } from "../components/ui/button";
+import Header from "../components/Header";
+import Footer from "../components/Footer";
 
 // ─── Sub-components ───────────────────────────────────────────────────────────
 
 const FeatureCard = ({ icon: Icon, iconBg, title, description }) => (
   <div className="bg-white rounded-2xl p-6 border border-gray-100 hover:border-[#2563EB] hover:shadow-xl transition-all group">
-    <div className={`w-12 h-12 ${iconBg} rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
+    <div
+      className={`w-12 h-12 ${iconBg} rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}
+    >
       <Icon className="w-6 h-6 text-white" />
     </div>
     <h3 className="text-lg font-bold text-gray-900 mb-2">{title}</h3>
@@ -21,40 +44,77 @@ const FeatureCard = ({ icon: Icon, iconBg, title, description }) => (
   </div>
 );
 
-const PlanCard = ({ name, badge, price, period, description, features, cta, highlighted }) => (
-  <div className={`relative rounded-2xl p-8 flex flex-col ${
-    highlighted
-      ? 'bg-[#2563EB] text-white shadow-2xl shadow-blue-200 scale-105'
-      : 'bg-white border border-gray-200 hover:border-[#2563EB] hover:shadow-xl transition-all'
-  }`}>
+const PlanCard = ({
+  name,
+  badge,
+  price,
+  period,
+  description,
+  features,
+  cta,
+  highlighted,
+}) => (
+  <div
+    className={`relative rounded-2xl p-8 flex flex-col ${
+      highlighted
+        ? "bg-[#2563EB] text-white shadow-2xl shadow-blue-200 scale-105"
+        : "bg-white border border-gray-200 hover:border-[#2563EB] hover:shadow-xl transition-all"
+    }`}
+  >
     {badge && (
-      <span className={`absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full text-xs font-bold ${
-        highlighted ? 'bg-white text-[#2563EB]' : 'bg-[#2563EB] text-white'
-      }`}>
+      <span
+        className={`absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full text-xs font-bold ${
+          highlighted ? "bg-white text-[#2563EB]" : "bg-[#2563EB] text-white"
+        }`}
+      >
         {badge}
       </span>
     )}
     <div className="mb-6">
-      <h3 className={`text-xl font-bold mb-1 ${highlighted ? 'text-white' : 'text-gray-900'}`}>{name}</h3>
-      <p className={`text-sm mb-4 ${highlighted ? 'text-blue-100' : 'text-gray-500'}`}>{description}</p>
+      <h3
+        className={`text-xl font-bold mb-1 ${highlighted ? "text-white" : "text-gray-900"}`}
+      >
+        {name}
+      </h3>
+      <p
+        className={`text-sm mb-4 ${highlighted ? "text-blue-100" : "text-gray-500"}`}
+      >
+        {description}
+      </p>
       <div className="flex items-end gap-1">
-        <span className={`text-4xl font-extrabold ${highlighted ? 'text-white' : 'text-gray-900'}`}>{price}</span>
-        {period && <span className={`text-sm mb-1 ${highlighted ? 'text-blue-100' : 'text-gray-400'}`}>{period}</span>}
+        <span
+          className={`text-4xl font-extrabold ${highlighted ? "text-white" : "text-gray-900"}`}
+        >
+          {price}
+        </span>
+        {period && (
+          <span
+            className={`text-sm mb-1 ${highlighted ? "text-blue-100" : "text-gray-400"}`}
+          >
+            {period}
+          </span>
+        )}
       </div>
     </div>
     <ul className="space-y-3 flex-1 mb-8">
-      {features.map(f => (
+      {features.map((f) => (
         <li key={f} className="flex items-start gap-2 text-sm">
-          <CheckCircle2 className={`w-4 h-4 mt-0.5 flex-shrink-0 ${highlighted ? 'text-blue-200' : 'text-emerald-500'}`} />
-          <span className={highlighted ? 'text-blue-50' : 'text-gray-700'}>{f}</span>
+          <CheckCircle2
+            className={`w-4 h-4 mt-0.5 flex-shrink-0 ${highlighted ? "text-blue-200" : "text-emerald-500"}`}
+          />
+          <span className={highlighted ? "text-blue-50" : "text-gray-700"}>
+            {f}
+          </span>
         </li>
       ))}
     </ul>
-    <Button className={`w-full rounded-full py-3 h-auto font-semibold ${
-      highlighted
-        ? 'bg-white text-[#2563EB] hover:bg-blue-50'
-        : 'bg-[#2563EB] text-white hover:bg-blue-700'
-    }`}>
+    <Button
+      className={`w-full rounded-full py-3 h-auto font-semibold ${
+        highlighted
+          ? "bg-white text-[#2563EB] hover:bg-blue-50"
+          : "bg-[#2563EB] text-white hover:bg-blue-700"
+      }`}
+    >
       {cta}
     </Button>
   </div>
@@ -67,14 +127,18 @@ const TestimonialCard = ({ quote, name, title, company, rating }) => (
         <Star key={i} className="w-4 h-4 fill-amber-400 text-amber-400" />
       ))}
     </div>
-    <p className="text-gray-700 text-sm leading-relaxed mb-5 italic">"{quote}"</p>
+    <p className="text-gray-700 text-sm leading-relaxed mb-5 italic">
+      "{quote}"
+    </p>
     <div className="flex items-center gap-3">
       <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center text-white font-bold text-sm">
         {name[0]}
       </div>
       <div>
         <p className="font-semibold text-gray-900 text-sm">{name}</p>
-        <p className="text-gray-500 text-xs">{title}, {company}</p>
+        <p className="text-gray-500 text-xs">
+          {title}, {company}
+        </p>
       </div>
     </div>
   </div>
@@ -83,7 +147,9 @@ const TestimonialCard = ({ quote, name, title, company, rating }) => (
 const ProcessStep = ({ number, title, description, icon: Icon, color }) => (
   <div className="relative flex gap-5">
     <div className="flex flex-col items-center">
-      <div className={`w-12 h-12 ${color} text-white rounded-full flex items-center justify-center font-bold text-lg flex-shrink-0 z-10`}>
+      <div
+        className={`w-12 h-12 ${color} text-white rounded-full flex items-center justify-center font-bold text-lg flex-shrink-0 z-10`}
+      >
         {number}
       </div>
       <div className="w-0.5 flex-1 bg-gray-200 mt-2 last:hidden" />
@@ -105,32 +171,52 @@ const ManagedAccessibilityPage = () => {
 
   const tabs = [
     {
-      label: 'Audit & Remediation',
+      label: "Audit & Remediation",
       icon: ClipboardList,
-      heading: 'Find every issue — then fix it',
-      body: 'Our certified experts conduct a thorough manual + automated audit of your entire digital presence. We then hand you a prioritised remediation plan and work alongside your developers to close every gap.',
-      points: ['Full WCAG 2.1 & 2.2 audit', 'Manual & automated testing', 'Developer-ready remediation guide', 'Re-test verification included'],
+      heading: "Find every issue — then fix it",
+      body: "Our certified experts conduct a thorough manual + automated audit of your entire digital presence. We then hand you a prioritised remediation plan and work alongside your developers to close every gap.",
+      points: [
+        "Full WCAG 2.1 & 2.2 audit",
+        "Manual & automated testing",
+        "Developer-ready remediation guide",
+        "Re-test verification included",
+      ],
     },
     {
-      label: 'Ongoing Monitoring',
+      label: "Ongoing Monitoring",
       icon: BarChart3,
-      heading: 'Stay compliant as your site evolves',
-      body: 'New content and features introduce new violations. Our Managed plan watches your site continuously and alerts you the moment a regression appears — with an expert ready to help you resolve it.',
-      points: ['24 / 7 automated scanning', 'Real-time Slack & email alerts', 'Monthly compliance health report', 'Dedicated accessibility manager'],
+      heading: "Stay compliant as your site evolves",
+      body: "New content and features introduce new violations. Our Managed plan watches your site continuously and alerts you the moment a regression appears — with an expert ready to help you resolve it.",
+      points: [
+        "24 / 7 automated scanning",
+        "Real-time Slack & email alerts",
+        "Monthly compliance health report",
+        "Dedicated accessibility manager",
+      ],
     },
     {
-      label: 'Legal Protection',
+      label: "Legal Protection",
       icon: Gavel,
-      heading: 'Reduce your legal exposure',
-      body: 'ADA web lawsuits are at an all-time high. Our managed clients receive a Voluntary Product Accessibility Template (VPAT), an accessibility statement, and can reference our certified audit in any legal proceedings.',
-      points: ['VPAT / ACR document', 'Published accessibility statement', 'Litigation support documentation', 'Quarterly compliance certificate'],
+      heading: "Reduce your legal exposure",
+      body: "ADA web lawsuits are at an all-time high. Our managed clients receive a Voluntary Product Accessibility Template (VPAT), an accessibility statement, and can reference our certified audit in any legal proceedings.",
+      points: [
+        "VPAT / ACR document",
+        "Published accessibility statement",
+        "Litigation support documentation",
+        "Quarterly compliance certificate",
+      ],
     },
     {
-      label: 'Training & Advisory',
+      label: "Training & Advisory",
       icon: BookOpen,
-      heading: 'Build accessibility into your team\'s DNA',
-      body: 'Accessibility is a team sport. We train your designers, developers, and content authors — so new work ships accessible from day one, reducing remediation costs long-term.',
-      points: ['Role-tailored training sessions', 'Self-paced e-learning platform', 'Design system accessibility review', 'On-demand expert Q&A'],
+      heading: "Build accessibility into your team's DNA",
+      body: "Accessibility is a team sport. We train your designers, developers, and content authors — so new work ships accessible from day one, reducing remediation costs long-term.",
+      points: [
+        "Role-tailored training sessions",
+        "Self-paced e-learning platform",
+        "Design system accessibility review",
+        "On-demand expert Q&A",
+      ],
     },
   ];
 
@@ -154,24 +240,39 @@ const ManagedAccessibilityPage = () => {
                   Certified Accessibility Experts
                 </div>
                 <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight">
-                  Managed<br />
+                  Managed
+                  <br />
                   <span className="text-blue-200">Accessibility</span>
                 </h1>
                 <p className="text-xl text-white/80 mb-8 leading-relaxed">
-                  Let our certified experts handle your entire accessibility program — from audit and remediation to continuous monitoring, legal documentation, and staff training.
+                  Let our certified experts handle your entire accessibility
+                  program — from audit and remediation to continuous monitoring,
+                  legal documentation, and staff training.
                 </p>
                 <div className="flex flex-wrap gap-4">
                   <Button className="bg-white text-[#2563EB] hover:bg-blue-50 rounded-full px-8 py-4 h-auto font-semibold shadow-lg">
                     Schedule a Consultation
                   </Button>
-                  <Button variant="outline" className="border-white text-white hover:bg-white/10 rounded-full px-8 py-4 h-auto font-semibold">
+                  <Button
+                    variant="outline"
+                    className="border-white text-white hover:bg-white/10 rounded-full px-8 py-4 h-auto font-semibold"
+                  >
                     View Pricing <ArrowRight className="w-4 h-4 ml-2" />
                   </Button>
                 </div>
                 <div className="flex flex-wrap gap-6 mt-10 text-white/70 text-sm">
-                  <div className="flex items-center gap-2"><Check className="w-4 h-4 text-green-300" /> WCAG 2.1 &amp; 2.2 Certified</div>
-                  <div className="flex items-center gap-2"><Check className="w-4 h-4 text-green-300" /> ADA &amp; Section 508</div>
-                  <div className="flex items-center gap-2"><Check className="w-4 h-4 text-green-300" /> Dedicated account manager</div>
+                  <div className="flex items-center gap-2">
+                    <Check className="w-4 h-4 text-green-300" /> WCAG 2.1 &amp;
+                    2.2 Certified
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Check className="w-4 h-4 text-green-300" /> ADA &amp;
+                    Section 508
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Check className="w-4 h-4 text-green-300" /> Dedicated
+                    account manager
+                  </div>
                 </div>
               </div>
 
@@ -179,14 +280,26 @@ const ManagedAccessibilityPage = () => {
               <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl p-8 text-white space-y-5">
                 <h3 className="font-bold text-xl mb-2">What's included</h3>
                 {[
-                  { icon: ClipboardList,     label: 'Expert manual + automated audit' },
-                  { icon: RefreshCw,         label: 'Ongoing remediation support' },
-                  { icon: BarChart3,         label: 'Continuous compliance monitoring' },
-                  { icon: Gavel,             label: 'VPAT & legal documentation' },
-                  { icon: BookOpen,          label: 'Team training & advisory' },
-                  { icon: HeadphonesIcon,    label: 'Dedicated accessibility manager' },
-                  { icon: FileText,          label: 'Monthly compliance reports' },
-                  { icon: ShieldCheck,       label: 'Quarterly compliance certificate' },
+                  {
+                    icon: ClipboardList,
+                    label: "Expert manual + automated audit",
+                  },
+                  { icon: RefreshCw, label: "Ongoing remediation support" },
+                  {
+                    icon: BarChart3,
+                    label: "Continuous compliance monitoring",
+                  },
+                  { icon: Gavel, label: "VPAT & legal documentation" },
+                  { icon: BookOpen, label: "Team training & advisory" },
+                  {
+                    icon: HeadphonesIcon,
+                    label: "Dedicated accessibility manager",
+                  },
+                  { icon: FileText, label: "Monthly compliance reports" },
+                  {
+                    icon: ShieldCheck,
+                    label: "Quarterly compliance certificate",
+                  },
                 ].map(({ icon: Icon, label }) => (
                   <div key={label} className="flex items-center gap-3">
                     <div className="w-9 h-9 bg-white/10 rounded-xl flex items-center justify-center flex-shrink-0">
@@ -207,9 +320,21 @@ const ManagedAccessibilityPage = () => {
               Trusted by leading organisations
             </p>
             <div className="flex flex-wrap justify-center gap-8">
-              {['US Department of Education', 'HealthFirst', 'LegalShield', 'RetailNow', 'CityGov Portal', 'EduPath LMS'].map(b => (
-                <div key={b} className="px-6 py-2.5 bg-white rounded-full shadow-sm border border-gray-100">
-                  <span className="font-semibold text-gray-600 text-sm">{b}</span>
+              {[
+                "US Department of Education",
+                "HealthFirst",
+                "LegalShield",
+                "RetailNow",
+                "CityGov Portal",
+                "EduPath LMS",
+              ].map((b) => (
+                <div
+                  key={b}
+                  className="px-6 py-2.5 bg-white rounded-full shadow-sm border border-gray-100"
+                >
+                  <span className="font-semibold text-gray-600 text-sm">
+                    {b}
+                  </span>
                 </div>
               ))}
             </div>
@@ -221,15 +346,31 @@ const ManagedAccessibilityPage = () => {
           <div className="max-w-7xl mx-auto px-4">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
               {[
-                { value: '98%',   label: 'Client satisfaction rate',   icon: Star },
-                { value: '2,400+', label: 'Managed sites worldwide',   icon: Globe },
-                { value: '0',     label: 'Successful ADA lawsuits\nagainst managed clients', icon: ShieldCheck },
-                { value: '6 wks', label: 'Avg. time to full compliance', icon: TrendingUp },
+                { value: "98%", label: "Client satisfaction rate", icon: Star },
+                {
+                  value: "2,400+",
+                  label: "Managed sites worldwide",
+                  icon: Globe,
+                },
+                {
+                  value: "0",
+                  label: "Successful ADA lawsuits\nagainst managed clients",
+                  icon: ShieldCheck,
+                },
+                {
+                  value: "6 wks",
+                  label: "Avg. time to full compliance",
+                  icon: TrendingUp,
+                },
               ].map(({ value, label, icon: Icon }) => (
                 <div key={label} className="flex flex-col items-center gap-2">
                   <Icon className="w-8 h-8 text-[#2563EB]" />
-                  <div className="text-3xl font-bold text-gray-900">{value}</div>
-                  <div className="text-gray-500 text-sm whitespace-pre-line leading-snug">{label}</div>
+                  <div className="text-3xl font-bold text-gray-900">
+                    {value}
+                  </div>
+                  <div className="text-gray-500 text-sm whitespace-pre-line leading-snug">
+                    {label}
+                  </div>
                 </div>
               ))}
             </div>
@@ -240,9 +381,12 @@ const ManagedAccessibilityPage = () => {
         <section className="py-20 bg-gray-50">
           <div className="max-w-7xl mx-auto px-4">
             <div className="text-center mb-12">
-              <span className="text-[#2563EB] font-semibold text-sm uppercase tracking-widest">Our Services</span>
+              <span className="text-[#2563EB] font-semibold text-sm uppercase tracking-widest">
+                Our Services
+              </span>
               <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mt-4 mb-4">
-                A complete accessibility program,<br />
+                A complete accessibility program,
+                <br />
                 <span className="text-[#2563EB]">fully managed for you</span>
               </h2>
             </div>
@@ -257,8 +401,8 @@ const ManagedAccessibilityPage = () => {
                     onClick={() => setActiveTab(i)}
                     className={`flex items-center gap-2 px-5 py-2.5 rounded-full font-medium text-sm transition-all ${
                       activeTab === i
-                        ? 'bg-[#2563EB] text-white shadow-md'
-                        : 'bg-white text-gray-600 border border-gray-200 hover:border-[#2563EB] hover:text-[#2563EB]'
+                        ? "bg-[#2563EB] text-white shadow-md"
+                        : "bg-white text-gray-600 border border-gray-200 hover:border-[#2563EB] hover:text-[#2563EB]"
                     }`}
                   >
                     <Icon className="w-4 h-4" />
@@ -272,21 +416,37 @@ const ManagedAccessibilityPage = () => {
             <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
               <div className="grid md:grid-cols-2 gap-0">
                 <div className="p-10 flex flex-col justify-center">
-                  <h3 className="text-2xl font-bold text-gray-900 mb-4">{tabs[activeTab].heading}</h3>
-                  <p className="text-gray-600 leading-relaxed mb-8">{tabs[activeTab].body}</p>
+                  <h3 className="text-2xl font-bold text-gray-900 mb-4">
+                    {tabs[activeTab].heading}
+                  </h3>
+                  <p className="text-gray-600 leading-relaxed mb-8">
+                    {tabs[activeTab].body}
+                  </p>
                   <ul className="space-y-3">
-                    {tabs[activeTab].points.map(p => (
-                      <li key={p} className="flex items-center gap-3 text-sm text-gray-700">
+                    {tabs[activeTab].points.map((p) => (
+                      <li
+                        key={p}
+                        className="flex items-center gap-3 text-sm text-gray-700"
+                      >
                         <CheckCircle2 className="w-5 h-5 text-emerald-500 flex-shrink-0" />
                         {p}
                       </li>
                     ))}
                   </ul>
                 </div>
-                <div className={`flex items-center justify-center p-10 bg-gradient-to-br ${
-                  ['from-blue-50 to-indigo-100', 'from-purple-50 to-blue-100', 'from-red-50 to-orange-100', 'from-green-50 to-teal-100'][activeTab]
-                }`}>
-                  {React.createElement(tabs[activeTab].icon, { className: 'w-32 h-32 text-[#2563EB] opacity-20' })}
+                <div
+                  className={`flex items-center justify-center p-10 bg-gradient-to-br ${
+                    [
+                      "from-blue-50 to-indigo-100",
+                      "from-purple-50 to-blue-100",
+                      "from-red-50 to-orange-100",
+                      "from-green-50 to-teal-100",
+                    ][activeTab]
+                  }`}
+                >
+                  {React.createElement(tabs[activeTab].icon, {
+                    className: "w-32 h-32 text-[#2563EB] opacity-20",
+                  })}
                 </div>
               </div>
             </div>
@@ -297,28 +457,50 @@ const ManagedAccessibilityPage = () => {
         <section className="py-20">
           <div className="max-w-4xl mx-auto px-4">
             <div className="text-center mb-14">
-              <span className="text-[#2563EB] font-semibold text-sm uppercase tracking-widest">The Process</span>
+              <span className="text-[#2563EB] font-semibold text-sm uppercase tracking-widest">
+                The Process
+              </span>
               <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mt-4">
                 How Managed Accessibility works
               </h2>
             </div>
 
             <div>
-              <ProcessStep number="1" icon={MessageCircle} color="bg-blue-600"
+              <ProcessStep
+                number="1"
+                icon={MessageCircle}
+                color="bg-blue-600"
                 title="Discovery call"
-                description="We start with a 30-minute consultation to understand your site, your tech stack, your traffic, and your legal exposure. No obligation." />
-              <ProcessStep number="2" icon={ClipboardList} color="bg-purple-600"
+                description="We start with a 30-minute consultation to understand your site, your tech stack, your traffic, and your legal exposure. No obligation."
+              />
+              <ProcessStep
+                number="2"
+                icon={ClipboardList}
+                color="bg-purple-600"
                 title="Baseline audit"
-                description="Our experts run a comprehensive manual and automated audit. You receive a prioritised issues list within 5 business days, mapped to WCAG success criteria." />
-              <ProcessStep number="3" icon={Lightbulb} color="bg-green-600"
+                description="Our experts run a comprehensive manual and automated audit. You receive a prioritised issues list within 5 business days, mapped to WCAG success criteria."
+              />
+              <ProcessStep
+                number="3"
+                icon={Lightbulb}
+                color="bg-green-600"
                 title="Remediation sprint"
-                description="We work alongside your dev team (or remediate directly, depending on your plan) to close critical and serious violations first — fastest path to compliance." />
-              <ProcessStep number="4" icon={ShieldCheck} color="bg-orange-500"
+                description="We work alongside your dev team (or remediate directly, depending on your plan) to close critical and serious violations first — fastest path to compliance."
+              />
+              <ProcessStep
+                number="4"
+                icon={ShieldCheck}
+                color="bg-orange-500"
                 title="Certification & documentation"
-                description="Once compliant, you receive a signed VPAT, a published accessibility statement, and a compliance certificate for use in legal or procurement contexts." />
-              <ProcessStep number="5" icon={RefreshCw} color="bg-indigo-600"
+                description="Once compliant, you receive a signed VPAT, a published accessibility statement, and a compliance certificate for use in legal or procurement contexts."
+              />
+              <ProcessStep
+                number="5"
+                icon={RefreshCw}
+                color="bg-indigo-600"
                 title="Continuous management"
-                description="We monitor your site 24/7, remediate regressions, deliver monthly reports, and are reachable any time via your dedicated accessibility manager." />
+                description="We monitor your site 24/7, remediate regressions, deliver monthly reports, and are reachable any time via your dedicated accessibility manager."
+              />
             </div>
           </div>
         </section>
@@ -327,12 +509,15 @@ const ManagedAccessibilityPage = () => {
         <section className="py-20 bg-gray-50">
           <div className="max-w-7xl mx-auto px-4">
             <div className="text-center mb-16">
-              <span className="text-[#2563EB] font-semibold text-sm uppercase tracking-widest">Pricing</span>
+              <span className="text-[#2563EB] font-semibold text-sm uppercase tracking-widest">
+                Pricing
+              </span>
               <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mt-4 mb-4">
                 Plans for every organisation
               </h2>
               <p className="text-gray-600 max-w-xl mx-auto">
-                All plans include a dedicated accessibility manager, WCAG 2.1 AA coverage, and monthly reporting.
+                All plans include a dedicated accessibility manager, WCAG 2.1 AA
+                coverage, and monthly reporting.
               </p>
             </div>
 
@@ -345,12 +530,12 @@ const ManagedAccessibilityPage = () => {
                 cta="Get Started"
                 highlighted={false}
                 features={[
-                  'Up to 50 pages monitored',
-                  'Annual manual audit',
-                  'Automated daily scans',
-                  'Email & Slack alerts',
-                  'Accessibility statement',
-                  'Email support (48 h SLA)',
+                  "Up to 50 pages monitored",
+                  "Annual manual audit",
+                  "Automated daily scans",
+                  "Email & Slack alerts",
+                  "Accessibility statement",
+                  "Email support (48 h SLA)",
                 ]}
               />
               <PlanCard
@@ -362,14 +547,14 @@ const ManagedAccessibilityPage = () => {
                 cta="Start Free Trial"
                 highlighted={true}
                 features={[
-                  'Up to 500 pages monitored',
-                  'Semi-annual manual audit',
-                  'Automated real-time scans',
-                  'VPAT / ACR document',
-                  'Dedicated account manager',
-                  'Remediation support (40 h / mo)',
-                  'Priority support (4 h SLA)',
-                  'Quarterly compliance certificate',
+                  "Up to 500 pages monitored",
+                  "Semi-annual manual audit",
+                  "Automated real-time scans",
+                  "VPAT / ACR document",
+                  "Dedicated account manager",
+                  "Remediation support (40 h / mo)",
+                  "Priority support (4 h SLA)",
+                  "Quarterly compliance certificate",
                 ]}
               />
               <PlanCard
@@ -380,14 +565,14 @@ const ManagedAccessibilityPage = () => {
                 cta="Contact Sales"
                 highlighted={false}
                 features={[
-                  'Unlimited pages',
-                  'Quarterly manual audits',
-                  'Full remediation by our team',
-                  'Litigation support package',
-                  'Custom SLA',
-                  'Staff training program',
-                  'Design system review',
-                  'Named CPACC-certified lead',
+                  "Unlimited pages",
+                  "Quarterly manual audits",
+                  "Full remediation by our team",
+                  "Litigation support package",
+                  "Custom SLA",
+                  "Staff training program",
+                  "Design system review",
+                  "Named CPACC-certified lead",
                 ]}
               />
             </div>
@@ -398,7 +583,9 @@ const ManagedAccessibilityPage = () => {
         <section className="py-20">
           <div className="max-w-7xl mx-auto px-4">
             <div className="text-center mb-14">
-              <span className="text-[#2563EB] font-semibold text-sm uppercase tracking-widest">What clients say</span>
+              <span className="text-[#2563EB] font-semibold text-sm uppercase tracking-widest">
+                What clients say
+              </span>
               <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mt-4">
                 Real results for real organisations
               </h2>
@@ -433,33 +620,40 @@ const ManagedAccessibilityPage = () => {
         <section className="py-20 bg-gray-50">
           <div className="max-w-3xl mx-auto px-4">
             <div className="text-center mb-12">
-              <span className="text-[#2563EB] font-semibold text-sm uppercase tracking-widest">FAQ</span>
-              <h2 className="text-3xl font-bold text-gray-900 mt-4">Common questions</h2>
+              <span className="text-[#2563EB] font-semibold text-sm uppercase tracking-widest">
+                FAQ
+              </span>
+              <h2 className="text-3xl font-bold text-gray-900 mt-4">
+                Common questions
+              </h2>
             </div>
             <div className="space-y-4">
               {[
                 {
                   q: 'What does "managed" actually mean?',
-                  a: 'It means our team handles the full accessibility lifecycle for you — audit, remediation guidance (or direct code fixes on Enterprise), monitoring, reporting, and legal docs. You retain final sign-off, but the heavy lifting is ours.'
+                  a: "It means our team handles the full accessibility lifecycle for you — audit, remediation guidance (or direct code fixes on Enterprise), monitoring, reporting, and legal docs. You retain final sign-off, but the heavy lifting is ours.",
                 },
                 {
-                  q: 'How long does the initial audit take?',
-                  a: 'For most sites under 200 pages, we deliver the full written audit within 5 business days of kick-off. Larger or more complex sites typically take 7–10 business days.'
+                  q: "How long does the initial audit take?",
+                  a: "For most sites under 200 pages, we deliver the full written audit within 5 business days of kick-off. Larger or more complex sites typically take 7–10 business days.",
                 },
                 {
-                  q: 'What standards do you audit against?',
-                  a: 'We audit against WCAG 2.1 Level AA as the baseline, with optional WCAG 2.2 and Section 508 coverage. Enterprise clients can also request EN 301 549 (European standard) coverage.'
+                  q: "What standards do you audit against?",
+                  a: "We audit against WCAG 2.1 Level AA as the baseline, with optional WCAG 2.2 and Section 508 coverage. Enterprise clients can also request EN 301 549 (European standard) coverage.",
                 },
                 {
-                  q: 'Can you work with any tech stack?',
-                  a: 'Yes. We have experts across React, Angular, Vue, WordPress, Shopify, Drupal, Sitecore, and bespoke platforms. We adapt our remediation approach to match your tooling.'
+                  q: "Can you work with any tech stack?",
+                  a: "Yes. We have experts across React, Angular, Vue, WordPress, Shopify, Drupal, Sitecore, and bespoke platforms. We adapt our remediation approach to match your tooling.",
                 },
                 {
-                  q: 'What happens if a lawsuit is filed while Im a managed client?',
-                  a: 'Enterprise clients receive litigation support documentation including the signed VPAT, audit trail, and a letter from our compliance team. We also provide expert witness support upon request.'
+                  q: "What happens if a lawsuit is filed while Im a managed client?",
+                  a: "Enterprise clients receive litigation support documentation including the signed VPAT, audit trail, and a letter from our compliance team. We also provide expert witness support upon request.",
                 },
               ].map(({ q, a }) => (
-                <details key={q} className="bg-white rounded-xl border border-gray-100 group overflow-hidden">
+                <details
+                  key={q}
+                  className="bg-white rounded-xl border border-gray-100 group overflow-hidden"
+                >
                   <summary className="flex items-center justify-between px-6 py-5 cursor-pointer font-semibold text-gray-900 select-none list-none">
                     {q}
                     <ArrowRight className="w-4 h-4 text-gray-400 transition-transform group-open:rotate-90 flex-shrink-0 ml-4" />
@@ -481,17 +675,23 @@ const ManagedAccessibilityPage = () => {
               Ready to put accessibility on autopilot?
             </h2>
             <p className="text-white/80 text-lg mb-10">
-              Schedule a free 30-minute consultation. We'll assess your current compliance posture and recommend the right plan — no obligations.
+              Schedule a free 30-minute consultation. We'll assess your current
+              compliance posture and recommend the right plan — no obligations.
             </p>
             <div className="flex flex-wrap gap-4 justify-center">
               <Button className="bg-white text-[#2563EB] hover:bg-blue-50 rounded-full px-10 py-4 h-auto font-semibold shadow-lg">
                 Book Free Consultation <ArrowRight className="w-5 h-5 ml-2" />
               </Button>
-              <Button variant="outline" className="border-white text-white hover:bg-white/10 rounded-full px-10 py-4 h-auto font-semibold">
+              <Button
+                variant="outline"
+                className="border-white text-white hover:bg-white/10 rounded-full px-10 py-4 h-auto font-semibold"
+              >
                 View Pricing
               </Button>
             </div>
-            <p className="text-white/40 text-sm mt-6">No credit card · No commitment · Response within 1 business day</p>
+            <p className="text-white/40 text-sm mt-6">
+              No credit card · No commitment · Response within 1 business day
+            </p>
           </div>
         </section>
       </main>
