@@ -22,6 +22,17 @@ import AuditPage from './pages/AuditPage';
 import FreeCheckerPage from './pages/FreeCheckerPage';
 import AuthPage from './pages/AuthPage';
 import DashboardPage from './pages/DashboardPage';
+import AdminPage from './pages/AdminPage';
+import BlogsPage from './pages/BlogsPage';
+import BlogPostPage from './pages/BlogPostPage';
+import AccessibilityMonitorPage from './pages/AccessibilityMonitorPage';
+import ManagedAccessibilityPage from './pages/ManagedAccessibilityPage';
+import ComparePage from './pages/ComparePage';
+import IndustryDetailPage from './pages/IndustryDetailPage';
+import InstallationDetailPage from './pages/InstallationDetailPage';
+import DocsPage from './pages/DocsPage';
+import AboutPage from './pages/AboutPage';
+import AgencyPage from './pages/AgencyPage';
 
 const HomePage = () => {
   const [showCookieConsent, setShowCookieConsent] = useState(true);
@@ -78,17 +89,18 @@ function App() {
         <Route path="/products/widget" element={<WidgetPage />} />
         <Route path="/products/audit" element={<AuditPage />} />
         <Route path="/products/checker" element={<FreeCheckerPage />} />
-        <Route path="/products/managed" element={<SimplePage title="Managed Accessibility" />} />
-        <Route path="/products/monitor" element={<SimplePage title="Accessibility Monitor" />} />
-        <Route path="/products/compare" element={<SimplePage title="Compare Solutions" />} />
+        <Route path="/products/managed" element={<ManagedAccessibilityPage />} />
+        <Route path="/products/monitor" element={<AccessibilityMonitorPage />} />
+        <Route path="/products/compare" element={<ComparePage />} />
         <Route path="/industries" element={<IndustriesPage />} />
-        <Route path="/industries/*" element={<IndustriesPage />} />
+        <Route path="/industries/:industry" element={<IndustryDetailPage />} />
         <Route path="/installation" element={<InstallationsPage />} />
-        <Route path="/installation/*" element={<InstallationsPage />} />
-        <Route path="/docs" element={<SimplePage title="Documentation" />} />
-        <Route path="/about" element={<SimplePage title="About Us" />} />
-        <Route path="/blogs" element={<SimplePage title="Blog & Insights" />} />
-        <Route path="/agency" element={<SimplePage title="Agency Partners" />} />
+        <Route path="/installation/:platform" element={<InstallationDetailPage />} />
+        <Route path="/docs" element={<DocsPage />} />
+        <Route path="/about" element={<AboutPage />} />
+        <Route path="/blogs" element={<BlogsPage />} />
+        <Route path="/blogs/:id" element={<BlogPostPage />} />
+        <Route path="/agency" element={<AgencyPage />} />
       </Routes>
     </BrowserRouter>
   );
