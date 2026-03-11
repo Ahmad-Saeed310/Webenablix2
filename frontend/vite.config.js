@@ -14,6 +14,7 @@ export default defineConfig({
   },
   server: {
     port: 3000,
+    allowedHosts: ['ahmadsaeed.me', '.ahmadsaeed.me', 'localhost'],
     proxy: {
       '/api': {
         target: 'http://localhost:8001',
