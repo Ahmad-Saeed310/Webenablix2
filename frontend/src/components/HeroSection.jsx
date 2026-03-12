@@ -1,8 +1,22 @@
-import React from 'react';
-import { Check, ShieldCheck } from 'lucide-react';
+import React, { useState } from 'react';
+import { Check, ShieldCheck, Search } from 'lucide-react';
 import { Button } from './ui/button';
+import { Input } from './ui/input';
 
-const HeroSection = () => {
+const HeroSection = ({ onScanRequest }) => {
+  const [url, setUrl] = useState('');
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!url.trim()) return;
+    let normalized = url.trim();
+    if (!/^https?:\/\//i.test(normalized)) normalized = 'https://' + normalized;
+    if (onScanRequest) onScanRequest(normalized);
+    // Smooth-scroll to the audit section
+    const el = document.getElementById('audit-section');
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
+
   return (
     <section className="relative bg-gradient-to-b from-[#3B82F6] to-[#60a5fa] overflow-hidden">
       <div className="absolute inset-0 overflow-hidden">
@@ -32,9 +46,30 @@ const HeroSection = () => {
             Navigate ADA & WCAG Compliance with Webenablix's Accessibility Solutions
           </p>
 
-          <Button className="bg-white text-[#2563EB] hover:bg-gray-100 px-8 py-4 rounded-full text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 h-auto">
-            Enable Accessibility Today
-          </Button>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 flex-wrap">
+            <Button className="bg-white text-[#2563EB] hover:bg-gray-100 px-8 py-4 rounded-full text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 h-auto">
+              Enable Accessibility Today
+            </Button>
+
+            <form onSubmit={handleSubmit} className="flex items-center gap-2 bg-white/15 backdrop-blur-sm rounded-full px-2 py-2 shadow-lg border border-white/20">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/60 pointer-events-none" />
+                <Input
+                  type="text"
+                  placeholder="Enter your website URL…"
+                  value={url}
+                  onChange={(e) => setUrl(e.target.value)}
+                  className="h-10 pl-9 pr-3 w-52 sm:w-64 bg-transparent border-none text-white placeholder:text-white/60 focus-visible:ring-0 focus-visible:ring-offset-0 text-sm"
+                />
+              </div>
+              <Button
+                type="submit"
+                className="h-10 px-5 bg-[#2563EB] hover:bg-[#1d4ed8] text-white rounded-full font-semibold text-sm whitespace-nowrap"
+              >
+                Analyze Free
+              </Button>
+            </form>
+          </div>
         </div>
 
         <div className="mt-16 grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">

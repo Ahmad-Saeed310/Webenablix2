@@ -1,67 +1,140 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import { Button } from '../components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
-import { Input } from '../components/ui/input';
-import { Label } from '../components/ui/label';
-import { Shield, Mail, Lock, User, Building, ArrowRight, CheckCircle } from 'lucide-react';
-import Header from '../components/Header';
-import Footer from '../components/Footer';
+import React, { useState, useEffect } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import { GoogleLogin } from "@react-oauth/google";
+import { Button } from "../components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "../components/ui/card";
+import { Input } from "../components/ui/input";
+import { Label } from "../components/ui/label";
+import {
+  Shield,
+  Mail,
+  Lock,
+  User,
+  Building,
+  ArrowRight,
+  CheckCircle,
+  KeyRound,
+  ShieldCheck,
+} from "lucide-react";
+import Header from "../components/Header";
+import Footer from "../components/Footer";
 
-const API_URL = import.meta.env.VITE_BACKEND_URL || '';
+const API_URL = import.meta.env.VITE_BACKEND_URL || "";
 
 const AuthPage = () => {
   const navigate = useNavigate();
-  const [isLogin, setIsLogin] = useState(true);
+  // tab: 'login' | 'register' | 'admin'
+  const [tab, setTab] = useState("login");
+  const isLogin = tab === "login";
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-  
+  const [error, setError] = useState("");
+
   const [formData, setFormData] = useState({
-    email: '',
-    password: '',
-    name: '',
-    company: ''
+    email: "",
+    password: "",
+    name: "",
+    company: "",
   });
 
+  const [adminData, setAdminData] = useState({ username: "", password: "" });
+
   useEffect(() => {
-    const token = localStorage.getItem('webenablix_token');
-    if (token) {
-      navigate('/dashboard');
-    }
+    const token = localStorage.getItem("webenablix_token");
+    if (token) navigate("/dashboard");
+    const adminToken = localStorage.getItem("webenablix_admin_token");
+    if (adminToken) navigate("/admin");
   }, [navigate]);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
-    setError('');
+    setError("");
+  };
+
+  const handleAdminChange = (e) => {
+    setAdminData({ ...adminData, [e.target.name]: e.target.value });
+    setError("");
+  };
+
+  const handleAdminLogin = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError("");
+    try {
+      const res = await fetch(`${API_URL}/api/auth/admin`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(adminData),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.detail || "Admin login failed");
+      localStorage.setItem("webenablix_admin_token", data.admin_token);
+      navigate("/admin");
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setError('');
+    setError("");
 
-    const endpoint = isLogin ? '/api/auth/login' : '/api/auth/register';
-    const body = isLogin 
+    const endpoint = isLogin ? "/api/auth/login" : "/api/auth/register";
+    const body = isLogin
       ? { email: formData.email, password: formData.password }
       : formData;
 
     try {
       const res = await fetch(`${API_URL}${endpoint}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body)
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
       });
 
       const data = await res.json();
 
       if (!res.ok) {
-        throw new Error(data.detail || 'Authentication failed');
+        throw new Error(data.detail || "Authentication failed");
       }
 
-      localStorage.setItem('webenablix_token', data.access_token);
-      localStorage.setItem('webenablix_user', JSON.stringify(data.user));
+      localStorage.setItem("webenablix_token", data.access_token);
+      localStorage.setItem("webenablix_user", JSON.stringify(data.user));
 
-      navigate('/dashboard');
+      navigate("/dashboard");
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleGoogleSuccess = async (credentialResponse) => {
+    setLoading(true);
+    setError("");
+    try {
+      const res = await fetch(`${API_URL}/api/auth/google`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ credential: credentialResponse.credential }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.detail || "Google sign-in failed");
+      }
+
+      localStorage.setItem("webenablix_token", data.access_token);
+      localStorage.setItem("webenablix_user", JSON.stringify(data.user));
+      navigate("/dashboard");
     } catch (err) {
       setError(err.message);
     } finally {
@@ -70,16 +143,16 @@ const AuthPage = () => {
   };
 
   const features = [
-    'Real-time accessibility scanning',
-    'WCAG 2.1/2.2 compliance reports',
-    'AI-powered fix suggestions',
-    'Customizable accessibility widget'
+    "Real-time accessibility scanning",
+    "WCAG 2.1/2.2 compliance reports",
+    "AI-powered fix suggestions",
+    "Customizable accessibility widget",
   ];
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
       <Header />
-      
+
       <main className="pt-20 pb-16">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
@@ -87,17 +160,20 @@ const AuthPage = () => {
             <div className="hidden lg:block">
               <div className="flex items-center gap-3 mb-6">
                 <Shield className="h-12 w-12 text-blue-600" />
-                <span className="text-3xl font-bold text-gray-900">Webenablix</span>
+                <span className="text-3xl font-bold text-gray-900">
+                  Webenablix
+                </span>
               </div>
-              
+
               <h1 className="text-4xl font-bold text-gray-900 mb-4">
                 Make Your Website Accessible to Everyone
               </h1>
-              
+
               <p className="text-lg text-gray-600 mb-8">
-                Join thousands of businesses using Webenablix to ensure their websites are accessible, compliant, and user-friendly.
+                Join thousands of businesses using Webenablix to ensure their
+                websites are accessible, compliant, and user-friendly.
               </p>
-              
+
               <div className="space-y-4">
                 {features.map((feature, i) => (
                   <div key={i} className="flex items-center gap-3">
@@ -106,14 +182,15 @@ const AuthPage = () => {
                   </div>
                 ))}
               </div>
-              
+
               <div className="mt-8 p-4 bg-blue-50 rounded-lg border border-blue-100">
                 <p className="text-sm text-blue-800">
-                  <strong>Free Plan Available:</strong> Start with 3 free scans per month, no credit card required.
+                  <strong>Free Plan Available:</strong> Start with 3 free scans
+                  per month, no credit card required.
                 </p>
               </div>
             </div>
-            
+
             {/* Right Side - Auth Form */}
             <div>
               <Card className="shadow-xl">
@@ -121,144 +198,275 @@ const AuthPage = () => {
                   <div className="flex justify-center mb-4 lg:hidden">
                     <Shield className="h-10 w-10 text-blue-600" />
                   </div>
+                  {/* Tab switcher */}
+                  <div className="flex rounded-lg border border-gray-200 overflow-hidden mb-2">
+                    {[
+                      ["login", "Sign In"],
+                      ["register", "Register"],
+                      ["admin", "Admin"],
+                    ].map(([key, label]) => (
+                      <button
+                        key={key}
+                        type="button"
+                        onClick={() => {
+                          setTab(key);
+                          setError("");
+                        }}
+                        className={`flex-1 py-2 text-sm font-medium transition-colors ${
+                          tab === key
+                            ? key === "admin"
+                              ? "bg-gray-900 text-white"
+                              : "bg-blue-600 text-white"
+                            : "text-gray-600 hover:bg-gray-50"
+                        }`}
+                      >
+                        {label}
+                      </button>
+                    ))}
+                  </div>
+
                   <CardTitle className="text-2xl">
-                    {isLogin ? 'Welcome Back' : 'Create Your Account'}
+                    {tab === "admin"
+                      ? "Admin Access"
+                      : isLogin
+                        ? "Welcome Back"
+                        : "Create Your Account"}
                   </CardTitle>
                   <CardDescription>
-                    {isLogin 
-                      ? 'Sign in to access your accessibility dashboard' 
-                      : 'Start your accessibility journey today'}
+                    {tab === "admin"
+                      ? "Enter admin credentials to access the control panel"
+                      : isLogin
+                        ? "Sign in to access your accessibility dashboard"
+                        : "Start your accessibility journey today"}
                   </CardDescription>
                 </CardHeader>
-                
+
                 <CardContent>
-                  <form onSubmit={handleSubmit} className="space-y-4">
-                    {!isLogin && (
-                      <>
-                        <div className="space-y-2">
-                          <Label htmlFor="name">Full Name</Label>
-                          <div className="relative">
-                            <User className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                            <Input
-                              id="name"
-                              name="name"
-                              placeholder="John Doe"
-                              value={formData.name}
-                              onChange={handleChange}
-                              className="pl-10"
-                              required={!isLogin}
-                            />
-                          </div>
+                  {/* ── Admin Login Form ── */}
+                  {tab === "admin" && (
+                    <form onSubmit={handleAdminLogin} className="space-y-4">
+                      <div className="flex justify-center mb-2">
+                        <div className="bg-gray-900 text-white rounded-full p-4">
+                          <ShieldCheck className="h-8 w-8" />
                         </div>
-                        
-                        <div className="space-y-2">
-                          <Label htmlFor="company">Company (Optional)</Label>
-                          <div className="relative">
-                            <Building className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                            <Input
-                              id="company"
-                              name="company"
-                              placeholder="Acme Inc."
-                              value={formData.company}
-                              onChange={handleChange}
-                              className="pl-10"
-                            />
-                          </div>
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label htmlFor="admin-username">Admin Username</Label>
+                        <div className="relative">
+                          <User className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                          <Input
+                            id="admin-username"
+                            name="username"
+                            placeholder="admin"
+                            value={adminData.username}
+                            onChange={handleAdminChange}
+                            className="pl-10"
+                            required
+                            autoComplete="off"
+                          />
                         </div>
-                      </>
-                    )}
-                    
-                    <div className="space-y-2">
-                      <Label htmlFor="email">Email Address</Label>
-                      <div className="relative">
-                        <Mail className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                        <Input
-                          id="email"
-                          name="email"
-                          type="email"
-                          placeholder="you@example.com"
-                          value={formData.email}
-                          onChange={handleChange}
-                          className="pl-10"
-                          required
-                        />
                       </div>
-                    </div>
-                    
-                    <div className="space-y-2">
-                      <Label htmlFor="password">Password</Label>
-                      <div className="relative">
-                        <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                        <Input
-                          id="password"
-                          name="password"
-                          type="password"
-                          placeholder="••••••••"
-                          value={formData.password}
-                          onChange={handleChange}
-                          className="pl-10"
-                          required
-                          minLength={6}
-                        />
+
+                      <div className="space-y-2">
+                        <Label htmlFor="admin-password">Admin Password</Label>
+                        <div className="relative">
+                          <KeyRound className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                          <Input
+                            id="admin-password"
+                            name="password"
+                            type="password"
+                            placeholder="••••••••"
+                            value={adminData.password}
+                            onChange={handleAdminChange}
+                            className="pl-10"
+                            required
+                          />
+                        </div>
                       </div>
-                    </div>
-                    
-                    {error && (
-                      <div className="p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-600">
-                        {error}
-                      </div>
-                    )}
-                    
-                    <Button 
-                      type="submit" 
-                      className="w-full" 
-                      size="lg"
-                      disabled={loading}
-                    >
-                      {loading ? (
-                        'Please wait...'
-                      ) : (
-                        <>
-                          {isLogin ? 'Sign In' : 'Create Account'}
-                          <ArrowRight className="ml-2 h-4 w-4" />
-                        </>
+
+                      {error && (
+                        <div className="p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-600">
+                          {error}
+                        </div>
                       )}
-                    </Button>
-                  </form>
-                  
-                  <div className="mt-6 text-center">
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setIsLogin(!isLogin);
-                        setError('');
-                      }}
-                      className="text-sm text-blue-600 hover:underline"
-                    >
-                      {isLogin 
-                        ? "Don't have an account? Sign up" 
-                        : 'Already have an account? Sign in'}
-                    </button>
-                  </div>
-                  
-                  {isLogin && (
-                    <div className="mt-4 text-center">
-                      <span className="text-sm text-gray-500">
-                        Forgot your password? Contact support.
-                      </span>
-                    </div>
+
+                      <Button
+                        type="submit"
+                        className="w-full bg-gray-900 hover:bg-gray-800"
+                        size="lg"
+                        disabled={loading}
+                      >
+                        {loading ? (
+                          "Verifying..."
+                        ) : (
+                          <>
+                            <ShieldCheck className="mr-2 h-4 w-4" />
+                            Access Admin Panel
+                          </>
+                        )}
+                      </Button>
+
+                      <p className="text-center text-xs text-gray-400 mt-2">
+                        Restricted area. Unauthorized access is prohibited.
+                      </p>
+                    </form>
+                  )}
+
+                  {/* ── Regular User Form ── */}
+                  {tab !== "admin" && (
+                    <>
+                      <form onSubmit={handleSubmit} className="space-y-4">
+                        {!isLogin && (
+                          <>
+                            <div className="space-y-2">
+                              <Label htmlFor="name">Full Name</Label>
+                              <div className="relative">
+                                <User className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                                <Input
+                                  id="name"
+                                  name="name"
+                                  placeholder="John Doe"
+                                  value={formData.name}
+                                  onChange={handleChange}
+                                  className="pl-10"
+                                  required={!isLogin}
+                                />
+                              </div>
+                            </div>
+
+                            <div className="space-y-2">
+                              <Label htmlFor="company">
+                                Company (Optional)
+                              </Label>
+                              <div className="relative">
+                                <Building className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                                <Input
+                                  id="company"
+                                  name="company"
+                                  placeholder="Acme Inc."
+                                  value={formData.company}
+                                  onChange={handleChange}
+                                  className="pl-10"
+                                />
+                              </div>
+                            </div>
+                          </>
+                        )}
+
+                        <div className="space-y-2">
+                          <Label htmlFor="email">Email Address</Label>
+                          <div className="relative">
+                            <Mail className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                            <Input
+                              id="email"
+                              name="email"
+                              type="email"
+                              placeholder="you@example.com"
+                              value={formData.email}
+                              onChange={handleChange}
+                              className="pl-10"
+                              required
+                            />
+                          </div>
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label htmlFor="password">Password</Label>
+                          <div className="relative">
+                            <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                            <Input
+                              id="password"
+                              name="password"
+                              type="password"
+                              placeholder="••••••••"
+                              value={formData.password}
+                              onChange={handleChange}
+                              className="pl-10"
+                              required
+                              minLength={6}
+                            />
+                          </div>
+                        </div>
+
+                        {error && (
+                          <div className="p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-600">
+                            {error}
+                          </div>
+                        )}
+
+                        <Button
+                          type="submit"
+                          className="w-full"
+                          size="lg"
+                          disabled={loading}
+                        >
+                          {loading ? (
+                            "Please wait..."
+                          ) : (
+                            <>
+                              {isLogin ? "Sign In" : "Create Account"}
+                              <ArrowRight className="ml-2 h-4 w-4" />
+                            </>
+                          )}
+                        </Button>
+                      </form>
+
+                      <div className="mt-4 flex items-center gap-3">
+                        <div className="flex-1 border-t border-gray-200" />
+                        <span className="text-xs text-gray-400">
+                          or continue with
+                        </span>
+                        <div className="flex-1 border-t border-gray-200" />
+                      </div>
+
+                      <div className="mt-4 flex justify-center">
+                        <GoogleLogin
+                          onSuccess={handleGoogleSuccess}
+                          onError={() =>
+                            setError("Google sign-in failed. Please try again.")
+                          }
+                          useOneTap={false}
+                          width="100%"
+                        />
+                      </div>
+
+                      <div className="mt-6 text-center">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setTab(isLogin ? "register" : "login");
+                            setError("");
+                          }}
+                          className="text-sm text-blue-600 hover:underline"
+                        >
+                          {isLogin
+                            ? "Don't have an account? Sign up"
+                            : "Already have an account? Sign in"}
+                        </button>
+                      </div>
+
+                      {isLogin && (
+                        <div className="mt-4 text-center">
+                          <span className="text-sm text-gray-500">
+                            Forgot your password? Contact support.
+                          </span>
+                        </div>
+                      )}
+                    </>
                   )}
                 </CardContent>
               </Card>
-              
+
               <p className="mt-4 text-center text-xs text-gray-500">
-                By signing up, you agree to our Terms of Service and Privacy Policy.
+                By signing up, you agree to our Terms of Service and Privacy
+                Policy.
               </p>
             </div>
           </div>
         </div>
       </main>
-      
+
       <Footer />
     </div>
   );

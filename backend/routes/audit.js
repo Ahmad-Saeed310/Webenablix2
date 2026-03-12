@@ -134,4 +134,29 @@ router.get('/stats/summary', async (req, res) => {
   }
 });
 
+
+// POST /api/auth/admin — Admin login
+router.post('/admin', async (req, res) => {
+  const { username, password } = req.body;
+  const ADMIN_USER = process.env.ADMIN_USERNAME || 'admin';
+  const ADMIN_PASS = process.env.ADMIN_PASSWORD || 'admin@webenablix';
+
+  if (!username || !password) {
+    return res.status(400).json({ detail: 'Username and password are required' });
+  }
+
+  if (username !== ADMIN_USER || password !== ADMIN_PASS) {
+    return res.status(401).json({ detail: 'Invalid admin credentials' });
+  }
+
+  const token = jwt.sign(
+    { role: 'admin', username: ADMIN_USER },
+    JWT_SECRET,
+    { expiresIn: '8h' }
+  );
+
+  return res.json({ admin_token: token, token_type: 'bearer' });
+});
+
+
 module.exports = router;

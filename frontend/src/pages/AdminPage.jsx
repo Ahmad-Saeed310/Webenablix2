@@ -5,7 +5,6 @@ import {
   Trash2, Search, ChevronLeft, ChevronRight,
   CheckCircle, XCircle, AlertTriangle, RefreshCw,
   TrendingUp, ShieldCheck, Activity, Calendar,
-  FileText, Star, Edit2, Plus, X,
 } from 'lucide-react';
 
 const API_URL = import.meta.env.VITE_BACKEND_URL || '';
@@ -85,13 +84,6 @@ const AdminPage = () => {
   const [auditsPages, setAuditsPages] = useState(1);
   const [auditsLoading, setAuditsLoading] = useState(false);
 
-  // Blogs
-  const [blogs, setBlogs] = useState([]);
-  const [blogsLoading, setBlogsLoading] = useState(false);
-  const [blogForm, setBlogForm] = useState(null); // null = closed, {} = new, {...} = editing
-  const [blogSaving, setBlogSaving] = useState(false);
-  const [blogDeleteConfirm, setBlogDeleteConfirm] = useState(null);
-
   const [deleteConfirm, setDeleteConfirm] = useState(null);
   const [toast, setToast] = useState(null);
 
@@ -157,54 +149,10 @@ const AdminPage = () => {
     }
   }, []);
 
-  // Fetch blogs
-  const fetchBlogs = useCallback(async () => {
-    setBlogsLoading(true);
-    try {
-      const res = await fetch(`${API_URL}/api/admin/blogs`, { headers: adminHeaders() });
-      const data = await res.json();
-      setBlogs(data.blogs || []);
-    } catch (err) {
-      showToast('Failed to load blogs', 'error');
-    } finally {
-      setBlogsLoading(false);
-    }
-  }, []);
-
-  const handleSaveBlog = async (formData) => {
-    setBlogSaving(true);
-    try {
-      const isEdit = !!formData.id;
-      const url = isEdit ? `${API_URL}/api/admin/blogs/${formData.id}` : `${API_URL}/api/admin/blogs`;
-      const method = isEdit ? 'PUT' : 'POST';
-      const res = await fetch(url, { method, headers: adminHeaders(), body: JSON.stringify(formData) });
-      if (!res.ok) { const d = await res.json(); throw new Error(d.detail || 'Save failed'); }
-      showToast(isEdit ? 'Blog updated' : 'Blog created');
-      setBlogForm(null);
-      fetchBlogs();
-    } catch (err) {
-      showToast(err.message, 'error');
-    } finally {
-      setBlogSaving(false);
-    }
-  };
-
-  const handleDeleteBlog = async (id) => {
-    try {
-      await fetch(`${API_URL}/api/admin/blogs/${id}`, { method: 'DELETE', headers: adminHeaders() });
-      showToast('Blog deleted');
-      fetchBlogs();
-    } catch {
-      showToast('Failed to delete blog', 'error');
-    }
-    setBlogDeleteConfirm(null);
-  };
-
   useEffect(() => { fetchStats(); }, [fetchStats]);
   useEffect(() => {
     if (activeTab === 'users') fetchUsers(1, '');
     if (activeTab === 'audits') fetchAudits(1);
-    if (activeTab === 'blogs') fetchBlogs();
   }, [activeTab]);
 
   const handleLogout = () => {
@@ -229,7 +177,6 @@ const AdminPage = () => {
     { key: 'overview', icon: Activity,   label: 'Overview' },
     { key: 'users',    icon: Users,      label: 'Users' },
     { key: 'audits',   icon: BarChart2,  label: 'Audits' },
-    { key: 'blogs',    icon: FileText,   label: 'Blogs' },
   ];
 
   return (
@@ -489,72 +436,6 @@ const AdminPage = () => {
             </div>
           )}
 
-          {/* ── Blogs Tab ── */}
-          {activeTab === 'blogs' && (
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-gray-400">{blogs.length} blog{blogs.length !== 1 ? 's' : ''}</span>
-                <button
-                  onClick={() => setBlogForm({ title: '', excerpt: '', category: '', category_color: 'blue', read_time: '', date: '', author: '', author_role: '', image_url: '', content: '', is_featured: false })}
-                  className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg text-sm font-medium transition-colors"
-                >
-                  <Plus className="h-4 w-4" /> New Blog
-                </button>
-              </div>
-
-              {blogsLoading ? (
-                <div className="text-center py-12 text-gray-500">Loading blogs...</div>
-              ) : blogs.length === 0 ? (
-                <div className="text-center py-12 text-gray-500">No blogs yet. Create your first one!</div>
-              ) : (
-                <div className="grid gap-4">
-                  {blogs.map((b) => (
-                    <div key={b.id} className="bg-gray-900 border border-gray-800 rounded-xl p-5 flex gap-4 items-start">
-                      {b.image_url && (
-                        <img src={b.image_url} alt={b.title} className="w-20 h-14 object-cover rounded-lg flex-shrink-0" />
-                      )}
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 mb-1">
-                          {b.is_featured && (
-                            <span className="flex items-center gap-1 px-2 py-0.5 bg-yellow-900/50 text-yellow-400 rounded-full text-xs font-semibold">
-                              <Star className="h-3 w-3" /> Featured
-                            </span>
-                          )}
-                          {b.category && (
-                            <span className="px-2 py-0.5 bg-gray-800 text-gray-300 rounded-full text-xs">{b.category}</span>
-                          )}
-                        </div>
-                        <h3 className="font-semibold text-gray-100 truncate">{b.title}</h3>
-                        <p className="text-sm text-gray-400 line-clamp-1 mt-0.5">{b.excerpt}</p>
-                        <div className="flex items-center gap-3 mt-1 text-xs text-gray-500">
-                          {b.author && <span>{b.author}</span>}
-                          {b.date && <span>{b.date}</span>}
-                          {b.read_time && <span>{b.read_time}</span>}
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-2 flex-shrink-0">
-                        <button
-                          onClick={() => setBlogForm({ ...b })}
-                          className="p-2 text-gray-400 hover:text-blue-400 hover:bg-blue-900/30 rounded-lg transition-colors"
-                          title="Edit"
-                        >
-                          <Edit2 className="h-4 w-4" />
-                        </button>
-                        <button
-                          onClick={() => setBlogDeleteConfirm(b)}
-                          className="p-2 text-gray-400 hover:text-red-400 hover:bg-red-900/30 rounded-lg transition-colors"
-                          title="Delete"
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          )}
-
           {/* ── Audits Tab ── */}
           {activeTab === 'audits' && (
             <div className="space-y-4">
@@ -653,7 +534,7 @@ const AdminPage = () => {
         </div>
       </main>
 
-      {/* Delete user confirm dialog */}
+      {/* Delete confirm dialog */}
       {deleteConfirm && (
         <div className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center">
           <div className="bg-gray-900 border border-gray-700 rounded-xl p-6 max-w-sm w-full mx-4 shadow-2xl">
@@ -678,204 +559,6 @@ const AdminPage = () => {
           </div>
         </div>
       )}
-
-      {/* Delete blog confirm dialog */}
-      {blogDeleteConfirm && (
-        <div className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center">
-          <div className="bg-gray-900 border border-gray-700 rounded-xl p-6 max-w-sm w-full mx-4 shadow-2xl">
-            <h3 className="font-bold text-lg mb-2">Delete Blog?</h3>
-            <p className="text-sm text-gray-400 mb-6">
-              Are you sure you want to delete <span className="text-white font-medium">{blogDeleteConfirm.title}</span>? This cannot be undone.
-            </p>
-            <div className="flex gap-3">
-              <button onClick={() => setBlogDeleteConfirm(null)} className="flex-1 py-2 rounded-lg border border-gray-700 text-sm font-medium hover:bg-gray-800 transition-colors">Cancel</button>
-              <button onClick={() => handleDeleteBlog(blogDeleteConfirm.id)} className="flex-1 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-sm font-medium transition-colors">Delete</button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Blog form modal */}
-      {blogForm && (
-        <div className="fixed inset-0 bg-black/80 z-50 flex items-start justify-center overflow-y-auto py-8 px-4">
-          <div className="bg-gray-900 border border-gray-700 rounded-2xl w-full max-w-2xl shadow-2xl">
-            <div className="flex items-center justify-between p-6 border-b border-gray-800">
-              <h3 className="font-bold text-lg">{blogForm.id ? 'Edit Blog' : 'New Blog'}</h3>
-              <button onClick={() => setBlogForm(null)} className="text-gray-400 hover:text-white transition-colors"><X className="h-5 w-5" /></button>
-            </div>
-            <BlogFormBody
-              initial={blogForm}
-              saving={blogSaving}
-              onSave={handleSaveBlog}
-              onCancel={() => setBlogForm(null)}
-            />
-          </div>
-        </div>
-      )}
-    </div>
-  );
-};
-
-// ── Blog Form ─────────────────────────────────────────────────
-const CATEGORY_COLORS_OPTIONS = ['blue','red','green','purple','orange','gray'];
-
-const BlogFormBody = ({ initial, saving, onSave, onCancel }) => {
-  const [form, setForm] = useState({ ...initial });
-  const set = (key, val) => setForm((f) => ({ ...f, [key]: val }));
-
-  return (
-    <div className="p-6 space-y-4">
-      {/* Title */}
-      <div>
-        <label className="block text-xs font-semibold text-gray-400 mb-1">Title *</label>
-        <input
-          className="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm text-gray-100 focus:outline-none focus:border-blue-500"
-          value={form.title || ''}
-          onChange={(e) => set('title', e.target.value)}
-          placeholder="Blog post title"
-        />
-      </div>
-
-      {/* Excerpt */}
-      <div>
-        <label className="block text-xs font-semibold text-gray-400 mb-1">Excerpt / Summary</label>
-        <textarea
-          rows={2}
-          className="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm text-gray-100 focus:outline-none focus:border-blue-500 resize-none"
-          value={form.excerpt || ''}
-          onChange={(e) => set('excerpt', e.target.value)}
-          placeholder="Short description shown in blog cards"
-        />
-      </div>
-
-      {/* Image URL */}
-      <div>
-        <label className="block text-xs font-semibold text-gray-400 mb-1">Image URL</label>
-        <input
-          className="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm text-gray-100 focus:outline-none focus:border-blue-500"
-          value={form.image_url || ''}
-          onChange={(e) => set('image_url', e.target.value)}
-          placeholder="https://..."
-        />
-        {form.image_url && (
-          <img src={form.image_url} alt="preview" className="mt-2 h-28 w-full object-cover rounded-lg" onError={(e) => { e.target.style.display = 'none'; }} />
-        )}
-      </div>
-
-      {/* Category + Color */}
-      <div className="grid grid-cols-2 gap-4">
-        <div>
-          <label className="block text-xs font-semibold text-gray-400 mb-1">Category</label>
-          <input
-            className="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm text-gray-100 focus:outline-none focus:border-blue-500"
-            value={form.category || ''}
-            onChange={(e) => set('category', e.target.value)}
-            placeholder="e.g. Compliance"
-          />
-        </div>
-        <div>
-          <label className="block text-xs font-semibold text-gray-400 mb-1">Category Color</label>
-          <select
-            className="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm text-gray-100 focus:outline-none focus:border-blue-500"
-            value={form.category_color || 'blue'}
-            onChange={(e) => set('category_color', e.target.value)}
-          >
-            {CATEGORY_COLORS_OPTIONS.map((c) => (
-              <option key={c} value={c}>{c.charAt(0).toUpperCase() + c.slice(1)}</option>
-            ))}
-          </select>
-        </div>
-      </div>
-
-      {/* Author + Role */}
-      <div className="grid grid-cols-2 gap-4">
-        <div>
-          <label className="block text-xs font-semibold text-gray-400 mb-1">Author</label>
-          <input
-            className="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm text-gray-100 focus:outline-none focus:border-blue-500"
-            value={form.author || ''}
-            onChange={(e) => set('author', e.target.value)}
-            placeholder="Author name"
-          />
-        </div>
-        <div>
-          <label className="block text-xs font-semibold text-gray-400 mb-1">Author Role</label>
-          <input
-            className="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm text-gray-100 focus:outline-none focus:border-blue-500"
-            value={form.author_role || ''}
-            onChange={(e) => set('author_role', e.target.value)}
-            placeholder="e.g. Accessibility Lead"
-          />
-        </div>
-      </div>
-
-      {/* Date + Read time */}
-      <div className="grid grid-cols-2 gap-4">
-        <div>
-          <label className="block text-xs font-semibold text-gray-400 mb-1">Date</label>
-          <input
-            className="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm text-gray-100 focus:outline-none focus:border-blue-500"
-            value={form.date || ''}
-            onChange={(e) => set('date', e.target.value)}
-            placeholder="e.g. Mar 9, 2026"
-          />
-        </div>
-        <div>
-          <label className="block text-xs font-semibold text-gray-400 mb-1">Read Time</label>
-          <input
-            className="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm text-gray-100 focus:outline-none focus:border-blue-500"
-            value={form.read_time || ''}
-            onChange={(e) => set('read_time', e.target.value)}
-            placeholder="e.g. 5 min read"
-          />
-        </div>
-      </div>
-
-      {/* Content */}
-      <div>
-        <label className="block text-xs font-semibold text-gray-400 mb-1">Content (Markdown supported)</label>
-        <textarea
-          rows={8}
-          className="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm text-gray-100 focus:outline-none focus:border-blue-500 resize-y font-mono"
-          value={form.content || ''}
-          onChange={(e) => set('content', e.target.value)}
-          placeholder="## Heading&#10;&#10;Your blog content in Markdown..."
-        />
-      </div>
-
-      {/* Featured toggle */}
-      <div className="flex items-center gap-3 p-3 bg-gray-800/60 rounded-lg border border-gray-700">
-        <label className="flex items-center cursor-pointer gap-3 w-full">
-          <div
-            onClick={() => set('is_featured', !form.is_featured)}
-            className={`relative w-10 h-5 rounded-full transition-colors flex-shrink-0 cursor-pointer ${
-              form.is_featured ? 'bg-yellow-500' : 'bg-gray-600'
-            }`}
-          >
-            <div className={`absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full shadow transition-transform ${
-              form.is_featured ? 'translate-x-5' : 'translate-x-0'
-            }`} />
-          </div>
-          <div>
-            <div className="text-sm font-medium text-gray-200 flex items-center gap-1.5">
-              <Star className="h-3.5 w-3.5 text-yellow-400" /> Featured Post
-            </div>
-            <div className="text-xs text-gray-500">Shown prominently at the top of the blog page. Only one post can be featured at a time.</div>
-          </div>
-        </label>
-      </div>
-
-      {/* Actions */}
-      <div className="flex gap-3 pt-2">
-        <button onClick={onCancel} className="flex-1 py-2 rounded-lg border border-gray-700 text-sm font-medium hover:bg-gray-800 transition-colors">Cancel</button>
-        <button
-          onClick={() => onSave(form)}
-          disabled={saving || !form.title?.trim()}
-          className="flex-1 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium transition-colors"
-        >
-          {saving ? 'Saving...' : (form.id ? 'Update Blog' : 'Publish Blog')}
-        </button>
-      </div>
     </div>
   );
 };
