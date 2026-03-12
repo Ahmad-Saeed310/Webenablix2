@@ -1,10 +1,16 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { 
-  Search, User, Menu, X, MapPin, ChevronDown,
+  Search, User, Menu, X, MapPin, ChevronDown, LayoutDashboard, LogOut,
 } from 'lucide-react';
 import { Button } from './ui/button';
 import { productsMenu, industriesMenu, installationsMenu } from '../data/navigation';
+
+// Read auth from localStorage
+const getStoredUser = () => {
+  try { return JSON.parse(localStorage.getItem('webenablix_user')); } catch { return null; }
+};
+const getStoredToken = () => localStorage.getItem('webenablix_token');
 
 const DropdownMenu = ({ items, isOpen, onClose, type }) => {
   if (!isOpen) return null;
@@ -72,7 +78,45 @@ const NavItem = ({ label, items, type }) => {
 const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [showBanner, setShowBanner] = useState(true);
+  const [authUser, setAuthUser] = useState(getStoredToken() ? getStoredUser() : null);
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const userMenuRef = useRef(null);
   const navigate = useNavigate();
+
+  // Sync auth state when localStorage changes (login/logout from other tabs or same page)
+  useEffect(() => {
+    const sync = () => setAuthUser(getStoredToken() ? getStoredUser() : null);
+    window.addEventListener('storage', sync);
+    window.addEventListener('webenablix-auth', sync);
+    return () => {
+      window.removeEventListener('storage', sync);
+      window.removeEventListener('webenablix-auth', sync);
+    };
+  }, []);
+
+  // Close user dropdown on outside click
+  useEffect(() => {
+    const handler = (e) => {
+      if (userMenuRef.current && !userMenuRef.current.contains(e.target)) {
+        setUserMenuOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem('webenablix_token');
+    localStorage.removeItem('webenablix_user');
+    setAuthUser(null);
+    setUserMenuOpen(false);
+    window.dispatchEvent(new Event('webenablix-auth'));
+    navigate('/');
+  };
+
+  const initials = authUser?.name
+    ? authUser.name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase()
+    : 'U';
 
   const simpleNavItems = [
     { name: 'Docs', href: '/docs' },
@@ -128,10 +172,48 @@ const Header = () => {
                 <button className="p-2 text-gray-500 hover:text-[#2563EB] transition-colors hidden sm:block">
                   <MapPin size={20} />
                 </button>
-                <Button onClick={() => navigate('/login')} className="bg-[#2563EB] hover:bg-[#1d4ed8] text-white rounded-full px-5 py-2 flex items-center gap-2 text-sm font-medium">
-                  <User size={16} />
-                  <span className="hidden sm:inline">Login/Signup</span>
-                </Button>
+
+                {authUser ? (
+                  <div ref={userMenuRef} className="relative">
+                    <button
+                      onClick={() => setUserMenuOpen(!userMenuOpen)}
+                      className="flex items-center gap-2 bg-[#2563EB] hover:bg-[#1d4ed8] text-white rounded-full pl-2 pr-4 py-1.5 text-sm font-medium transition-colors"
+                    >
+                      <span className="w-7 h-7 rounded-full bg-white/20 flex items-center justify-center text-xs font-bold">{initials}</span>
+                      <span className="hidden sm:inline max-w-[100px] truncate">{authUser.name?.split(' ')[0]}</span>
+                      <ChevronDown size={14} className={`transition-transform ${userMenuOpen ? 'rotate-180' : ''}`} />
+                    </button>
+                    {userMenuOpen && (
+                      <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-xl border border-gray-100 py-1 z-50">
+                        <div className="px-4 py-2 border-b border-gray-100">
+                          <p className="text-sm font-semibold text-gray-800 truncate">{authUser.name}</p>
+                          <p className="text-xs text-gray-400 truncate">{authUser.email}</p>
+                          <span className="mt-1 inline-block px-2 py-0.5 bg-blue-100 text-blue-700 text-xs rounded-full capitalize">{authUser.plan || 'Free'}</span>
+                        </div>
+                        <button
+                          onClick={() => { setUserMenuOpen(false); navigate('/dashboard'); }}
+                          className="w-full flex items-center gap-2 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+                        >
+                          <LayoutDashboard size={15} className="text-blue-500" />
+                          My Dashboard
+                        </button>
+                        <button
+                          onClick={handleLogout}
+                          className="w-full flex items-center gap-2 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-colors"
+                        >
+                          <LogOut size={15} />
+                          Sign Out
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <Button onClick={() => navigate('/login')} className="bg-[#2563EB] hover:bg-[#1d4ed8] text-white rounded-full px-5 py-2 flex items-center gap-2 text-sm font-medium">
+                    <User size={16} />
+                    <span className="hidden sm:inline">Login/Signup</span>
+                  </Button>
+                )}
+
                 <button className="lg:hidden p-2 text-gray-500" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
                   {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
                 </button>

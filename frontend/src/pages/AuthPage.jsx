@@ -107,8 +107,8 @@ const AuthPage = () => {
 
       localStorage.setItem("webenablix_token", data.access_token);
       localStorage.setItem("webenablix_user", JSON.stringify(data.user));
-
-      navigate("/dashboard");
+      window.dispatchEvent(new Event('webenablix-auth'));
+      navigate("/");
     } catch (err) {
       setError(err.message);
     } finally {
@@ -134,7 +134,8 @@ const AuthPage = () => {
 
       localStorage.setItem("webenablix_token", data.access_token);
       localStorage.setItem("webenablix_user", JSON.stringify(data.user));
-      navigate("/dashboard");
+      window.dispatchEvent(new Event('webenablix-auth'));
+      navigate("/");
     } catch (err) {
       setError(err.message);
     } finally {
