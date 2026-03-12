@@ -50,7 +50,7 @@ services:
       JWT_SECRET: ?m23Kc8$#.pat}/Y0KJPjSptM*kA]upgTRd7j-mH3b%b5]rg(5nGddu?#yp{ePnw
       ADMIN_USERNAME: admin
       ADMIN_PASSWORD: admin@webenablix
-      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID:-}
+      GOOGLE_CLIENT_ID: 545358341358-4p7oa6iqp3g978k7ck2mra7g8e1dnioj.apps.googleusercontent.com
       FRONTEND_URL: https://ahmadsaeed.me
     ports:
       - "8001:8001"
@@ -62,7 +62,7 @@ services:
       dockerfile: Dockerfile
       args:
         VITE_BACKEND_URL: ""        # Empty = nginx proxy to backend container
-        VITE_GOOGLE_CLIENT_ID: ${VITE_GOOGLE_CLIENT_ID:-}
+        VITE_GOOGLE_CLIENT_ID: 545358341358-4p7oa6iqp3g978k7ck2mra7g8e1dnioj.apps.googleusercontent.com
     container_name: webenablix_frontend
     restart: unless-stopped
     networks:
