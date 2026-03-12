@@ -82,9 +82,11 @@ router.post(
 );
 
 // GET /api/audits - List recent audits
-router.get('/', async (req, res) => {
-  const limit = parseInt(req.query.limit) || 10;
+// GET /api/audits - List audits for the authenticated user only
+router.get('/', require('../middleware/auth').authenticateToken, async (req, res) => {
+  const limit = Math.min(parseInt(req.query.limit) || 10, 100);
   const offset = parseInt(req.query.offset) || 0;
+  const userId = req.user.sub;
 
   try {
     const result = await pool.query(
@@ -92,9 +94,10 @@ router.get('/', async (req, res) => {
               mobile_score, security_score, overall_score, lawsuit_risk, wcag_level,
               total_issues, critical_issues, warnings, scan_successful, created_at
        FROM audits
+       WHERE user_id = $1
        ORDER BY created_at DESC
-       LIMIT $1 OFFSET $2`,
-      [limit, offset]
+       LIMIT $2 OFFSET $3`,
+      [userId, limit, offset]
     );
     return res.json(result.rows);
   } catch (err) {
@@ -103,14 +106,19 @@ router.get('/', async (req, res) => {
   }
 });
 
-// GET /api/audits/:id - Get single audit
-router.get('/:id', async (req, res) => {
+// GET /api/audits/:id - Get single audit (owner or guest)
+router.get('/:id', require('../middleware/auth').optionalAuth, async (req, res) => {
   try {
     const result = await pool.query('SELECT * FROM audits WHERE id = $1', [req.params.id]);
     if (result.rows.length === 0) {
       return res.status(404).json({ detail: 'Audit not found' });
     }
-    return res.json(result.rows[0]);
+    const audit = result.rows[0];
+    // If the audit belongs to a user, only that user (or unauthenticated guest audits) may view it
+    if (audit.user_id && (!req.user || req.user.sub !== audit.user_id)) {
+      return res.status(403).json({ detail: 'Forbidden' });
+    }
+    return res.json(audit);
   } catch (err) {
     console.error('Get audit error:', err);
     return res.status(500).json({ detail: 'Internal server error' });
