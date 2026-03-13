@@ -87,6 +87,63 @@ const createTables = async () => {
       )
     `);
 
+    // Blogs table
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS blogs (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        slug TEXT UNIQUE,
+        title TEXT NOT NULL,
+        excerpt TEXT,
+        category VARCHAR(100),
+        category_color VARCHAR(50) DEFAULT 'blue',
+        read_time VARCHAR(50),
+        date VARCHAR(100),
+        author VARCHAR(255),
+        author_role VARCHAR(255),
+        image_url TEXT,
+        feature_image_url TEXT,
+        additional_images JSONB DEFAULT '[]',
+        meta_title TEXT,
+        meta_description TEXT,
+        content TEXT,
+        is_featured BOOLEAN DEFAULT false,
+        created_at TIMESTAMPTZ DEFAULT NOW(),
+        updated_at TIMESTAMPTZ DEFAULT NOW()
+      )
+    `);
+
+    // Backward-compatible blog schema upgrades
+    await client.query(`ALTER TABLE blogs ADD COLUMN IF NOT EXISTS slug TEXT`);
+    await client.query(`ALTER TABLE blogs ADD COLUMN IF NOT EXISTS feature_image_url TEXT`);
+    await client.query(`ALTER TABLE blogs ADD COLUMN IF NOT EXISTS additional_images JSONB DEFAULT '[]'`);
+    await client.query(`ALTER TABLE blogs ADD COLUMN IF NOT EXISTS meta_title TEXT`);
+    await client.query(`ALTER TABLE blogs ADD COLUMN IF NOT EXISTS meta_description TEXT`);
+    await client.query(`CREATE UNIQUE INDEX IF NOT EXISTS blogs_slug_unique_idx ON blogs (slug)`);
+
+    // Keep legacy and new image fields in sync for older code paths
+    await client.query(`
+      UPDATE blogs
+      SET feature_image_url = image_url
+      WHERE (feature_image_url IS NULL OR feature_image_url = '')
+        AND image_url IS NOT NULL
+        AND image_url != ''
+    `);
+
+    await client.query(`
+      UPDATE blogs
+      SET image_url = feature_image_url
+      WHERE (image_url IS NULL OR image_url = '')
+        AND feature_image_url IS NOT NULL
+        AND feature_image_url != ''
+    `);
+
+    // Ensure existing rows have a safe unique slug value
+    await client.query(`
+      UPDATE blogs
+      SET slug = id::text
+      WHERE slug IS NULL OR slug = ''
+    `);
+
     await client.query('COMMIT');
     console.log('✅ Database tables created successfully');
   } catch (err) {

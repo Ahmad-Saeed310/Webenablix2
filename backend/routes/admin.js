@@ -5,6 +5,53 @@ const pool = require('../db');
 const router = express.Router();
 const JWT_SECRET = process.env.JWT_SECRET || 'webenablix-secret-key-change-in-production-2024';
 
+const slugify = (value = '') => {
+  return String(value)
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9\s-]/g, '')
+    .replace(/\s+/g, '-')
+    .replace(/-+/g, '-')
+    .replace(/^-|-$/g, '');
+};
+
+const ensureUniqueSlug = async (baseSlug, excludeId = null) => {
+  const seed = slugify(baseSlug) || `post-${Date.now()}`;
+  let candidate = seed;
+  let suffix = 1;
+
+  while (true) {
+    const params = [candidate];
+    let query = 'SELECT id FROM blogs WHERE slug = $1';
+
+    if (excludeId) {
+      params.push(excludeId);
+      query += ' AND id != $2';
+    }
+
+    const exists = await pool.query(query, params);
+    if (exists.rows.length === 0) return candidate;
+
+    suffix += 1;
+    candidate = `${seed}-${suffix}`;
+  }
+};
+
+const normalizeAdditionalImages = (value) => {
+  if (Array.isArray(value)) {
+    return value.map((img) => String(img || '').trim()).filter(Boolean);
+  }
+
+  if (typeof value === 'string') {
+    return value
+      .split('\n')
+      .map((img) => img.trim())
+      .filter(Boolean);
+  }
+
+  return [];
+};
+
 // Middleware: verify admin token
 const requireAdmin = (req, res, next) => {
   const authHeader = req.headers['authorization'];
@@ -160,18 +207,58 @@ router.get('/blogs', requireAdmin, async (req, res) => {
 
 // POST /api/admin/blogs
 router.post('/blogs', requireAdmin, async (req, res) => {
-  const { title, excerpt, category, category_color, read_time, date, author, author_role, image_url, content, is_featured } = req.body;
+  const {
+    title,
+    slug,
+    excerpt,
+    category,
+    category_color,
+    read_time,
+    date,
+    author,
+    author_role,
+    image_url,
+    feature_image_url,
+    additional_images,
+    meta_title,
+    meta_description,
+    content,
+    is_featured,
+  } = req.body;
   if (!title) return res.status(400).json({ detail: 'Title is required' });
   try {
+    const uniqueSlug = await ensureUniqueSlug(slug || title);
+    const normalizedImages = normalizeAdditionalImages(additional_images);
+    const featureImage = feature_image_url || image_url || '';
+    const metaTitle = meta_title || title || '';
+    const metaDescription = meta_description || excerpt || '';
+
     // If marking as featured, unset existing featured post
     if (is_featured) {
       await pool.query(`UPDATE blogs SET is_featured = false WHERE is_featured = true`);
     }
     const result = await pool.query(
-      `INSERT INTO blogs (title, excerpt, category, category_color, read_time, date, author, author_role, image_url, content, is_featured)
-       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11)
+      `INSERT INTO blogs (slug, title, excerpt, category, category_color, read_time, date, author, author_role, image_url, feature_image_url, additional_images, meta_title, meta_description, content, is_featured)
+       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12::jsonb,$13,$14,$15,$16)
        RETURNING *`,
-      [title, excerpt || '', category || '', category_color || 'blue', read_time || '', date || '', author || '', author_role || '', image_url || '', content || '', !!is_featured]
+      [
+        uniqueSlug,
+        title,
+        excerpt || '',
+        category || '',
+        category_color || 'blue',
+        read_time || '',
+        date || '',
+        author || '',
+        author_role || '',
+        featureImage,
+        featureImage,
+        JSON.stringify(normalizedImages),
+        metaTitle,
+        metaDescription,
+        content || '',
+        !!is_featured,
+      ]
     );
     return res.status(201).json({ blog: result.rows[0] });
   } catch (err) {
@@ -182,18 +269,60 @@ router.post('/blogs', requireAdmin, async (req, res) => {
 
 // PUT /api/admin/blogs/:id
 router.put('/blogs/:id', requireAdmin, async (req, res) => {
-  const { title, excerpt, category, category_color, read_time, date, author, author_role, image_url, content, is_featured } = req.body;
+  const {
+    title,
+    slug,
+    excerpt,
+    category,
+    category_color,
+    read_time,
+    date,
+    author,
+    author_role,
+    image_url,
+    feature_image_url,
+    additional_images,
+    meta_title,
+    meta_description,
+    content,
+    is_featured,
+  } = req.body;
   if (!title) return res.status(400).json({ detail: 'Title is required' });
   try {
+    const uniqueSlug = await ensureUniqueSlug(slug || title, req.params.id);
+    const normalizedImages = normalizeAdditionalImages(additional_images);
+    const featureImage = feature_image_url || image_url || '';
+    const metaTitle = meta_title || title || '';
+    const metaDescription = meta_description || excerpt || '';
+
     // If marking as featured, unset existing featured post (except this one)
     if (is_featured) {
       await pool.query(`UPDATE blogs SET is_featured = false WHERE is_featured = true AND id != $1`, [req.params.id]);
     }
     const result = await pool.query(
-      `UPDATE blogs SET title=$1, excerpt=$2, category=$3, category_color=$4, read_time=$5, date=$6,
-       author=$7, author_role=$8, image_url=$9, content=$10, is_featured=$11, updated_at=NOW()
-       WHERE id=$12 RETURNING *`,
-      [title, excerpt || '', category || '', category_color || 'blue', read_time || '', date || '', author || '', author_role || '', image_url || '', content || '', !!is_featured, req.params.id]
+      `UPDATE blogs SET slug=$1, title=$2, excerpt=$3, category=$4, category_color=$5, read_time=$6, date=$7,
+       author=$8, author_role=$9, image_url=$10, feature_image_url=$11, additional_images=$12::jsonb,
+       meta_title=$13, meta_description=$14, content=$15, is_featured=$16, updated_at=NOW()
+       WHERE id=$17 RETURNING *`,
+      [
+        uniqueSlug,
+        title,
+        excerpt || '',
+        category || '',
+        category_color || 'blue',
+        read_time || '',
+        date || '',
+        author || '',
+        author_role || '',
+        featureImage,
+        featureImage,
+        JSON.stringify(normalizedImages),
+        metaTitle,
+        metaDescription,
+        content || '',
+        !!is_featured,
+        req.params.id,
+      ]
     );
     if (result.rows.length === 0) return res.status(404).json({ detail: 'Blog not found' });
     return res.json({ blog: result.rows[0] });

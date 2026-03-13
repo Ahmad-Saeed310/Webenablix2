@@ -40,6 +40,7 @@ app.use('/api/leads',   require('./routes/leads'));
 app.use('/api/contact', require('./routes/contact'));
 app.use('/api/status',  require('./routes/status'));
 app.use('/api/preview', require('./routes/preview'));
+app.use('/api/blogs',   require('./routes/blogs'));
 app.use('/api/admin',   require('./routes/admin'));
 
 // Stats endpoint (shortcut)

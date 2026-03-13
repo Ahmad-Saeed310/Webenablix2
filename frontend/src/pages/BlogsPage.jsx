@@ -9,6 +9,7 @@ const API_URL = import.meta.env.VITE_BACKEND_URL || '';
 // Normalize a DB blog row to the same shape as BLOG_POSTS entries
 export const normalizeApiPost = (b) => ({
   id: b.id,
+  slug: b.slug || b.id,
   title: b.title,
   excerpt: b.excerpt || '',
   category: b.category || '',
@@ -17,7 +18,10 @@ export const normalizeApiPost = (b) => ({
   date: b.date || '',
   author: b.author || '',
   authorRole: b.author_role || '',
-  image: b.image_url || '',
+  image: b.feature_image_url || b.image_url || '',
+  images: Array.isArray(b.additional_images) ? b.additional_images : [],
+  metaTitle: b.meta_title || '',
+  metaDescription: b.meta_description || '',
   content: b.content || '',
   is_featured: b.is_featured,
 });
@@ -388,7 +392,7 @@ const BlogCard = ({ post }) => {
   const cc = CATEGORY_COLORS[post.categoryColor] || CATEGORY_COLORS.blue;
   return (
     <Link
-      to={`/blogs/${post.id}`}
+      to={`/blogs/${post.slug || post.id}`}
       className="group flex-shrink-0 w-80 bg-white rounded-2xl shadow-md border border-gray-100 overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
     >
       <div className="relative h-44 overflow-hidden">
@@ -483,7 +487,7 @@ const BlogsPage = () => {
 
           {/* ── Featured Post ────────────────────────────────────── */}
           <Link
-            to={`/blogs/${featured.id}`}
+            to={`/blogs/${featured.slug || featured.id}`}
             className="group block rounded-3xl overflow-hidden shadow-xl border border-gray-100 bg-white mb-14 hover:shadow-2xl transition-shadow duration-300"
           >
             <div className="grid md:grid-cols-2">

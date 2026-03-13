@@ -16,10 +16,13 @@ router.get('/', async (req, res) => {
   }
 });
 
-// GET /api/blogs/:id  — public, single blog by id
-router.get('/:id', async (req, res) => {
+// GET /api/blogs/:slugOrId  — public, single blog by slug or id
+router.get('/:slugOrId', async (req, res) => {
   try {
-    const result = await pool.query(`SELECT * FROM blogs WHERE id = $1`, [req.params.id]);
+    const result = await pool.query(
+      `SELECT * FROM blogs WHERE slug = $1 OR id::text = $1 LIMIT 1`,
+      [req.params.slugOrId]
+    );
     if (result.rows.length === 0) return res.status(404).json({ detail: 'Blog not found' });
     return res.json({ blog: result.rows[0] });
   } catch (err) {

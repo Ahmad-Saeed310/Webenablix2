@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import {
   ArrowLeft, Clock, Calendar, User, Tag,
@@ -224,14 +224,18 @@ const ReadingProgress = ({ progress }) => {
 const BlogPostPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [post, setPost] = useState(() => BLOG_POSTS.find((p) => p.id === id) || null);
-  const [loading, setLoading] = useState(!BLOG_POSTS.find((p) => p.id === id));
+  const findStaticPost = useCallback(
+    (value) => BLOG_POSTS.find((p) => p.id === value || p.slug === value) || null,
+    []
+  );
+  const [post, setPost] = useState(() => findStaticPost(id));
+  const [loading, setLoading] = useState(!findStaticPost(id));
   const [progress, setProgress] = useState(0);
   const articleRef = useRef(null);
 
   // If not found in static data, try the API
   useEffect(() => {
-    if (!BLOG_POSTS.find((p) => p.id === id)) {
+    if (!findStaticPost(id)) {
       setLoading(true);
       fetch(`${API_URL}/api/blogs/${id}`)
         .then((r) => r.json())
@@ -241,8 +245,27 @@ const BlogPostPage = () => {
         })
         .catch(() => setPost(null))
         .finally(() => setLoading(false));
+      return;
     }
-  }, [id]);
+
+    setPost(findStaticPost(id));
+    setLoading(false);
+  }, [id, findStaticPost]);
+
+  useEffect(() => {
+    if (!post) return;
+    const title = post.metaTitle || post.title;
+    const description = post.metaDescription || post.excerpt || '';
+    document.title = title;
+
+    let meta = document.querySelector('meta[name="description"]');
+    if (!meta) {
+      meta = document.createElement('meta');
+      meta.setAttribute('name', 'description');
+      document.head.appendChild(meta);
+    }
+    meta.setAttribute('content', description);
+  }, [post]);
 
   // Reading progress tracking
   useEffect(() => {
@@ -293,7 +316,7 @@ const BlogPostPage = () => {
   const badgeCls = cc[post.categoryColor] || cc.blue;
 
   // Related posts (same category, excluding current)
-  const related = BLOG_POSTS.filter((p) => p.category === post.category && p.id !== post.id).slice(0, 3);
+  const related = BLOG_POSTS.filter((p) => p.category === post.category && (p.slug || p.id) !== (post.slug || post.id)).slice(0, 3);
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
@@ -328,6 +351,19 @@ const BlogPostPage = () => {
               className="w-full h-64 sm:h-80 object-cover"
             />
           </div>
+
+          {Array.isArray(post.images) && post.images.length > 0 && (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-10">
+              {post.images.map((img, idx) => (
+                <img
+                  key={`${img}-${idx}`}
+                  src={img}
+                  alt={`${post.title} visual ${idx + 1}`}
+                  className="w-full h-52 object-cover rounded-2xl border border-gray-200"
+                />
+              ))}
+            </div>
+          )}
 
           {/* Article Header */}
           <div className="mb-8">

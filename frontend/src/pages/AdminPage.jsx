@@ -98,7 +98,9 @@ const AdminPage = () => {
   const emptyBlogForm = () => ({
     title: '', excerpt: '', category: '', category_color: 'blue',
     read_time: '', date: '', author: '', author_role: '',
-    image_url: '', content: '', is_featured: false,
+    slug: '', image_url: '', feature_image_url: '',
+    additional_images: [], meta_title: '', meta_description: '',
+    content: '', is_featured: false,
   });
 
   // Guard — redirect if no admin token
@@ -184,7 +186,13 @@ const AdminPage = () => {
       const isEdit = !!blogForm.id;
       const url = isEdit ? `${API_URL}/api/admin/blogs/${blogForm.id}` : `${API_URL}/api/admin/blogs`;
       const method = isEdit ? 'PUT' : 'POST';
-      const res = await fetch(url, { method, headers: adminHeaders(), body: JSON.stringify(blogForm) });
+      const payload = {
+        ...blogForm,
+        feature_image_url: blogForm.feature_image_url || blogForm.image_url || '',
+        image_url: blogForm.feature_image_url || blogForm.image_url || '',
+        additional_images: Array.isArray(blogForm.additional_images) ? blogForm.additional_images : [],
+      };
+      const res = await fetch(url, { method, headers: adminHeaders(), body: JSON.stringify(payload) });
       if (!res.ok) { const d = await res.json(); showToast(d.detail || 'Save failed', 'error'); return; }
       showToast(isEdit ? 'Blog updated' : 'Blog created');
       setBlogForm(null);
@@ -646,7 +654,16 @@ const AdminPage = () => {
                           </td>
                           <td className="px-5 py-3 text-right flex items-center justify-end gap-2">
                             <button
-                              onClick={() => setBlogForm({ ...b })}
+                              onClick={() => setBlogForm({
+                                ...emptyBlogForm(),
+                                ...b,
+                                slug: b.slug || '',
+                                feature_image_url: b.feature_image_url || b.image_url || '',
+                                image_url: b.image_url || b.feature_image_url || '',
+                                meta_title: b.meta_title || '',
+                                meta_description: b.meta_description || '',
+                                additional_images: Array.isArray(b.additional_images) ? b.additional_images : [],
+                              })}
                               className="text-blue-400 hover:text-blue-300 p-1 rounded hover:bg-blue-900/30 transition-colors"
                               title="Edit"
                             >
@@ -691,6 +708,17 @@ const AdminPage = () => {
                   onChange={(e) => setBlogForm(f => ({ ...f, title: e.target.value }))}
                   className="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm text-gray-100 focus:outline-none focus:border-blue-500"
                   placeholder="Blog post title"
+                />
+              </div>
+              {/* Slug */}
+              <div>
+                <label className="block text-xs font-medium text-gray-400 mb-1">Slug</label>
+                <input
+                  type="text"
+                  value={blogForm.slug}
+                  onChange={(e) => setBlogForm(f => ({ ...f, slug: e.target.value }))}
+                  className="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm text-gray-100 focus:outline-none focus:border-blue-500"
+                  placeholder="seo-friendly-url-slug"
                 />
               </div>
               {/* Excerpt */}
@@ -775,26 +803,62 @@ const AdminPage = () => {
                   />
                 </div>
               </div>
-              {/* Image URL */}
+              {/* Feature Image URL */}
               <div>
-                <label className="block text-xs font-medium text-gray-400 mb-1">Image URL</label>
+                <label className="block text-xs font-medium text-gray-400 mb-1">Feature Image URL</label>
                 <input
                   type="text"
-                  value={blogForm.image_url}
-                  onChange={(e) => setBlogForm(f => ({ ...f, image_url: e.target.value }))}
+                  value={blogForm.feature_image_url || blogForm.image_url}
+                  onChange={(e) => setBlogForm(f => ({ ...f, feature_image_url: e.target.value, image_url: e.target.value }))}
                   className="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm text-gray-100 focus:outline-none focus:border-blue-500"
                   placeholder="https://..."
                 />
               </div>
+              {/* Meta Title */}
+              <div>
+                <label className="block text-xs font-medium text-gray-400 mb-1">Meta Title</label>
+                <input
+                  type="text"
+                  value={blogForm.meta_title}
+                  onChange={(e) => setBlogForm(f => ({ ...f, meta_title: e.target.value }))}
+                  className="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm text-gray-100 focus:outline-none focus:border-blue-500"
+                  placeholder="SEO title for search results"
+                />
+              </div>
+              {/* Meta Description */}
+              <div>
+                <label className="block text-xs font-medium text-gray-400 mb-1">Meta Description</label>
+                <textarea
+                  value={blogForm.meta_description}
+                  onChange={(e) => setBlogForm(f => ({ ...f, meta_description: e.target.value }))}
+                  rows={2}
+                  className="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm text-gray-100 focus:outline-none focus:border-blue-500 resize-none"
+                  placeholder="SEO description for search snippets"
+                />
+              </div>
+              {/* Additional Images */}
+              <div>
+                <label className="block text-xs font-medium text-gray-400 mb-1">Additional Image URLs</label>
+                <textarea
+                  value={(blogForm.additional_images || []).join('\n')}
+                  onChange={(e) => setBlogForm(f => ({
+                    ...f,
+                    additional_images: e.target.value.split('\n').map((url) => url.trim()).filter(Boolean),
+                  }))}
+                  rows={3}
+                  className="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm text-gray-100 focus:outline-none focus:border-blue-500 resize-y"
+                  placeholder="One image URL per line"
+                />
+              </div>
               {/* Content */}
               <div>
-                <label className="block text-xs font-medium text-gray-400 mb-1">Content</label>
+                <label className="block text-xs font-medium text-gray-400 mb-1">Content (Markdown)</label>
                 <textarea
                   value={blogForm.content}
                   onChange={(e) => setBlogForm(f => ({ ...f, content: e.target.value }))}
                   rows={8}
                   className="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm text-gray-100 focus:outline-none focus:border-blue-500 resize-y font-mono"
-                  placeholder="Full blog content (supports HTML or plain text)"
+                  placeholder="Use markdown headings (#, ##, ###), lists, and paragraphs"
                 />
               </div>
               {/* Featured */}
