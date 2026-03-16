@@ -52,6 +52,7 @@ services:
       ADMIN_PASSWORD: admin@webenablix
       GOOGLE_CLIENT_ID: 545358341358-okj8erfv2mcab403k17q21tbusen5cm1.apps.googleusercontent.com
       FRONTEND_URL: https://ahmadsaeed.me
+      PAGESPEED_API_KEY: ""
     ports:
       - "8001:8001"
 
