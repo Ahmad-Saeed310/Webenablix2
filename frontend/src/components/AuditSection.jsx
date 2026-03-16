@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import {
   ArrowRight, Search, Loader2, CheckCircle, XCircle, AlertTriangle,
   Smartphone, Shield, Zap, Globe, Eye, ChevronDown, ChevronUp, Sparkles,
-  MonitorCheck, Filter, RefreshCw
+  MonitorCheck, Filter, RefreshCw, Package, ImageIcon, Wifi, Code2, Copy, Check
 } from 'lucide-react';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
@@ -16,30 +16,43 @@ const buildProjectedResult = (result) => {
   const acc  = Math.min(100, Math.round(result.accessibility_score + (100 - result.accessibility_score) * 0.88));
   const seo  = Math.min(100, Math.round(result.seo_score           + (100 - result.seo_score)           * 0.82));
   const perf = Math.min(100, Math.round(result.performance_score   + (100 - result.performance_score)   * 0.75));
-  const mob  = Math.min(100, Math.round(result.mobile_score        + (100 - result.mobile_score)        * 0.90));
   const sec  = Math.min(100, Math.round(result.security_score      + (100 - result.security_score)      * 1.00));
-  const overall = Math.round(acc * 0.30 + seo * 0.25 + perf * 0.20 + mob * 0.15 + sec * 0.10);
+  const res  = Math.min(100, Math.round((result.resources_score || 50)        + (100 - (result.resources_score || 50))        * 0.80));
+  const img  = Math.min(100, Math.round((result.images_score || 50)           + (100 - (result.images_score || 50))           * 0.85));
+  const net  = Math.min(100, Math.round((result.network_caching_score || 50)  + (100 - (result.network_caching_score || 50))  * 0.90));
+  const cq   = Math.min(100, Math.round((result.code_quality_score || 50)     + (100 - (result.code_quality_score || 50))     * 0.78));
+  const overall = Math.round(acc * 0.20 + seo * 0.15 + perf * 0.20 + res * 0.10 + img * 0.10 + net * 0.05 + sec * 0.10 + cq * 0.10);
   return {
     ...result,
     accessibility_score: acc,
     seo_score:           seo,
     performance_score:   perf,
-    mobile_score:        mob,
     security_score:      sec,
+    resources_score:     res,
+    images_score:        img,
+    network_caching_score: net,
+    code_quality_score:  cq,
     overall_score:       overall,
     critical_issues:     0,
     warnings:            0,
     total_issues:        0,
     accessibility_issues: [],
     seo_issues:           [],
+    resources_issues:     [],
+    images_issues:        [],
+    code_quality_issues:  [],
+    fixes_applied:        [],
     lawsuit_risk:        'low',
     wcag_level:          acc >= 95 ? 'AAA' : 'AA',
     top_recommendations: [
       'All critical accessibility issues fixed (images, form labels, ARIA)',
       'Meta descriptions and title tags optimised for every page',
       'Structured data (Schema.org) added for rich search snippets',
-      'Core Web Vitals (LCP, CLS) brought within Google "Good" thresholds',
+      'Core Web Vitals (LCP, CLS, TBT) brought within Google "Good" thresholds',
       'HTTPS, HSTS, and Content Security Policy fully configured',
+      'Images converted to WebP/AVIF with proper lazy loading',
+      'Render-blocking resources eliminated, JavaScript deferred',
+      'Cache headers and compression optimised for all assets',
     ],
     mobile_friendliness: {
       ...result.mobile_friendliness,
@@ -55,6 +68,13 @@ const buildProjectedResult = (result) => {
       has_csp:        true,
       mixed_content:  false,
       security_score: sec,
+    },
+    network_caching: {
+      ...(result.network_caching || {}),
+      compression: 'br',
+      cdn_detected: true,
+      issues: [],
+      score: net,
     },
   };
 };
@@ -114,38 +134,45 @@ const StatusBadge = ({ status }) => {
 };
 
 // Core Web Vitals Display
-const CoreWebVitalsSection = ({ vitals }) => (
-  <div className="grid md:grid-cols-3 gap-4">
+const CoreWebVitalsSection = ({ vitals }) => {
+  const MetricCard = ({ label, value, unit, status, target }) => (
     <div className="bg-gray-50 rounded-lg p-4">
       <div className="flex items-center justify-between mb-2">
-        <span className="text-sm text-gray-600">LCP (Largest Contentful Paint)</span>
-        <StatusBadge status={vitals.lcp_status} />
+        <span className="text-sm text-gray-600">{label}</span>
+        <StatusBadge status={status || 'unknown'} />
       </div>
       <div className="text-2xl font-bold text-gray-800">
-        {vitals.lcp}<span className="text-sm font-normal text-gray-500">s</span>
+        {value != null ? value : '—'}{unit && <span className="text-sm font-normal text-gray-500">{unit}</span>}
       </div>
-      <p className="text-xs text-gray-500 mt-1">Target: &lt; 2.5s</p>
+      <p className="text-xs text-gray-500 mt-1">Target: {target}</p>
     </div>
-    <div className="bg-gray-50 rounded-lg p-4">
-      <div className="flex items-center justify-between mb-2">
-        <span className="text-sm text-gray-600">FID (First Input Delay)</span>
-        <StatusBadge status={vitals.fid_status} />
+  );
+
+  return (
+    <div>
+      {vitals.source && (
+        <div className="mb-3 flex items-center gap-2">
+          <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${vitals.source === 'pagespeed' ? 'bg-emerald-100 text-emerald-700' : 'bg-yellow-100 text-yellow-700'}`}>
+            {vitals.source === 'pagespeed' ? 'Real data from Google PageSpeed Insights' : 'Estimated from static analysis'}
+          </span>
+        </div>
+      )}
+      <div className="grid md:grid-cols-3 gap-4">
+        <MetricCard label="FCP (First Contentful Paint)" value={vitals.fcp} unit="s" status={vitals.fcp_status} target="< 1.8s" />
+        <MetricCard label="LCP (Largest Contentful Paint)" value={vitals.lcp} unit="s" status={vitals.lcp_status} target="< 2.5s" />
+        <MetricCard label="TBT (Total Blocking Time)" value={vitals.tbt} unit="ms" status={vitals.tbt_status} target="< 200ms" />
+        <MetricCard label="CLS (Cumulative Layout Shift)" value={vitals.cls} unit="" status={vitals.cls_status} target="< 0.1" />
+        <MetricCard label="Speed Index" value={vitals.speed_index} unit="s" status={vitals.speed_index_status} target="< 3.4s" />
+        <MetricCard label="TTI (Time to Interactive)" value={vitals.tti} unit="s" status={vitals.tti_status} target="< 3.8s" />
+        <MetricCard label="TTFB (Time to First Byte)" value={vitals.ttfb} unit="ms" status={vitals.ttfb_status} target="< 800ms" />
+        <MetricCard label="INP (Interaction to Next Paint)" value={vitals.inp} unit="ms" status={vitals.inp_status} target="< 200ms" />
+        {vitals.fully_loaded_time != null && (
+          <MetricCard label="Fully Loaded Time" value={vitals.fully_loaded_time} unit="s" status={vitals.fully_loaded_time < 5 ? 'good' : vitals.fully_loaded_time < 8 ? 'needs-improvement' : 'poor'} target="< 5s" />
+        )}
       </div>
-      <div className="text-2xl font-bold text-gray-800">
-        {vitals.fid}<span className="text-sm font-normal text-gray-500">ms</span>
-      </div>
-      <p className="text-xs text-gray-500 mt-1">Target: &lt; 100ms</p>
     </div>
-    <div className="bg-gray-50 rounded-lg p-4">
-      <div className="flex items-center justify-between mb-2">
-        <span className="text-sm text-gray-600">CLS (Cumulative Layout Shift)</span>
-        <StatusBadge status={vitals.cls_status} />
-      </div>
-      <div className="text-2xl font-bold text-gray-800">{vitals.cls}</div>
-      <p className="text-xs text-gray-500 mt-1">Target: &lt; 0.1</p>
-    </div>
-  </div>
-);
+  );
+};
 
 // Mobile Friendliness Section
 const MobileSection = ({ mobile }) => {
@@ -284,19 +311,269 @@ const Section = ({ title, icon: Icon, children, defaultOpen }) => {
   );
 };
 
+// Resources & JavaScript Section
+const ResourcesSection = ({ issues, summary }) => {
+  if ((!issues || issues.length === 0) && !summary) {
+    return <p className="text-emerald-600 text-center py-4 font-medium">No resource issues detected!</p>;
+  }
+  return (
+    <div>
+      {summary && (
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
+          <div className="bg-gray-50 rounded-lg p-3 text-center">
+            <p className="text-xl font-bold text-gray-800">{summary.total_scripts ?? '—'}</p>
+            <p className="text-xs text-gray-500">Scripts</p>
+          </div>
+          <div className="bg-gray-50 rounded-lg p-3 text-center">
+            <p className="text-xl font-bold text-gray-800">{summary.total_stylesheets ?? '—'}</p>
+            <p className="text-xs text-gray-500">Stylesheets</p>
+          </div>
+          <div className="bg-gray-50 rounded-lg p-3 text-center">
+            <p className={`text-xl font-bold ${(summary.dom_element_count || 0) > 1500 ? 'text-yellow-600' : 'text-gray-800'}`}>
+              {summary.dom_element_count?.toLocaleString() ?? '—'}
+            </p>
+            <p className="text-xs text-gray-500">DOM Elements</p>
+          </div>
+          <div className="bg-gray-50 rounded-lg p-3 text-center">
+            <p className={`text-xl font-bold ${(summary.render_blocking_count || 0) > 0 ? 'text-red-600' : 'text-emerald-600'}`}>
+              {summary.render_blocking_count ?? 0}
+            </p>
+            <p className="text-xs text-gray-500">Render-blocking</p>
+          </div>
+        </div>
+      )}
+      <div className="space-y-3">
+        {(issues || []).slice(0, 8).map((issue, i) => (
+          <IssueDisplay key={`res-${i}`} issue={issue} idx={i} />
+        ))}
+        {(issues || []).length > 8 && <p className="text-sm text-gray-500 text-center">+ {issues.length - 8} more issues</p>}
+      </div>
+    </div>
+  );
+};
+
+// Images & Media Section
+const ImagesMediaSection = ({ issues, summary }) => {
+  if ((!issues || issues.length === 0) && !summary) {
+    return <p className="text-emerald-600 text-center py-4 font-medium">No image optimization issues!</p>;
+  }
+  return (
+    <div>
+      {summary && (
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-3 mb-4">
+          <div className="bg-gray-50 rounded-lg p-3 text-center">
+            <p className="text-xl font-bold text-gray-800">{summary.total ?? 0}</p>
+            <p className="text-xs text-gray-500">Total Images</p>
+          </div>
+          <div className="bg-gray-50 rounded-lg p-3 text-center">
+            <p className={`text-xl font-bold ${(summary.without_alt || 0) > 0 ? 'text-red-600' : 'text-emerald-600'}`}>
+              {summary.without_alt ?? 0}
+            </p>
+            <p className="text-xs text-gray-500">Missing Alt</p>
+          </div>
+          <div className="bg-gray-50 rounded-lg p-3 text-center">
+            <p className={`text-xl font-bold ${(summary.without_dimensions || 0) > 0 ? 'text-yellow-600' : 'text-emerald-600'}`}>
+              {summary.without_dimensions ?? 0}
+            </p>
+            <p className="text-xs text-gray-500">No Dimensions</p>
+          </div>
+          <div className="bg-gray-50 rounded-lg p-3 text-center">
+            <p className={`text-xl font-bold ${(summary.not_lazy_loaded || 0) > 0 ? 'text-yellow-600' : 'text-emerald-600'}`}>
+              {summary.not_lazy_loaded ?? 0}
+            </p>
+            <p className="text-xs text-gray-500">Not Lazy</p>
+          </div>
+          <div className="bg-gray-50 rounded-lg p-3 text-center">
+            <p className={`text-xl font-bold ${(summary.legacy_format || 0) > 0 ? 'text-yellow-600' : 'text-emerald-600'}`}>
+              {summary.legacy_format ?? 0}
+            </p>
+            <p className="text-xs text-gray-500">Legacy Format</p>
+          </div>
+        </div>
+      )}
+      <div className="space-y-3">
+        {(issues || []).slice(0, 8).map((issue, i) => (
+          <IssueDisplay key={`img-${i}`} issue={issue} idx={i} />
+        ))}
+        {(issues || []).length > 8 && <p className="text-sm text-gray-500 text-center">+ {issues.length - 8} more issues</p>}
+      </div>
+    </div>
+  );
+};
+
+// Network & Caching Section
+const NetworkCachingSection = ({ network }) => {
+  if (!network) return <p className="text-gray-500 text-center py-4">No network data available</p>;
+  const CheckItem = ({ passed, label, desc }) => (
+    <div className="flex items-start gap-3 p-3 bg-gray-50 rounded-lg">
+      {passed ? <CheckCircle className="w-5 h-5 text-emerald-500" /> : <XCircle className="w-5 h-5 text-red-500" />}
+      <div>
+        <p className={`font-medium ${passed ? 'text-gray-700' : 'text-red-700'}`}>{label}</p>
+        <p className="text-xs text-gray-500">{desc}</p>
+      </div>
+    </div>
+  );
+  return (
+    <div className="space-y-3">
+      <CheckItem
+        passed={network.compression && network.compression !== 'none'}
+        label={`Compression: ${network.compression || 'None'}`}
+        desc="Text compression (gzip/brotli) reduces transfer size"
+      />
+      <CheckItem
+        passed={!!network.cdn_detected}
+        label={network.cdn_detected ? `CDN: ${network.cdn_name || 'Detected'}` : 'No CDN detected'}
+        desc="CDN serves assets from edge locations closer to users"
+      />
+      <CheckItem
+        passed={!!network.cache_control}
+        label={network.cache_control ? 'Cache-Control configured' : 'Cache-Control missing'}
+        desc={network.cache_control || 'No caching headers set for the HTML document'}
+      />
+      <CheckItem
+        passed={!!network.etag || !!network.last_modified}
+        label={network.etag ? 'ETag present' : network.last_modified ? 'Last-Modified present' : 'No conditional headers'}
+        desc="Conditional headers enable efficient cache revalidation"
+      />
+      {(network.preconnects || []).length > 0 && (
+        <div className="p-3 bg-emerald-50 rounded-lg">
+          <p className="font-medium text-emerald-700 text-sm mb-1">Preconnect Hints Found</p>
+          <div className="flex flex-wrap gap-1">
+            {network.preconnects.map((url, i) => (
+              <span key={i} className="text-xs bg-white px-2 py-0.5 rounded text-gray-600">{url}</span>
+            ))}
+          </div>
+        </div>
+      )}
+      {(network.issues || []).length > 0 && (
+        <div className="space-y-2 mt-3">
+          {network.issues.slice(0, 5).map((issue, i) => (
+            <IssueDisplay key={`net-${i}`} issue={issue} idx={i} />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
+
+// Code Quality Section
+const CodeQualitySection = ({ issues, summary }) => {
+  if ((!issues || issues.length === 0) && !summary) {
+    return <p className="text-emerald-600 text-center py-4 font-medium">No code quality issues detected!</p>;
+  }
+  return (
+    <div>
+      {summary && (
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
+          <div className="bg-gray-50 rounded-lg p-3 text-center">
+            <p className={`text-xl font-bold ${summary.has_font_display ? 'text-emerald-600' : 'text-yellow-600'}`}>
+              {summary.has_font_display ? 'Yes' : 'No'}
+            </p>
+            <p className="text-xs text-gray-500">font-display</p>
+          </div>
+          <div className="bg-gray-50 rounded-lg p-3 text-center">
+            <p className="text-xl font-bold text-gray-800">{summary.font_preloads ?? 0}</p>
+            <p className="text-xs text-gray-500">Font Preloads</p>
+          </div>
+          <div className="bg-gray-50 rounded-lg p-3 text-center">
+            <p className={`text-xl font-bold ${summary.has_document_write ? 'text-red-600' : 'text-emerald-600'}`}>
+              {summary.has_document_write ? 'Yes' : 'No'}
+            </p>
+            <p className="text-xs text-gray-500">document.write</p>
+          </div>
+          <div className="bg-gray-50 rounded-lg p-3 text-center">
+            <p className={`text-xl font-bold ${summary.has_source_maps ? 'text-emerald-600' : 'text-gray-600'}`}>
+              {summary.has_source_maps ? 'Yes' : 'No'}
+            </p>
+            <p className="text-xs text-gray-500">Source Maps</p>
+          </div>
+        </div>
+      )}
+      <div className="space-y-3">
+        {(issues || []).slice(0, 8).map((issue, i) => (
+          <IssueDisplay key={`cq-${i}`} issue={issue} idx={i} />
+        ))}
+        {(issues || []).length > 8 && <p className="text-sm text-gray-500 text-center">+ {issues.length - 8} more issues</p>}
+      </div>
+    </div>
+  );
+};
+
+// Fixes Applied Section — before/after code diffs
+const FixesAppliedSection = ({ fixes }) => {
+  const [copiedIdx, setCopiedIdx] = useState(null);
+  if (!fixes || fixes.length === 0) return <p className="text-gray-500 text-center py-4">No fix suggestions generated</p>;
+
+  const copyToClipboard = (text, idx) => {
+    navigator.clipboard.writeText(text).then(() => {
+      setCopiedIdx(idx);
+      setTimeout(() => setCopiedIdx(null), 2000);
+    });
+  };
+
+  return (
+    <div className="space-y-4">
+      {fixes.slice(0, 12).map((fix, i) => (
+        <div key={`fix-${i}`} className="border border-gray-200 rounded-lg overflow-hidden">
+          <div className="p-3 bg-gray-50 flex items-center justify-between flex-wrap gap-2">
+            <div className="flex items-center gap-2">
+              <span className={`px-2 py-0.5 rounded text-xs font-medium ${
+                fix.priority === 'high' ? 'bg-red-100 text-red-700' :
+                fix.priority === 'medium' ? 'bg-yellow-100 text-yellow-700' :
+                'bg-blue-100 text-blue-700'
+              }`}>{fix.priority}</span>
+              <span className="text-sm font-semibold text-gray-800">{fix.title}</span>
+            </div>
+            <span className="text-xs text-gray-500 bg-white px-2 py-0.5 rounded">{fix.category}</span>
+          </div>
+          {fix.impact && (
+            <div className="px-3 py-1.5 bg-blue-50 text-xs text-blue-700">{fix.impact}</div>
+          )}
+          <div className="grid md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-gray-200">
+            <div className="p-3">
+              <p className="text-xs font-bold text-red-600 mb-1">BEFORE</p>
+              <pre className="text-xs bg-red-50 p-2 rounded overflow-x-auto font-mono whitespace-pre-wrap">{fix.before}</pre>
+            </div>
+            <div className="p-3 relative">
+              <div className="flex items-center justify-between mb-1">
+                <p className="text-xs font-bold text-emerald-600">AFTER</p>
+                <button
+                  onClick={() => copyToClipboard(fix.after, i)}
+                  className="text-xs text-gray-400 hover:text-gray-600 flex items-center gap-1"
+                >
+                  {copiedIdx === i ? <><Check className="w-3 h-3" /> Copied</> : <><Copy className="w-3 h-3" /> Copy</>}
+                </button>
+              </div>
+              <pre className="text-xs bg-emerald-50 p-2 rounded overflow-x-auto font-mono whitespace-pre-wrap">{fix.after}</pre>
+            </div>
+          </div>
+        </div>
+      ))}
+      {fixes.length > 12 && <p className="text-sm text-gray-500 text-center">+ {fixes.length - 12} more fixes available</p>}
+    </div>
+  );
+};
+
 // Full Audit Results
 const FullAuditResults = ({ result, originalResult, view, onToggle }) => {
   const accIssues = result.accessibility_issues || [];
   const seoIssues = result.seo_issues || [];
+  const resIssues = result.resources_issues || [];
+  const imgIssues = result.images_issues || [];
+  const cqIssues = result.code_quality_issues || [];
   const recs = result.top_recommendations || [];
+  const fixes = result.fixes_applied || [];
   const isWebenablix = view === 'webenablix';
 
   const overallDelta  = isWebenablix ? result.overall_score       - originalResult.overall_score       : 0;
   const accDelta      = isWebenablix ? result.accessibility_score  - originalResult.accessibility_score  : 0;
   const seoDelta      = isWebenablix ? result.seo_score            - originalResult.seo_score            : 0;
   const perfDelta     = isWebenablix ? result.performance_score    - originalResult.performance_score    : 0;
-  const mobDelta      = isWebenablix ? result.mobile_score         - originalResult.mobile_score         : 0;
   const secDelta      = isWebenablix ? result.security_score       - originalResult.security_score       : 0;
+  const resDelta      = isWebenablix ? (result.resources_score || 0)       - (originalResult.resources_score || 0)       : 0;
+  const imgDelta      = isWebenablix ? (result.images_score || 0)          - (originalResult.images_score || 0)          : 0;
+  const netDelta      = isWebenablix ? (result.network_caching_score || 0) - (originalResult.network_caching_score || 0) : 0;
+  const cqDelta       = isWebenablix ? (result.code_quality_score || 0)    - (originalResult.code_quality_score || 0)    : 0;
 
   return (
     <div className="mt-12 max-w-5xl mx-auto">
@@ -366,11 +643,33 @@ const FullAuditResults = ({ result, originalResult, view, onToggle }) => {
         {/* Score Cards */}
         <div className="p-6 border-b">
           <div className="flex flex-wrap justify-center gap-6">
+            <ScoreBadge score={result.overall_score} label="Overall" delta={overallDelta} />
+          </div>
+          {/* Grade */}
+          {result.grade_report?.overall && (
+            <div className="flex justify-center mt-2">
+              <span className={`text-2xl font-bold px-3 py-1 rounded-lg ${
+                result.grade_report.overall.grade === 'A' ? 'bg-emerald-100 text-emerald-700' :
+                result.grade_report.overall.grade === 'B' ? 'bg-blue-100 text-blue-700' :
+                result.grade_report.overall.grade === 'C' ? 'bg-yellow-100 text-yellow-700' :
+                result.grade_report.overall.grade === 'D' ? 'bg-orange-100 text-orange-700' :
+                'bg-red-100 text-red-700'
+              }`}>Grade: {result.grade_report.overall.grade}</span>
+            </div>
+          )}
+        </div>
+
+        {/* 8-Category Score Cards */}
+        <div className="p-6 border-b">
+          <div className="grid grid-cols-4 md:grid-cols-8 gap-4 justify-items-center">
             <ScoreBadge score={result.accessibility_score} label="Accessibility" delta={accDelta} />
             <ScoreBadge score={result.seo_score}           label="SEO"           delta={seoDelta} />
             <ScoreBadge score={result.performance_score}   label="Performance"   delta={perfDelta} />
-            <ScoreBadge score={result.mobile_score}        label="Mobile"        delta={mobDelta} />
+            <ScoreBadge score={result.resources_score || 0}       label="Resources"    delta={resDelta} />
+            <ScoreBadge score={result.images_score || 0}          label="Images"       delta={imgDelta} />
+            <ScoreBadge score={result.network_caching_score || 0} label="Network"      delta={netDelta} />
             <ScoreBadge score={result.security_score}      label="Security"      delta={secDelta} />
+            <ScoreBadge score={result.code_quality_score || 0}    label="Code Quality" delta={cqDelta} />
           </div>
         </div>
 
@@ -471,17 +770,35 @@ const FullAuditResults = ({ result, originalResult, view, onToggle }) => {
             </div>
           </Section>
 
-          <Section title="Mobile Friendliness" icon={Smartphone}>
-            <MobileSection mobile={result.mobile_friendliness} />
+          <Section title={`Resources & JavaScript (${resIssues.length})`} icon={Package}>
+            <ResourcesSection issues={resIssues} summary={result.resources_summary} />
+          </Section>
+
+          <Section title={`Images & Media (${imgIssues.length})`} icon={ImageIcon}>
+            <ImagesMediaSection issues={imgIssues} summary={result.images_summary} />
           </Section>
 
           <Section title="Structured Data (Schema.org)" icon={Globe}>
             <StructuredDataSection data={result.structured_data} />
           </Section>
 
+          <Section title="Network & Caching" icon={Wifi}>
+            <NetworkCachingSection network={result.network_caching} />
+          </Section>
+
           <Section title="Security Analysis" icon={Shield}>
             <SecuritySection security={result.security} />
           </Section>
+
+          <Section title={`Code Quality (${cqIssues.length})`} icon={Code2}>
+            <CodeQualitySection issues={cqIssues} summary={result.code_quality_summary} />
+          </Section>
+
+          {fixes.length > 0 && (
+            <Section title={`Suggested Fixes (${fixes.length})`} icon={Sparkles} defaultOpen={true}>
+              <FixesAppliedSection fixes={fixes} />
+            </Section>
+          )}
         </div>
       </div>
 

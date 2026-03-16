@@ -112,6 +112,19 @@ const createTables = async () => {
       )
     `);
 
+    // Backward-compatible audit schema upgrades (8-category scoring)
+    await client.query(`ALTER TABLE audits ADD COLUMN IF NOT EXISTS resources_score INTEGER`);
+    await client.query(`ALTER TABLE audits ADD COLUMN IF NOT EXISTS images_score INTEGER`);
+    await client.query(`ALTER TABLE audits ADD COLUMN IF NOT EXISTS network_caching_score INTEGER`);
+    await client.query(`ALTER TABLE audits ADD COLUMN IF NOT EXISTS code_quality_score INTEGER`);
+    await client.query(`ALTER TABLE audits ADD COLUMN IF NOT EXISTS resources_issues JSONB DEFAULT '[]'`);
+    await client.query(`ALTER TABLE audits ADD COLUMN IF NOT EXISTS images_issues JSONB DEFAULT '[]'`);
+    await client.query(`ALTER TABLE audits ADD COLUMN IF NOT EXISTS network_caching JSONB DEFAULT '{}'`);
+    await client.query(`ALTER TABLE audits ADD COLUMN IF NOT EXISTS code_quality_issues JSONB DEFAULT '[]'`);
+    await client.query(`ALTER TABLE audits ADD COLUMN IF NOT EXISTS fixes_applied JSONB DEFAULT '[]'`);
+    await client.query(`ALTER TABLE audits ADD COLUMN IF NOT EXISTS grade_report JSONB DEFAULT '{}'`);
+    await client.query(`ALTER TABLE audits ADD COLUMN IF NOT EXISTS pagespeed_data JSONB DEFAULT '{}'`);
+
     // Backward-compatible blog schema upgrades
     await client.query(`ALTER TABLE blogs ADD COLUMN IF NOT EXISTS slug TEXT`);
     await client.query(`ALTER TABLE blogs ADD COLUMN IF NOT EXISTS feature_image_url TEXT`);

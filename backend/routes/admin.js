@@ -156,6 +156,7 @@ router.get('/audits', requireAdmin, async (req, res) => {
     const [auditsRes, countRes] = await Promise.all([
       pool.query(
         `SELECT a.id, a.url, a.overall_score, a.accessibility_score, a.seo_score,
+                a.resources_score, a.images_score, a.network_caching_score, a.code_quality_score,
                 a.total_issues, a.scan_successful, a.created_at,
                 u.email AS user_email, u.name AS user_name
          FROM audits a

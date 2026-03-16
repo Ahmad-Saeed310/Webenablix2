@@ -528,6 +528,10 @@ const AdminPage = () => {
                         <th className="px-5 py-3 font-medium text-center">Score</th>
                         <th className="px-5 py-3 font-medium text-center">A11y</th>
                         <th className="px-5 py-3 font-medium text-center">SEO</th>
+                        <th className="px-5 py-3 font-medium text-center">Res</th>
+                        <th className="px-5 py-3 font-medium text-center">Img</th>
+                        <th className="px-5 py-3 font-medium text-center">Net</th>
+                        <th className="px-5 py-3 font-medium text-center">Code</th>
                         <th className="px-5 py-3 font-medium text-center">Issues</th>
                         <th className="px-5 py-3 font-medium text-center">Status</th>
                         <th className="px-5 py-3 font-medium">Date</th>
@@ -557,9 +561,13 @@ const AdminPage = () => {
                               <span className="text-gray-600">Guest</span>
                             )}
                           </td>
-                          <td className="px-5 py-3 text-center"><ScorePill score={a.overall_score} /></td>
-                          <td className="px-5 py-3 text-center"><ScorePill score={a.accessibility_score} /></td>
-                          <td className="px-5 py-3 text-center"><ScorePill score={a.seo_score} /></td>
+                          <td className="px-5 py-3 text-center"><ScorePill score={a.overall_score || 0} /></td>
+                          <td className="px-5 py-3 text-center"><ScorePill score={a.accessibility_score || 0} /></td>
+                          <td className="px-5 py-3 text-center"><ScorePill score={a.seo_score || 0} /></td>
+                          <td className="px-5 py-3 text-center"><ScorePill score={a.resources_score || 0} /></td>
+                          <td className="px-5 py-3 text-center"><ScorePill score={a.images_score || 0} /></td>
+                          <td className="px-5 py-3 text-center"><ScorePill score={a.network_caching_score || 0} /></td>
+                          <td className="px-5 py-3 text-center"><ScorePill score={a.code_quality_score || 0} /></td>
                           <td className="px-5 py-3 text-center text-gray-400">{a.total_issues ?? '—'}</td>
                           <td className="px-5 py-3 text-center">
                             {a.scan_successful

@@ -329,15 +329,15 @@ const DashboardPage = () => {
                     >
                       <div className="flex items-center gap-3">
                         <div
-                          className={`p-2 rounded-full ${getScoreBg(audit.overall_score)}`}
+                          className={`p-2 rounded-full ${getScoreBg(audit.overall_score || 0)}`}
                         >
-                          {audit.overall_score >= 80 ? (
+                          {(audit.overall_score || 0) >= 80 ? (
                             <CheckCircle
-                              className={`h-4 w-4 ${getScoreColor(audit.overall_score)}`}
+                              className={`h-4 w-4 ${getScoreColor(audit.overall_score || 0)}`}
                             />
                           ) : (
                             <AlertTriangle
-                              className={`h-4 w-4 ${getScoreColor(audit.overall_score)}`}
+                              className={`h-4 w-4 ${getScoreColor(audit.overall_score || 0)}`}
                             />
                           )}
                         </div>
@@ -346,16 +346,36 @@ const DashboardPage = () => {
                             {audit.url}
                           </p>
                           <p className="text-xs text-gray-500">
-                            {audit.total_issues} issues •{" "}
+                            {audit.total_issues || 0} issues •{" "}
                             {new Date(audit.created_at).toLocaleDateString()}
                           </p>
+                          <div className="flex flex-wrap gap-1 mt-1">
+                            <span className="text-[10px] px-1.5 py-0.5 rounded bg-blue-50 text-blue-700" title="Accessibility">
+                              A11y {audit.accessibility_score || 0}
+                            </span>
+                            <span className="text-[10px] px-1.5 py-0.5 rounded bg-purple-50 text-purple-700" title="SEO">
+                              SEO {audit.seo_score || 0}
+                            </span>
+                            <span className="text-[10px] px-1.5 py-0.5 rounded bg-teal-50 text-teal-700" title="Resources">
+                              Res {audit.resources_score || 0}
+                            </span>
+                            <span className="text-[10px] px-1.5 py-0.5 rounded bg-orange-50 text-orange-700" title="Images">
+                              Img {audit.images_score || 0}
+                            </span>
+                            <span className="text-[10px] px-1.5 py-0.5 rounded bg-cyan-50 text-cyan-700" title="Network & Caching">
+                              Net {audit.network_caching_score || 0}
+                            </span>
+                            <span className="text-[10px] px-1.5 py-0.5 rounded bg-rose-50 text-rose-700" title="Code Quality">
+                              Code {audit.code_quality_score || 0}
+                            </span>
+                          </div>
                         </div>
                       </div>
                       <div className="text-right">
                         <p
-                          className={`text-lg font-bold ${getScoreColor(audit.overall_score)}`}
+                          className={`text-lg font-bold ${getScoreColor(audit.overall_score || 0)}`}
                         >
-                          {audit.overall_score}%
+                          {audit.overall_score || 0}%
                         </p>
                       </div>
                     </div>

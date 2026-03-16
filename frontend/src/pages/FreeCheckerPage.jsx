@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { 
+import {
   ArrowRight, Search, Loader2, CheckCircle, XCircle, AlertTriangle,
-  Smartphone, Shield, Zap, Globe, Eye, Download
+  Shield, Zap, Globe, Eye, Download, FileText, Image, Wifi, Code
 } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
@@ -127,14 +127,34 @@ const FreeCheckerPage = () => {
                 
                 {/* Scores */}
                 <div className="p-6 border-b">
-                  <div className="flex flex-wrap justify-center gap-8">
+                  <div className="flex flex-wrap justify-center gap-6">
                     <ScoreBadge score={auditResult.accessibility_score} label="Accessibility" />
                     <ScoreBadge score={auditResult.seo_score} label="SEO" />
                     <ScoreBadge score={auditResult.performance_score} label="Performance" />
-                    <ScoreBadge score={auditResult.mobile_score} label="Mobile" />
+                    <ScoreBadge score={auditResult.resources_score || 0} label="Resources" />
+                    <ScoreBadge score={auditResult.images_score || 0} label="Images" />
+                    <ScoreBadge score={auditResult.network_caching_score || 0} label="Network" />
                     <ScoreBadge score={auditResult.security_score} label="Security" />
+                    <ScoreBadge score={auditResult.code_quality_score || 0} label="Code Quality" />
                   </div>
                 </div>
+
+                {/* Grade Report */}
+                {auditResult.grade_report && (
+                  <div className="p-6 border-b bg-gradient-to-r from-gray-50 to-white">
+                    <div className="flex items-center justify-center gap-6">
+                      <div className="text-center">
+                        <p className="text-sm text-gray-500 mb-1">Overall Grade</p>
+                        <span className="inline-block text-5xl font-bold text-[#2563EB]">
+                          {auditResult.grade_report.overall?.grade || 'N/A'}
+                        </span>
+                      </div>
+                      {auditResult.grade_report.summary && (
+                        <p className="text-gray-600 text-sm max-w-md">{auditResult.grade_report.summary}</p>
+                      )}
+                    </div>
+                  </div>
+                )}
                 
                 {/* Quick Stats */}
                 <div className="grid grid-cols-3 border-b">
@@ -190,10 +210,10 @@ const FreeCheckerPage = () => {
               <p className="text-gray-600">Comprehensive scanning based on WCAG 2.1 &amp; 2.2 guidelines</p>
             </div>
             
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
               <div className="bg-white p-6 rounded-xl">
                 <Eye className="w-10 h-10 text-[#2563EB] mb-4" />
-                <h3 className="font-bold text-gray-900 mb-2">Accessibility Issues</h3>
+                <h3 className="font-bold text-gray-900 mb-2">Accessibility</h3>
                 <p className="text-gray-600 text-sm">Alt text, color contrast, form labels, ARIA attributes, keyboard navigation</p>
               </div>
               <div className="bg-white p-6 rounded-xl">
@@ -203,23 +223,33 @@ const FreeCheckerPage = () => {
               </div>
               <div className="bg-white p-6 rounded-xl">
                 <Zap className="w-10 h-10 text-[#2563EB] mb-4" />
-                <h3 className="font-bold text-gray-900 mb-2">Core Web Vitals</h3>
-                <p className="text-gray-600 text-sm">LCP, FID, CLS metrics based on Google's ranking factors</p>
+                <h3 className="font-bold text-gray-900 mb-2">Performance</h3>
+                <p className="text-gray-600 text-sm">Page load speed, render-blocking resources, Core Web Vitals metrics</p>
               </div>
               <div className="bg-white p-6 rounded-xl">
-                <Smartphone className="w-10 h-10 text-[#2563EB] mb-4" />
-                <h3 className="font-bold text-gray-900 mb-2">Mobile Friendliness</h3>
-                <p className="text-gray-600 text-sm">Viewport, tap targets, text readability, responsive design</p>
+                <FileText className="w-10 h-10 text-[#2563EB] mb-4" />
+                <h3 className="font-bold text-gray-900 mb-2">Resources</h3>
+                <p className="text-gray-600 text-sm">CSS &amp; JS optimization, minification, unused code, resource loading</p>
+              </div>
+              <div className="bg-white p-6 rounded-xl">
+                <Image className="w-10 h-10 text-[#2563EB] mb-4" />
+                <h3 className="font-bold text-gray-900 mb-2">Images</h3>
+                <p className="text-gray-600 text-sm">Image optimization, modern formats, lazy loading, responsive sizing</p>
+              </div>
+              <div className="bg-white p-6 rounded-xl">
+                <Wifi className="w-10 h-10 text-[#2563EB] mb-4" />
+                <h3 className="font-bold text-gray-900 mb-2">Network &amp; Caching</h3>
+                <p className="text-gray-600 text-sm">Browser caching, CDN usage, compression, HTTP/2, request optimization</p>
               </div>
               <div className="bg-white p-6 rounded-xl">
                 <Shield className="w-10 h-10 text-[#2563EB] mb-4" />
-                <h3 className="font-bold text-gray-900 mb-2">Security Checks</h3>
-                <p className="text-gray-600 text-sm">HTTPS, HSTS, Content Security Policy, mixed content</p>
+                <h3 className="font-bold text-gray-900 mb-2">Security</h3>
+                <p className="text-gray-600 text-sm">HTTPS, HSTS, Content Security Policy, mixed content, security headers</p>
               </div>
               <div className="bg-white p-6 rounded-xl">
-                <CheckCircle className="w-10 h-10 text-[#2563EB] mb-4" />
-                <h3 className="font-bold text-gray-900 mb-2">Compliance Status</h3>
-                <p className="text-gray-600 text-sm">WCAG 2.1 level, lawsuit risk assessment, ADA compliance</p>
+                <Code className="w-10 h-10 text-[#2563EB] mb-4" />
+                <h3 className="font-bold text-gray-900 mb-2">Code Quality</h3>
+                <p className="text-gray-600 text-sm">HTML validation, semantic markup, deprecated elements, best practices</p>
               </div>
             </div>
           </div>

@@ -12,7 +12,7 @@ router.post(
   optionalAuth,
   [
     body('url').notEmpty().trim(),
-    body('audit_type').optional().isIn(['full', 'accessibility', 'seo', 'performance', 'mobile', 'security']),
+    body('audit_type').optional().isIn(['full', 'accessibility', 'seo', 'performance', 'resources', 'images', 'mobile', 'security', 'network', 'code_quality']),
   ],
   async (req, res) => {
     const errors = validationResult(req);
@@ -30,13 +30,16 @@ router.post(
       const result = await pool.query(
         `INSERT INTO audits (
           url, audit_type, accessibility_score, seo_score, performance_score,
-          mobile_score, security_score, overall_score, lawsuit_risk, wcag_level,
-          total_issues, critical_issues, warnings, accessibility_issues, seo_issues,
-          core_web_vitals, mobile_friendliness, structured_data, security,
-          top_recommendations, page_title, meta_description, images_without_alt,
-          scan_successful, scan_duration, user_id
+          mobile_score, security_score, resources_score, images_score,
+          network_caching_score, code_quality_score, overall_score,
+          lawsuit_risk, wcag_level, total_issues, critical_issues, warnings,
+          accessibility_issues, seo_issues, core_web_vitals, mobile_friendliness,
+          structured_data, security, resources_issues, images_issues,
+          network_caching, code_quality_issues, fixes_applied, grade_report,
+          pagespeed_data, top_recommendations, page_title, meta_description,
+          images_without_alt, scan_successful, scan_duration, user_id
         ) VALUES (
-          $1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24,$25,$26
+          $1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24,$25,$26,$27,$28,$29,$30,$31,$32,$33,$34,$35,$36,$37
         ) RETURNING id, created_at`,
         [
           auditData.url,
@@ -46,6 +49,10 @@ router.post(
           auditData.performance_score,
           auditData.mobile_score,
           auditData.security_score,
+          auditData.resources_score,
+          auditData.images_score,
+          auditData.network_caching_score,
+          auditData.code_quality_score,
           auditData.overall_score,
           auditData.lawsuit_risk,
           auditData.wcag_level,
@@ -58,6 +65,13 @@ router.post(
           JSON.stringify(auditData.mobile_friendliness),
           JSON.stringify(auditData.structured_data),
           JSON.stringify(auditData.security),
+          JSON.stringify(auditData.resources_issues),
+          JSON.stringify(auditData.images_issues),
+          JSON.stringify(auditData.network_caching),
+          JSON.stringify(auditData.code_quality_issues),
+          JSON.stringify(auditData.fixes_applied),
+          JSON.stringify(auditData.grade_report),
+          JSON.stringify(auditData.pagespeed_data),
           JSON.stringify(auditData.top_recommendations),
           auditData.page_title,
           auditData.meta_description,
@@ -91,8 +105,10 @@ router.get('/', require('../middleware/auth').authenticateToken, async (req, res
   try {
     const result = await pool.query(
       `SELECT id, url, audit_type, accessibility_score, seo_score, performance_score,
-              mobile_score, security_score, overall_score, lawsuit_risk, wcag_level,
-              total_issues, critical_issues, warnings, scan_successful, created_at
+              mobile_score, security_score, resources_score, images_score,
+              network_caching_score, code_quality_score, overall_score,
+              lawsuit_risk, wcag_level, total_issues, critical_issues, warnings,
+              grade_report, scan_successful, created_at
        FROM audits
        WHERE user_id = $1
        ORDER BY created_at DESC
