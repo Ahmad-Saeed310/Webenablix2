@@ -61,9 +61,94 @@ const ScorePill = ({ score }) => {
   return <span className={`font-semibold ${color}`}>{score}</span>;
 };
 
+// ── Admin Login Gate ─────────────────────────────────────────
+const AdminLoginGate = ({ onSuccess }) => {
+  const [adminData, setAdminData] = useState({ username: '', password: '' });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  const handleChange = (e) => {
+    setAdminData({ ...adminData, [e.target.name]: e.target.value });
+    setError('');
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError('');
+    try {
+      const res = await fetch(`${API_URL}/api/auth/admin`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(adminData),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.detail || 'Admin login failed');
+      localStorage.setItem('webenablix_admin_token', data.admin_token);
+      onSuccess();
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white flex items-center justify-center px-4">
+      <div className="w-full max-w-sm">
+        <div className="flex justify-center mb-6">
+          <div className="bg-gray-900 text-white rounded-full p-4">
+            <ShieldCheck className="h-8 w-8" />
+          </div>
+        </div>
+        <h1 className="text-2xl font-bold text-center text-gray-900 mb-1">Admin Access</h1>
+        <p className="text-sm text-center text-gray-500 mb-6">Enter admin credentials to access the control panel</p>
+        <form onSubmit={handleSubmit} className="space-y-4 bg-white shadow-xl rounded-xl p-6 border border-gray-100">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Username</label>
+            <input
+              name="username"
+              placeholder="admin"
+              value={adminData.username}
+              onChange={handleChange}
+              required
+              autoComplete="off"
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gray-900"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
+            <input
+              name="password"
+              type="password"
+              placeholder="••••••••"
+              value={adminData.password}
+              onChange={handleChange}
+              required
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gray-900"
+            />
+          </div>
+          {error && (
+            <div className="p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-600">{error}</div>
+          )}
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full bg-gray-900 hover:bg-gray-800 text-white font-medium py-2 rounded-lg text-sm transition-colors disabled:opacity-60"
+          >
+            {loading ? 'Verifying...' : 'Access Admin Panel'}
+          </button>
+          <p className="text-center text-xs text-gray-400 mt-1">Restricted area. Unauthorized access is prohibited.</p>
+        </form>
+      </div>
+    </div>
+  );
+};
+
 // ── Main AdminPage ───────────────────────────────────────────
 const AdminPage = () => {
   const navigate = useNavigate();
+  const [isAuthenticated, setIsAuthenticated] = useState(!!localStorage.getItem('webenablix_admin_token'));
   const [activeTab, setActiveTab] = useState('overview');
 
   // Stats
@@ -103,11 +188,10 @@ const AdminPage = () => {
     content: '', is_featured: false,
   });
 
-  // Guard — redirect if no admin token
-  useEffect(() => {
-    const token = localStorage.getItem('webenablix_admin_token');
-    if (!token) navigate('/login');
-  }, [navigate]);
+  // Guard — show login form if no admin token
+  if (!isAuthenticated) {
+    return <AdminLoginGate onSuccess={() => setIsAuthenticated(true)} />;
+  }
 
   const showToast = (msg, type = 'success') => {
     setToast({ msg, type });
@@ -224,7 +308,7 @@ const AdminPage = () => {
 
   const handleLogout = () => {
     localStorage.removeItem('webenablix_admin_token');
-    navigate('/login');
+    setIsAuthenticated(false);
   };
 
   const handleDeleteUser = async (id) => {

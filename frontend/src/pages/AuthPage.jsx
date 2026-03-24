@@ -19,8 +19,6 @@ import {
   Building,
   ArrowRight,
   CheckCircle,
-  KeyRound,
-  ShieldCheck,
 } from "lucide-react";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
@@ -29,7 +27,7 @@ const API_URL = import.meta.env.VITE_BACKEND_URL || "";
 
 const AuthPage = () => {
   const navigate = useNavigate();
-  // tab: 'login' | 'register' | 'admin'
+  // tab: 'login' | 'register'
   const [tab, setTab] = useState("login");
   const isLogin = tab === "login";
   const [loading, setLoading] = useState(false);
@@ -42,44 +40,14 @@ const AuthPage = () => {
     company: "",
   });
 
-  const [adminData, setAdminData] = useState({ username: "", password: "" });
-
   useEffect(() => {
     const token = localStorage.getItem("webenablix_token");
     if (token) navigate("/dashboard");
-    const adminToken = localStorage.getItem("webenablix_admin_token");
-    if (adminToken) navigate("/admin");
   }, [navigate]);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
     setError("");
-  };
-
-  const handleAdminChange = (e) => {
-    setAdminData({ ...adminData, [e.target.name]: e.target.value });
-    setError("");
-  };
-
-  const handleAdminLogin = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setError("");
-    try {
-      const res = await fetch(`${API_URL}/api/auth/admin`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(adminData),
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.detail || "Admin login failed");
-      localStorage.setItem("webenablix_admin_token", data.admin_token);
-      navigate("/admin");
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
   };
 
   const handleSubmit = async (e) => {
@@ -204,7 +172,6 @@ const AuthPage = () => {
                     {[
                       ["login", "Sign In"],
                       ["register", "Register"],
-                      ["admin", "Admin"],
                     ].map(([key, label]) => (
                       <button
                         key={key}
@@ -215,9 +182,7 @@ const AuthPage = () => {
                         }}
                         className={`flex-1 py-2 text-sm font-medium transition-colors ${
                           tab === key
-                            ? key === "admin"
-                              ? "bg-gray-900 text-white"
-                              : "bg-blue-600 text-white"
+                            ? "bg-blue-600 text-white"
                             : "text-gray-600 hover:bg-gray-50"
                         }`}
                       >
@@ -227,97 +192,17 @@ const AuthPage = () => {
                   </div>
 
                   <CardTitle className="text-2xl">
-                    {tab === "admin"
-                      ? "Admin Access"
-                      : isLogin
-                        ? "Welcome Back"
-                        : "Create Your Account"}
+                    {isLogin ? "Welcome Back" : "Create Your Account"}
                   </CardTitle>
                   <CardDescription>
-                    {tab === "admin"
-                      ? "Enter admin credentials to access the control panel"
-                      : isLogin
-                        ? "Sign in to access your accessibility dashboard"
-                        : "Start your accessibility journey today"}
+                    {isLogin
+                      ? "Sign in to access your accessibility dashboard"
+                      : "Start your accessibility journey today"}
                   </CardDescription>
                 </CardHeader>
 
                 <CardContent>
-                  {/* ── Admin Login Form ── */}
-                  {tab === "admin" && (
-                    <form onSubmit={handleAdminLogin} className="space-y-4">
-                      <div className="flex justify-center mb-2">
-                        <div className="bg-gray-900 text-white rounded-full p-4">
-                          <ShieldCheck className="h-8 w-8" />
-                        </div>
-                      </div>
-
-                      <div className="space-y-2">
-                        <Label htmlFor="admin-username">Admin Username</Label>
-                        <div className="relative">
-                          <User className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                          <Input
-                            id="admin-username"
-                            name="username"
-                            placeholder="admin"
-                            value={adminData.username}
-                            onChange={handleAdminChange}
-                            className="pl-10"
-                            required
-                            autoComplete="off"
-                          />
-                        </div>
-                      </div>
-
-                      <div className="space-y-2">
-                        <Label htmlFor="admin-password">Admin Password</Label>
-                        <div className="relative">
-                          <KeyRound className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                          <Input
-                            id="admin-password"
-                            name="password"
-                            type="password"
-                            placeholder="••••••••"
-                            value={adminData.password}
-                            onChange={handleAdminChange}
-                            className="pl-10"
-                            required
-                          />
-                        </div>
-                      </div>
-
-                      {error && (
-                        <div className="p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-600">
-                          {error}
-                        </div>
-                      )}
-
-                      <Button
-                        type="submit"
-                        className="w-full bg-gray-900 hover:bg-gray-800"
-                        size="lg"
-                        disabled={loading}
-                      >
-                        {loading ? (
-                          "Verifying..."
-                        ) : (
-                          <>
-                            <ShieldCheck className="mr-2 h-4 w-4" />
-                            Access Admin Panel
-                          </>
-                        )}
-                      </Button>
-
-                      <p className="text-center text-xs text-gray-400 mt-2">
-                        Restricted area. Unauthorized access is prohibited.
-                      </p>
-                    </form>
-                  )}
-
-                  {/* ── Regular User Form ── */}
-                  {tab !== "admin" && (
-                    <>
-                      <form onSubmit={handleSubmit} className="space-y-4">
+                  <form onSubmit={handleSubmit} className="space-y-4">
                         {!isLogin && (
                           <>
                             <div className="space-y-2">
@@ -454,8 +339,6 @@ const AuthPage = () => {
                           </span>
                         </div>
                       )}
-                    </>
-                  )}
                 </CardContent>
               </Card>
 
