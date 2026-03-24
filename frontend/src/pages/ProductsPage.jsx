@@ -1,11 +1,12 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { ArrowRight, Shield, Zap, Eye, Globe, BarChart3, Users } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 
 const ProductsPage = () => {
+  const navigate = useNavigate();
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
@@ -54,7 +55,7 @@ const ProductsPage = () => {
           <div className="max-w-4xl mx-auto px-4 text-center">
             <h2 className="text-3xl font-bold text-gray-900 mb-4">Not sure which product is right for you?</h2>
             <p className="text-gray-600 mb-8">Our accessibility experts can help you find the perfect solution for your needs.</p>
-            <Button className="bg-[#2563EB] hover:bg-[#1d4ed8] text-white rounded-full px-8 py-4 h-auto font-semibold">
+            <Button onClick={() => navigate('/about')} className="bg-[#2563EB] hover:bg-[#1d4ed8] text-white rounded-full px-8 py-4 h-auto font-semibold">
               Schedule a Consultation <ArrowRight className="w-5 h-5 ml-2" />
             </Button>
           </div>

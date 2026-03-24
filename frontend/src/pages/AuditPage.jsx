@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { 
   ArrowRight, Check, Search, BarChart3, FileText, AlertTriangle,
   Eye, Globe, Shield, Zap, Clock, Download, Users, TrendingUp
@@ -9,6 +9,7 @@ import Header from '../components/Header';
 import Footer from '../components/Footer';
 
 const AuditPage = () => {
+  const navigate = useNavigate();
   return (
     <div className="min-h-screen bg-white">
       <Header />
@@ -26,11 +27,11 @@ const AuditPage = () => {
               Get detailed reports on your website's ADA & WCAG compliance with actionable recommendations from certified accessibility experts.
             </p>
             <div className="flex flex-wrap gap-4 justify-center">
-              <Button className="bg-white text-[#2563EB] hover:bg-gray-100 rounded-full px-8 py-4 h-auto font-semibold">
+              <Button onClick={() => navigate('/register')} className="bg-white text-[#2563EB] hover:bg-gray-100 rounded-full px-8 py-4 h-auto font-semibold">
                 Request an Audit
                 <ArrowRight className="w-5 h-5 ml-2" />
               </Button>
-              <Button variant="outline" className="border-white text-white hover:bg-white/10 rounded-full px-8 py-4 h-auto font-semibold">
+              <Button onClick={() => navigate('/docs')} variant="outline" className="border-white text-white hover:bg-white/10 rounded-full px-8 py-4 h-auto font-semibold">
                 View Sample Report
               </Button>
             </div>
@@ -56,7 +57,7 @@ const AuditPage = () => {
                   <li className="flex items-center gap-2"><Check className="w-5 h-5 text-emerald-500" /><span className="text-sm text-gray-700">WCAG 2.1 coverage</span></li>
                   <li className="flex items-center gap-2"><Check className="w-5 h-5 text-emerald-500" /><span className="text-sm text-gray-700">Continuous monitoring</span></li>
                 </ul>
-                <Button className="w-full bg-[#2563EB] hover:bg-[#1d4ed8] text-white rounded-full">Try Free Scan</Button>
+                <Button onClick={() => navigate('/products/checker')} className="w-full bg-[#2563EB] hover:bg-[#1d4ed8] text-white rounded-full">Try Free Scan</Button>
               </div>
               
               <div className="bg-[#2563EB] rounded-2xl p-8 text-white relative">
@@ -73,7 +74,7 @@ const AuditPage = () => {
                   <li className="flex items-center gap-2"><Check className="w-5 h-5 text-blue-200" /><span className="text-sm">Priority recommendations</span></li>
                   <li className="flex items-center gap-2"><Check className="w-5 h-5 text-blue-200" /><span className="text-sm">Compliance statement</span></li>
                 </ul>
-                <Button className="w-full bg-white text-[#2563EB] hover:bg-gray-100 rounded-full">Schedule Audit</Button>
+                <Button onClick={() => navigate('/register')} className="w-full bg-white text-[#2563EB] hover:bg-gray-100 rounded-full">Schedule Audit</Button>
               </div>
               
               <div className="bg-white rounded-2xl p-8 border border-gray-200 hover:border-[#2563EB] hover:shadow-xl transition-all">
@@ -87,7 +88,7 @@ const AuditPage = () => {
                   <li className="flex items-center gap-2"><Check className="w-5 h-5 text-emerald-500" /><span className="text-sm text-gray-700">Remediation support</span></li>
                   <li className="flex items-center gap-2"><Check className="w-5 h-5 text-emerald-500" /><span className="text-sm text-gray-700">Legal documentation</span></li>
                 </ul>
-                <Button variant="outline" className="w-full rounded-full">Contact Sales</Button>
+                <Button onClick={() => navigate('/about')} variant="outline" className="w-full rounded-full">Contact Sales</Button>
               </div>
             </div>
           </div>
@@ -123,7 +124,7 @@ const AuditPage = () => {
           <div className="max-w-4xl mx-auto px-4 text-center">
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">Start Your Accessibility Journey</h2>
             <p className="text-white/80 text-lg mb-8">Get a comprehensive audit and actionable roadmap to compliance</p>
-            <Button className="bg-white text-[#2563EB] hover:bg-gray-100 rounded-full px-8 py-4 h-auto font-semibold">
+            <Button onClick={() => navigate('/register')} className="bg-white text-[#2563EB] hover:bg-gray-100 rounded-full px-8 py-4 h-auto font-semibold">
               Request Free Consultation <ArrowRight className="w-5 h-5 ml-2" />
             </Button>
           </div>

@@ -1,8 +1,10 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Check, Heart, ArrowRight } from 'lucide-react';
 import { Button } from './ui/button';
 
 const WhyAccessibilitySection = () => {
+  const navigate = useNavigate();
   return (
     <section className="py-20 lg:py-28 bg-white">
       <div className="max-w-7xl mx-auto px-4">
@@ -12,7 +14,7 @@ const WhyAccessibilitySection = () => {
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mt-4 leading-tight">
               Web accessibility is<br />the right thing to do<br />and good for business
             </h2>
-            <Button className="mt-8 bg-[#2563EB] hover:bg-[#1d4ed8] text-white rounded-full px-8 py-4 h-auto font-semibold flex items-center gap-2">
+            <Button onClick={() => navigate('/products/checker')} className="mt-8 bg-[#2563EB] hover:bg-[#1d4ed8] text-white rounded-full px-8 py-4 h-auto font-semibold flex items-center gap-2">
               TRY WEBENABLIX NOW
               <ArrowRight className="w-5 h-5" />
             </Button>

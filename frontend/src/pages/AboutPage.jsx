@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   ArrowRight,
   Award,
@@ -230,6 +231,7 @@ const Avatar = ({ member }) => (
 
 const AboutPage = () => {
   const [expandTimeline, setExpandTimeline] = useState(false);
+  const navigate = useNavigate();
   const visibleMilestones = expandTimeline
     ? milestones
     : milestones.slice(0, 4);
@@ -693,6 +695,7 @@ const AboutPage = () => {
             <Button
               variant="outline"
               className="border-white/40 text-white hover:bg-white/10 rounded-full px-8 py-3 h-auto text-base font-semibold"
+              onClick={() => navigate('/about')}
             >
               Talk to Sales
             </Button>

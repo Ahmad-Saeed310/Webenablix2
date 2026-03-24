@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Check, ShieldCheck, Search } from 'lucide-react';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 
 const HeroSection = ({ onScanRequest }) => {
   const [url, setUrl] = useState('');
+  const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -47,7 +49,7 @@ const HeroSection = ({ onScanRequest }) => {
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 flex-wrap">
-            <Button className="bg-white text-[#2563EB] hover:bg-gray-100 px-8 py-4 rounded-full text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 h-auto">
+            <Button onClick={() => navigate('/products/checker')} className="bg-white text-[#2563EB] hover:bg-gray-100 px-8 py-4 rounded-full text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 h-auto">
               Enable Accessibility Today
             </Button>
 

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import "./App.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import AccessibilityWidget from "./components/AccessibilityWidget";
+import ScrollToTop from "./components/ScrollToTop";
 import Header from "./components/Header";
 import HeroSection from "./components/HeroSection";
 import FeaturesSection from "./components/FeaturesSection";
@@ -9,8 +10,10 @@ import AuditSection from "./components/AuditSection";
 import WhyAccessibilitySection from "./components/WhyAccessibilitySection";
 import WidgetSection from "./components/WidgetSection";
 import TrustedBySection from "./components/TrustedBySection";
+import FaqSection from "./components/FaqSection";
 import Footer from "./components/Footer";
 import { CookieConsent, AccessibilityReportModal } from "./components/Modals";
+import UnifiedSectionNav from "./components/UnifiedSectionNav";
 
 // Pages
 import PricingPage from "./pages/PricingPage";
@@ -48,6 +51,8 @@ const HomePage = () => {
         <AuditSection externalUrl={heroScanUrl} />
         <WhyAccessibilitySection />
         <WidgetSection />
+        <UnifiedSectionNav />
+        <FaqSection />
         <TrustedBySection />
       </main>
       <Footer />
@@ -66,6 +71,7 @@ const HomePage = () => {
 function App() {
   return (
     <BrowserRouter>
+      <ScrollToTop />
       <AccessibilityWidget />
       <Routes>
         <Route path="/" element={<HomePage />} />

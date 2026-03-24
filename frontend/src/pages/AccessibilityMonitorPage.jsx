@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   ArrowRight,
   BarChart3,
@@ -323,6 +324,7 @@ const ExportCard = ({ format, description, icon: Icon, color }) => (
 // ─── Main Page ────────────────────────────────────────────────────────────────
 
 const AccessibilityMonitorPage = () => {
+  const navigate = useNavigate();
   return (
     <div className="min-h-screen bg-white">
       <Header />
@@ -354,10 +356,11 @@ const AccessibilityMonitorPage = () => {
                   violation and suggests a fix.
                 </p>
                 <div className="flex flex-wrap gap-4">
-                  <Button className="bg-white text-[#2563EB] hover:bg-blue-50 rounded-full px-8 py-4 h-auto font-semibold shadow-lg">
+                  <Button onClick={() => navigate('/register')} className="bg-white text-[#2563EB] hover:bg-blue-50 rounded-full px-8 py-4 h-auto font-semibold shadow-lg">
                     Start Monitoring Free
                   </Button>
                   <Button
+                    onClick={() => navigate('/products/checker')}
                     variant="outline"
                     className="border-white text-white hover:bg-white/10 rounded-full px-8 py-4 h-auto font-semibold"
                   >
@@ -634,7 +637,7 @@ const AccessibilityMonitorPage = () => {
                     </div>
                   ))}
                 </div>
-                <Button className="w-full mt-6 bg-[#2563EB] hover:bg-blue-700 text-white rounded-xl py-3 h-auto font-semibold">
+                <Button onClick={() => navigate('/products/audit')} className="w-full mt-6 bg-[#2563EB] hover:bg-blue-700 text-white rounded-xl py-3 h-auto font-semibold">
                   <Download className="w-4 h-4 mr-2" /> Download Sample PDF
                 </Button>
               </div>
@@ -797,10 +800,11 @@ const AccessibilityMonitorPage = () => {
               litigation.
             </p>
             <div className="flex flex-wrap gap-4 justify-center">
-              <Button className="bg-white text-[#2563EB] hover:bg-blue-50 rounded-full px-10 py-4 h-auto font-semibold shadow-lg">
+              <Button onClick={() => navigate('/register')} className="bg-white text-[#2563EB] hover:bg-blue-50 rounded-full px-10 py-4 h-auto font-semibold shadow-lg">
                 Start Free Trial <ArrowRight className="w-5 h-5 ml-2" />
               </Button>
               <Button
+                onClick={() => navigate('/products/checker')}
                 variant="outline"
                 className="border-white text-white hover:bg-white/10 rounded-full px-10 py-4 h-auto font-semibold"
               >

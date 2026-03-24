@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import {
   ArrowRight,
   Check,
@@ -497,10 +498,11 @@ const ComparePage = () => {
               protection, support, and pricing.
             </p>
             <div className="flex flex-wrap gap-4 justify-center">
-              <Button className="bg-white text-[#2563EB] hover:bg-blue-50 rounded-full px-8 py-4 h-auto font-semibold shadow-lg">
+              <Button onClick={() => navigate('/register')} className="bg-white text-[#2563EB] hover:bg-blue-50 rounded-full px-8 py-4 h-auto font-semibold shadow-lg">
                 Start Free Trial <ArrowRight className="w-5 h-5 ml-2" />
               </Button>
               <Button
+                onClick={() => navigate('/register')}
                 variant="outline"
                 className="border-white text-white hover:bg-white/10 rounded-full px-8 py-4 h-auto font-semibold"
               >
@@ -849,9 +851,9 @@ const ComparePage = () => {
                   desc: "Full-service compliance management",
                 },
               ].map((p) => (
-                <a
+                <Link
                   key={p.label}
-                  href={p.href}
+                  to={p.href}
                   className="bg-white rounded-xl p-5 border border-gray-100 hover:border-[#2563EB] hover:shadow-md transition-all text-left group"
                 >
                   <div className="w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center mb-3 group-hover:bg-blue-100 transition-colors">
@@ -861,7 +863,7 @@ const ComparePage = () => {
                     {p.label}
                   </p>
                   <p className="text-gray-500 text-xs mt-0.5">{p.desc}</p>
-                </a>
+                </Link>
               ))}
             </div>
           </div>
@@ -880,10 +882,11 @@ const ComparePage = () => {
               accessibility program in the market.
             </p>
             <div className="flex flex-wrap gap-4 justify-center">
-              <Button className="bg-white text-[#2563EB] hover:bg-blue-50 rounded-full px-10 py-4 h-auto font-semibold shadow-lg">
+              <Button onClick={() => navigate('/register')} className="bg-white text-[#2563EB] hover:bg-blue-50 rounded-full px-10 py-4 h-auto font-semibold shadow-lg">
                 Start Free Trial <ArrowRight className="w-5 h-5 ml-2" />
               </Button>
               <Button
+                onClick={() => navigate('/register')}
                 variant="outline"
                 className="border-white text-white hover:bg-white/10 rounded-full px-10 py-4 h-auto font-semibold"
               >

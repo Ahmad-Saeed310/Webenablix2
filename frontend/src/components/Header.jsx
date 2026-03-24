@@ -1,7 +1,11 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { 
-  Search, User, Menu, X, MapPin, ChevronDown, LayoutDashboard, LogOut,
+  Search, User, Menu, X, MapPin, ChevronDown, ChevronRight, LayoutDashboard, LogOut,
+  Package, Building2, Wrench,
+  Shield, Settings, Monitor, BarChart3, Zap,
+  Landmark, Wallet, GraduationCap, ShoppingBag, Cpu, HeartPulse, Car, Home, Users, Film, BadgeCheck,
+  Code2, Globe, Sparkles, Layers, Briefcase, Tag, Store,
 } from 'lucide-react';
 import { Button } from './ui/button';
 import { productsMenu, industriesMenu, installationsMenu } from '../data/navigation';
@@ -15,6 +19,48 @@ const getStoredToken = () => localStorage.getItem('webenablix_token');
 const DropdownMenu = ({ items, isOpen, onClose, type }) => {
   if (!isOpen) return null;
 
+  const itemIconMap = {
+    products: {
+      search: Search,
+      zap: Zap,
+      shield: Shield,
+      settings: Settings,
+      monitor: Monitor,
+      barChart: BarChart3,
+    },
+    industries: {
+      landmark: Landmark,
+      wallet: Wallet,
+      graduation: GraduationCap,
+      shoppingBag: ShoppingBag,
+      cpu: Cpu,
+      heart: HeartPulse,
+      car: Car,
+      home: Home,
+      users: Users,
+      film: Film,
+      badge: BadgeCheck,
+    },
+    installations: {
+      code: Code2,
+      globe: Globe,
+      wrench: Wrench,
+      sparkles: Sparkles,
+      layers: Layers,
+      shoppingBag: ShoppingBag,
+      briefcase: Briefcase,
+      tag: Tag,
+      store: Store,
+    },
+  };
+
+  const fallbackIcon = type === 'industries' ? Building2 : type === 'installations' ? Wrench : Package;
+
+  const getItemIcon = (item) => {
+    const byType = itemIconMap[type] || {};
+    return byType[item.icon] || fallbackIcon;
+  };
+
   const getColumns = () => {
     if (type === 'industries') return 'grid-cols-2 lg:grid-cols-3';
     if (type === 'installations') return 'grid-cols-2 lg:grid-cols-4';
@@ -22,17 +68,21 @@ const DropdownMenu = ({ items, isOpen, onClose, type }) => {
   };
 
   return (
-    <div className="absolute top-full left-0 mt-2 bg-white rounded-2xl shadow-2xl border border-gray-100 p-4 z-50 min-w-[300px]" style={{ maxWidth: type === 'installations' ? '700px' : type === 'industries' ? '600px' : '350px' }}>
+    <div className="absolute top-full left-0 mt-2 bg-white rounded-2xl shadow-2xl border border-gray-100 p-4 z-50 min-w-[400px]" style={{ maxWidth: type === 'installations' ? '700px' : type === 'industries' ? '600px' : '350px' }}>
       <div className={`grid ${getColumns()} gap-2`}>
         {items.slice(0, 12).map((item, idx) => (
+          (() => {
+            const ItemIcon = getItemIcon(item);
+            return (
           <Link
             key={`dropdown-${type}-${idx}`}
             to={item.href}
             onClick={onClose}
-            className="flex items-start gap-3 p-3 rounded-xl hover:bg-gray-50 transition-colors group"
+            className="flex items-start justify-between gap-3 p-3 rounded-xl hover:bg-gray-50 transition-colors group"
           >
             <div className="flex-1">
               <div className="flex items-center gap-2">
+                <ItemIcon className="w-3.5 h-3.5 text-gray-400 group-hover:text-[#2563EB] transition-colors shrink-0" />
                 <span className="font-medium text-gray-800 group-hover:text-[#2563EB] text-sm">{item.name}</span>
                 {item.isNew && (
                   <span className="px-2 py-0.5 bg-emerald-100 text-emerald-700 text-xs rounded-full font-medium">NEW</span>
@@ -40,14 +90,17 @@ const DropdownMenu = ({ items, isOpen, onClose, type }) => {
               </div>
               <p className="text-xs text-gray-500 mt-1 line-clamp-2">{item.description}</p>
             </div>
+            <ChevronRight className="w-4 h-4 text-gray-300 group-hover:text-[#2563EB] mt-0.5 transition-colors" />
           </Link>
+            );
+          })()
         ))}
       </div>
     </div>
   );
 };
 
-const NavItem = ({ label, items, type }) => {
+const NavItem = ({ label, items, type, icon: Icon }) => {
   const [isOpen, setIsOpen] = useState(false);
   const ref = useRef(null);
 
@@ -67,6 +120,7 @@ const NavItem = ({ label, items, type }) => {
         onClick={() => setIsOpen(!isOpen)}
         className="flex items-center gap-1 px-3 py-2 text-sm text-gray-600 hover:text-[#2563EB] transition-colors font-medium"
       >
+        {Icon && <Icon className="w-4 h-4" />}
         {label}
         <ChevronDown className={`w-4 h-4 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
       </button>
@@ -155,9 +209,9 @@ const Header = () => {
               </Link>
 
               <div className="hidden lg:flex items-center gap-1">
-                <NavItem label="Products" items={productsMenu} type="products" />
-                <NavItem label="Industries" items={industriesMenu} type="industries" />
-                <NavItem label="Installation" items={installationsMenu} type="installations" />
+                <NavItem label="Products" items={productsMenu} type="products" icon={Package} />
+                <NavItem label="Industries" items={industriesMenu} type="industries" icon={Building2} />
+                <NavItem label="Installation" items={installationsMenu} type="installations" icon={Wrench} />
                 {simpleNavItems.map((item) => (
                   <Link key={item.name} to={item.href} className="px-3 py-2 text-sm text-gray-600 hover:text-[#2563EB] transition-colors font-medium">
                     {item.name}

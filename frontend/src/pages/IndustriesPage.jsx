@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { ArrowRight, Building, Landmark, GraduationCap, ShoppingCart, Code, HeartPulse, Car, Home, Heart, Tv, Shield } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import Header from '../components/Header';
@@ -20,6 +20,7 @@ const industries = [
 ];
 
 const IndustriesPage = () => {
+  const navigate = useNavigate();
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
@@ -69,7 +70,7 @@ const IndustriesPage = () => {
           <div className="max-w-4xl mx-auto px-4 text-center">
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">Ready to Make Your Industry More Accessible?</h2>
             <p className="text-white/80 text-lg mb-8">Contact our team for industry-specific accessibility solutions</p>
-            <Button className="bg-white text-[#2563EB] hover:bg-gray-100 rounded-full px-8 py-4 h-auto font-semibold">
+            <Button onClick={() => navigate('/register')} className="bg-white text-[#2563EB] hover:bg-gray-100 rounded-full px-8 py-4 h-auto font-semibold">
               Get Industry Solution <ArrowRight className="w-5 h-5 ml-2" />
             </Button>
           </div>

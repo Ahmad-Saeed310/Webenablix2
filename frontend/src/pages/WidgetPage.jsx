@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { 
   ArrowRight, Check, Eye, Keyboard, Palette, Brain, Zap, EyeOff, Focus,
   Globe, BarChart3, Settings, Type, MousePointer,
@@ -76,6 +77,7 @@ const ProfileCard = ({ icon: Icon, title, description, color }) => (
 
 const WidgetPage = () => {
   const [currentLang, setCurrentLang] = useState(0);
+  const navigate = useNavigate();
   const nextLang = () => setCurrentLang((prev) => (prev + 1) % languages.length);
   const prevLang = () => setCurrentLang((prev) => (prev - 1 + languages.length) % languages.length);
 
@@ -99,10 +101,10 @@ const WidgetPage = () => {
                   Start your ADA compliance journey with the Accessibility Widget. Conform to WCAG 2.1 &amp; 2.2 and boost performance along the way.
                 </p>
                 <div className="flex flex-wrap gap-4">
-                  <Button className="bg-white text-[#2563EB] hover:bg-gray-100 rounded-full px-8 py-4 h-auto font-semibold">
+                  <Button onClick={() => navigate('/register')} className="bg-white text-[#2563EB] hover:bg-gray-100 rounded-full px-8 py-4 h-auto font-semibold">
                     Request a demo
                   </Button>
-                  <Button variant="outline" className="border-white text-white hover:bg-white/10 rounded-full px-8 py-4 h-auto font-semibold">
+                  <Button onClick={() => navigate('/register')} variant="outline" className="border-white text-white hover:bg-white/10 rounded-full px-8 py-4 h-auto font-semibold">
                     Start free trial
                   </Button>
                 </div>
@@ -189,10 +191,10 @@ const WidgetPage = () => {
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">Ready to Make Your Website Accessible?</h2>
             <p className="text-white/80 text-lg mb-8">Join thousands of websites using Webenablix to comply with ADA and WCAG standards</p>
             <div className="flex flex-wrap gap-4 justify-center">
-              <Button className="bg-white text-[#2563EB] hover:bg-gray-100 rounded-full px-8 py-4 h-auto font-semibold">
+              <Button onClick={() => navigate('/register')} className="bg-white text-[#2563EB] hover:bg-gray-100 rounded-full px-8 py-4 h-auto font-semibold">
                 Start Free Trial <ArrowRight className="w-5 h-5 ml-2" />
               </Button>
-              <Button variant="outline" className="border-white text-white hover:bg-white/10 rounded-full px-8 py-4 h-auto font-semibold">
+              <Button onClick={() => navigate('/pricing')} variant="outline" className="border-white text-white hover:bg-white/10 rounded-full px-8 py-4 h-auto font-semibold">
                 View Pricing
               </Button>
             </div>

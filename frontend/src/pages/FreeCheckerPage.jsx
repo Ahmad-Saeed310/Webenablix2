@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   ArrowRight, Search, Loader2, CheckCircle, XCircle, AlertTriangle,
   Shield, Zap, Globe, Eye, Download, FileText, Image, Wifi, Code
@@ -32,6 +33,7 @@ const FreeCheckerPage = () => {
   const [loading, setLoading] = useState(false);
   const [auditResult, setAuditResult] = useState(null);
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
   const handleAudit = async () => {
     if (!websiteUrl.trim()) {
@@ -39,15 +41,28 @@ const FreeCheckerPage = () => {
       return;
     }
 
+    let normalizedUrl = websiteUrl.trim();
+    if (!/^https?:\/\//i.test(normalizedUrl)) {
+      normalizedUrl = `https://${normalizedUrl}`;
+    }
+
     setLoading(true);
     setError(null);
     setAuditResult(null);
 
     try {
-      const response = await axios.post(`${API}/audit`, { url: websiteUrl, audit_type: 'full' });
+      const response = await axios.post(`${API}/audit`, { url: normalizedUrl, audit_type: 'full' });
       setAuditResult(response.data);
     } catch (err) {
-      setError(err.response?.data?.detail || 'Failed to audit website. Please try again.');
+      if (err.response?.data?.detail) {
+        setError(err.response.data.detail);
+      } else if (err.code === 'ERR_NETWORK' || err.code === 'ECONNREFUSED') {
+        setError('Cannot connect to server. Please ensure the backend is running on port 8001.');
+      } else if (err.code === 'ECONNABORTED') {
+        setError('Request timed out. The website may be slow or unreachable.');
+      } else {
+        setError(`Failed to audit website: ${err.message || 'Please try again.'}`);
+      }
     } finally {
       setLoading(false);
     }
@@ -192,7 +207,7 @@ const FreeCheckerPage = () => {
                 {/* CTA */}
                 <div className="p-6 bg-gray-50 text-center">
                   <p className="text-gray-600 mb-4">Want a more detailed analysis with expert recommendations?</p>
-                  <Button className="bg-[#2563EB] hover:bg-[#1d4ed8] text-white rounded-full px-8">
+                  <Button className="bg-[#2563EB] hover:bg-[#1d4ed8] text-white rounded-full px-8" onClick={() => navigate('/products/audit')}>
                     Get Full Audit Report
                     <ArrowRight className="w-4 h-4 ml-2" />
                   </Button>
@@ -261,10 +276,10 @@ const FreeCheckerPage = () => {
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">Need More Than a Free Check?</h2>
             <p className="text-white/80 text-lg mb-8">Our expert audits provide in-depth analysis with remediation support</p>
             <div className="flex flex-wrap gap-4 justify-center">
-              <Button className="bg-white text-[#2563EB] hover:bg-gray-100 rounded-full px-8 py-4 h-auto font-semibold">
+              <Button onClick={() => navigate('/products/audit')} className="bg-white text-[#2563EB] hover:bg-gray-100 rounded-full px-8 py-4 h-auto font-semibold">
                 Explore Audit Services
               </Button>
-              <Button variant="outline" className="border-white text-white hover:bg-white/10 rounded-full px-8 py-4 h-auto font-semibold">
+              <Button onClick={() => navigate('/products/widget')} variant="outline" className="border-white text-white hover:bg-white/10 rounded-full px-8 py-4 h-auto font-semibold">
                 Install Widget
               </Button>
             </div>

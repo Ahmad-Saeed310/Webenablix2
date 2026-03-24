@@ -1,10 +1,12 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Check, X, ArrowRight, Sparkles } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 
 const PricingPage = () => {
+  const navigate = useNavigate();
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
@@ -35,7 +37,7 @@ const PricingPage = () => {
                 <span className="text-lg text-gray-500">/month</span>
               </div>
               <p className="mb-6 text-sm text-gray-600">Our basic plan for automation-only monitoring, fixes, and online support</p>
-              <Button className="w-full rounded-full py-3 font-semibold mb-8 bg-[#2563EB] text-white hover:bg-[#1d4ed8]">
+              <Button onClick={() => navigate('/register')} className="w-full rounded-full py-3 font-semibold mb-8 bg-[#2563EB] text-white hover:bg-[#1d4ed8]">
                 Start Free Trial <ArrowRight className="w-4 h-4 ml-2" />
               </Button>
               <div>
@@ -60,7 +62,7 @@ const PricingPage = () => {
                 <span className="text-4xl font-bold text-white">Custom</span>
               </div>
               <p className="mb-6 text-sm text-blue-100">Empower your developers to understand and build for accessibility at the source</p>
-              <Button className="w-full rounded-full py-3 font-semibold mb-8 bg-white text-[#2563EB] hover:bg-gray-100">
+              <Button onClick={() => navigate('/register')} className="w-full rounded-full py-3 font-semibold mb-8 bg-white text-[#2563EB] hover:bg-gray-100">
                 Schedule Demo <ArrowRight className="w-4 h-4 ml-2" />
               </Button>
               <div>
@@ -82,7 +84,7 @@ const PricingPage = () => {
                 <span className="text-4xl font-bold text-gray-900">Custom</span>
               </div>
               <p className="mb-6 text-sm text-gray-600">Let our team of experts get you compliant by handling everything for you</p>
-              <Button variant="outline" className="w-full rounded-full py-3 font-semibold mb-8">
+              <Button onClick={() => navigate('/register')} variant="outline" className="w-full rounded-full py-3 font-semibold mb-8">
                 Schedule Demo <ArrowRight className="w-4 h-4 ml-2" />
               </Button>
               <div>
@@ -109,15 +111,15 @@ const PricingPage = () => {
                     <th className="text-left py-4 px-4 font-semibold text-gray-900 w-1/4"></th>
                     <th className="text-center py-4 px-4">
                       <span className="font-semibold text-gray-900">Automated</span>
-                      <div className="mt-2"><Button variant="outline" size="sm" className="rounded-full text-xs">Start Free Trial</Button></div>
+                      <div className="mt-2"><Button onClick={() => navigate('/register')} variant="outline" size="sm" className="rounded-full text-xs">Start Free Trial</Button></div>
                     </th>
                     <th className="text-center py-4 px-4 bg-blue-50">
                       <span className="font-semibold text-[#2563EB]">Self Managed</span>
-                      <div className="mt-2"><Button size="sm" className="rounded-full text-xs bg-[#2563EB]">Schedule Demo</Button></div>
+                      <div className="mt-2"><Button onClick={() => navigate('/register')} size="sm" className="rounded-full text-xs bg-[#2563EB]">Schedule Demo</Button></div>
                     </th>
                     <th className="text-center py-4 px-4">
                       <span className="font-semibold text-gray-900">Managed</span>
-                      <div className="mt-2"><Button variant="outline" size="sm" className="rounded-full text-xs">Schedule Demo</Button></div>
+                      <div className="mt-2"><Button onClick={() => navigate('/register')} variant="outline" size="sm" className="rounded-full text-xs">Schedule Demo</Button></div>
                     </th>
                   </tr>
                 </thead>

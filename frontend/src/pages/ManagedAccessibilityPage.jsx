@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   ArrowRight,
   Award,
@@ -53,6 +54,7 @@ const PlanCard = ({
   features,
   cta,
   highlighted,
+  onCtaClick,
 }) => (
   <div
     className={`relative rounded-2xl p-8 flex flex-col ${
@@ -109,6 +111,7 @@ const PlanCard = ({
       ))}
     </ul>
     <Button
+      onClick={onCtaClick}
       className={`w-full rounded-full py-3 h-auto font-semibold ${
         highlighted
           ? "bg-white text-[#2563EB] hover:bg-blue-50"
@@ -168,6 +171,7 @@ const ProcessStep = ({ number, title, description, icon: Icon, color }) => (
 
 const ManagedAccessibilityPage = () => {
   const [activeTab, setActiveTab] = useState(0);
+  const navigate = useNavigate();
 
   const tabs = [
     {
@@ -250,10 +254,11 @@ const ManagedAccessibilityPage = () => {
                   legal documentation, and staff training.
                 </p>
                 <div className="flex flex-wrap gap-4">
-                  <Button className="bg-white text-[#2563EB] hover:bg-blue-50 rounded-full px-8 py-4 h-auto font-semibold shadow-lg">
+                  <Button onClick={() => navigate('/register')} className="bg-white text-[#2563EB] hover:bg-blue-50 rounded-full px-8 py-4 h-auto font-semibold shadow-lg">
                     Schedule a Consultation
                   </Button>
                   <Button
+                    onClick={() => navigate('/pricing')}
                     variant="outline"
                     className="border-white text-white hover:bg-white/10 rounded-full px-8 py-4 h-auto font-semibold"
                   >
@@ -529,6 +534,7 @@ const ManagedAccessibilityPage = () => {
                 description="For small sites that need a solid compliance foundation"
                 cta="Get Started"
                 highlighted={false}
+                onCtaClick={() => navigate('/register')}
                 features={[
                   "Up to 50 pages monitored",
                   "Annual manual audit",
@@ -546,6 +552,7 @@ const ManagedAccessibilityPage = () => {
                 description="For growing businesses with ongoing compliance needs"
                 cta="Start Free Trial"
                 highlighted={true}
+                onCtaClick={() => navigate('/register')}
                 features={[
                   "Up to 500 pages monitored",
                   "Semi-annual manual audit",
@@ -564,6 +571,7 @@ const ManagedAccessibilityPage = () => {
                 description="For large enterprises, government, and regulated industries"
                 cta="Contact Sales"
                 highlighted={false}
+                onCtaClick={() => navigate('/about')}
                 features={[
                   "Unlimited pages",
                   "Quarterly manual audits",
@@ -679,10 +687,11 @@ const ManagedAccessibilityPage = () => {
               compliance posture and recommend the right plan — no obligations.
             </p>
             <div className="flex flex-wrap gap-4 justify-center">
-              <Button className="bg-white text-[#2563EB] hover:bg-blue-50 rounded-full px-10 py-4 h-auto font-semibold shadow-lg">
+              <Button onClick={() => navigate('/register')} className="bg-white text-[#2563EB] hover:bg-blue-50 rounded-full px-10 py-4 h-auto font-semibold shadow-lg">
                 Book Free Consultation <ArrowRight className="w-5 h-5 ml-2" />
               </Button>
               <Button
+                onClick={() => navigate('/pricing')}
                 variant="outline"
                 className="border-white text-white hover:bg-white/10 rounded-full px-10 py-4 h-auto font-semibold"
               >

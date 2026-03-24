@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   ArrowRight,
   Award,
@@ -297,7 +298,9 @@ const FaqItem = ({ q, a }) => {
 
 // ─── Page ──────────────────────────────────────────────────────────────────────
 
-const AgencyPage = () => (
+const AgencyPage = () => {
+  const navigate = useNavigate();
+  return (
   <div className="min-h-screen bg-white">
     <Header />
 
@@ -322,10 +325,11 @@ const AgencyPage = () => (
           your clients, and become the compliance experts your market needs.
         </p>
         <div className="flex flex-wrap gap-4 justify-center">
-          <Button className="bg-white text-[#2563EB] hover:bg-blue-50 rounded-full px-8 py-3 h-auto text-base font-semibold shadow-xl">
+          <Button onClick={() => navigate('/register')} className="bg-white text-[#2563EB] hover:bg-blue-50 rounded-full px-8 py-3 h-auto text-base font-semibold shadow-xl">
             Apply to Partner <ArrowRight className="w-4 h-4 ml-2" />
           </Button>
           <Button
+            onClick={() => navigate('/docs')}
             variant="outline"
             className="border-white/40 text-white hover:bg-white/10 rounded-full px-8 py-3 h-auto text-base font-semibold"
           >
@@ -459,7 +463,7 @@ const AgencyPage = () => (
                   </ul>
                 </div>
                 <div className="px-6 pb-6">
-                  <Button className="w-full bg-[#2563EB] hover:bg-blue-700 text-white rounded-xl h-10 text-sm font-semibold">
+                  <Button onClick={() => navigate('/register')} className="w-full bg-[#2563EB] hover:bg-blue-700 text-white rounded-xl h-10 text-sm font-semibold">
                     Apply Now
                   </Button>
                 </div>
@@ -624,10 +628,11 @@ const AgencyPage = () => (
           recurring commissions from your very first referral.
         </p>
         <div className="flex flex-wrap gap-4 justify-center">
-          <Button className="bg-white text-[#2563EB] hover:bg-blue-50 rounded-full px-8 py-3 h-auto text-base font-semibold shadow-xl">
+          <Button onClick={() => navigate('/register')} className="bg-white text-[#2563EB] hover:bg-blue-50 rounded-full px-8 py-3 h-auto text-base font-semibold shadow-xl">
             Apply Now — It's Free <ArrowRight className="w-4 h-4 ml-2" />
           </Button>
           <Button
+            onClick={() => navigate('/about')}
             variant="outline"
             className="border-white/40 text-white hover:bg-white/10 rounded-full px-8 py-3 h-auto text-base font-semibold"
           >
@@ -642,6 +647,7 @@ const AgencyPage = () => (
 
     <Footer />
   </div>
-);
+  );
+};
 
 export default AgencyPage;

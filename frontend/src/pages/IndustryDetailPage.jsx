@@ -1,7 +1,9 @@
 import React from "react";
 import { useParams } from "react-router-dom";
+import { jsPDF } from "jspdf";
 import {
   ArrowRight,
+  Download,
   Check,
   CheckCircle2,
   Shield,
@@ -83,6 +85,76 @@ const IndustryDetailPage = () => {
   const { industry } = useParams();
   const data = industriesData[industry];
 
+  const handleDownloadGuide = () => {
+    if (!data) return;
+
+    const doc = new jsPDF({ unit: "pt", format: "a4" });
+    const margin = 48;
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const pageHeight = doc.internal.pageSize.getHeight();
+    const maxWidth = pageWidth - margin * 2;
+    let cursorY = margin;
+
+    const ensureSpace = (neededHeight = 16) => {
+      if (cursorY + neededHeight > pageHeight - margin) {
+        doc.addPage();
+        cursorY = margin;
+      }
+    };
+
+    const writeHeading = (text, size = 16) => {
+      ensureSpace(size + 10);
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(size);
+      doc.setTextColor(17, 24, 39);
+      doc.text(text, margin, cursorY);
+      cursorY += size + 8;
+    };
+
+    const writeParagraph = (text, size = 11, bold = false) => {
+      doc.setFont("helvetica", bold ? "bold" : "normal");
+      doc.setFontSize(size);
+      doc.setTextColor(55, 65, 81);
+      const lines = doc.splitTextToSize(text, maxWidth);
+      const lineHeight = Math.max(14, size * 1.35);
+
+      lines.forEach((line) => {
+        ensureSpace(lineHeight);
+        doc.text(line, margin, cursorY);
+        cursorY += lineHeight;
+      });
+      cursorY += 6;
+    };
+
+    writeHeading(`${data.name} Accessibility Guide`, 22);
+    writeParagraph(data.tagline, 12, true);
+    writeParagraph(data.description, 11);
+
+    writeHeading("Key Regulations", 15);
+    data.regulations.forEach((reg, index) => {
+      writeParagraph(`${index + 1}. ${reg.name}`, 12, true);
+      writeParagraph(reg.desc, 11);
+    });
+
+    writeHeading("Common Challenges", 15);
+    data.challenges.forEach((challenge, index) => {
+      writeParagraph(`${index + 1}. ${challenge.title}`, 12, true);
+      writeParagraph(challenge.desc, 11);
+    });
+
+    writeHeading("Recommended Solutions", 15);
+    data.solutions.forEach((solution, index) => {
+      writeParagraph(`${index + 1}. ${solution.title}`, 12, true);
+      writeParagraph(solution.desc, 11);
+    });
+
+    writeHeading("Source", 13);
+    writeParagraph("Generated from Webenablix Industry Page content.", 10);
+    writeParagraph(`Date: ${new Date().toLocaleDateString()}`, 10);
+
+    doc.save(`${data.id}-accessibility-guide.pdf`);
+  };
+
   // Fallback for unknown slugs
   if (!data) {
     return (
@@ -145,8 +217,10 @@ const IndustryDetailPage = () => {
                   </Button>
                   <Button
                     variant="outline"
+                    onClick={handleDownloadGuide}
                     className="border-white text-white hover:bg-white/10 rounded-full px-8 py-4 h-auto font-semibold"
                   >
+                    <Download className="w-4 h-4 mr-2" />
                     {data.cta.secondary}
                   </Button>
                 </div>
@@ -400,8 +474,10 @@ const IndustryDetailPage = () => {
               </Button>
               <Button
                 variant="outline"
+                onClick={handleDownloadGuide}
                 className="border-white text-white hover:bg-white/10 rounded-full px-10 py-4 h-auto font-semibold"
               >
+                <Download className="w-4 h-4 mr-2" />
                 {data.cta.secondary}
               </Button>
             </div>
