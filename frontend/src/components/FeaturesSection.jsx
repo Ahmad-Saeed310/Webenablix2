@@ -1,12 +1,17 @@
-import React from 'react';
-import { Accessibility, Globe, Users, Check } from 'lucide-react';
+import React from "react";
+import { Accessibility, Globe, Users, Check } from "lucide-react";
 
+/**
+ * FeatureCard Component
+ * Props JSON Schema: {"type":"object","properties":{"iconType":{"type":"string","enum":["accessibility","globe","users"]},"title":{"type":"string"},"description":{"type":"string"},"point1":{"type":"string"},"point2":{"type":"string"}},"required":["iconType","title","description","point1","point2"]}
+ */
 const FeatureCard = ({ iconType, title, description, point1, point2 }) => {
   const getIcon = () => {
     const iconClass = "w-8 h-8 text-[#2563EB]";
-    if (iconType === 'accessibility') return <Accessibility className={iconClass} />;
-    if (iconType === 'globe') return <Globe className={iconClass} />;
-    if (iconType === 'users') return <Users className={iconClass} />;
+    if (iconType === "accessibility")
+      return <Accessibility className={iconClass} />;
+    if (iconType === "globe") return <Globe className={iconClass} />;
+    if (iconType === "users") return <Users className={iconClass} />;
     return null;
   };
 
@@ -16,7 +21,9 @@ const FeatureCard = ({ iconType, title, description, point1, point2 }) => {
         {getIcon()}
       </div>
       <h3 className="text-xl font-bold text-gray-900 mb-3">{title}</h3>
-      <p className="text-gray-600 mb-6 text-sm leading-relaxed">{description}</p>
+      <p className="text-gray-600 mb-6 text-sm leading-relaxed">
+        {description}
+      </p>
       <ul className="space-y-3">
         <li className="flex items-start gap-3">
           <div className="w-5 h-5 bg-[#2563EB] rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
@@ -40,12 +47,17 @@ const FeaturesSection = () => {
     <section className="py-20 lg:py-28 bg-gray-50">
       <div className="max-w-7xl mx-auto px-4">
         <div className="text-center mb-16">
-          <span className="text-[#2563EB] font-semibold text-sm uppercase tracking-wide">THE WEBENABLIX WAY</span>
+          <span className="text-[#2563EB] font-semibold text-sm uppercase tracking-wide">
+            THE WEBENABLIX WAY
+          </span>
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mt-4">
-            Make Your Website with<br />Webenablix
+            Make Your Website with
+            <br />
+            Webenablix
           </h2>
           <p className="text-gray-600 mt-4 max-w-2xl mx-auto">
-            Turn accessibility from a legal burden into a business advantage with our complete compliance solutions.
+            Turn accessibility from a legal burden into a business advantage
+            with our complete compliance solutions.
           </p>
         </div>
 

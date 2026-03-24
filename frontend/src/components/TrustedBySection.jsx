@@ -1,12 +1,19 @@
-import React from 'react';
+import React from "react";
 
+/**
+ * TrustedBySection Component
+ * Props JSON Schema: {"type":"object","properties":{},"description":"No required props"}
+ * Companies Data Schema: {"type":"array","minItems":5,"maxItems":5,"items":{"type":"object","properties":{"name":{"type":"string"},"color":{"type":"string"}},"required":["name","color"]}}
+ */
 const TrustedBySection = () => {
   const companies = [
-    { name: 'Salesforce', color: '#00A1E0' },
-    { name: 'IBM', color: '#1F70C1' },
-    { name: 'Zendesk', color: '#03363D' },
-    { name: 'BMW', color: '#0066B1' },
-    { name: 'British', color: '#EB2226' }
+    { name: "Salesforce", color: "#00A1E0" },
+    { name: "IBM", color: "#1F70C1" },
+    { name: "Zendesk", color: "#03363D" },
+    { name: "BMW", color: "#0066B1" },
+    { name: "British", color: "#EB2226" },
+    { name: "Salesforce", color: "#00A1E0" },
+    { name: "IBM", color: "#1F70C1" },
   ];
 
   return (
@@ -17,9 +24,17 @@ const TrustedBySection = () => {
         </p>
         <div className="flex flex-wrap justify-center items-center gap-8 lg:gap-16">
           {companies.map((company, index) => (
-            <div key={index} className="flex items-center gap-2 px-6 py-3 bg-gray-50 rounded-full">
-              <div className="w-3 h-3 rounded-full" style={{ backgroundColor: company.color }} />
-              <span className="font-semibold text-gray-700">{company.name}</span>
+            <div
+              key={index}
+              className="flex items-center gap-2 px-6 py-3 bg-gray-50 rounded-full"
+            >
+              <div
+                className="w-3 h-3 rounded-full"
+                style={{ backgroundColor: company.color }}
+              />
+              <span className="font-semibold text-gray-700">
+                {company.name}
+              </span>
             </div>
           ))}
         </div>

@@ -1,35 +1,83 @@
-import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { ArrowRight, Shield, Zap, Eye, Globe, BarChart3, Users } from 'lucide-react';
-import { Button } from '../components/ui/button';
-import Header from '../components/Header';
-import Footer from '../components/Footer';
+import React, { useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import {
+  ArrowRight,
+  Shield,
+  Zap,
+  Eye,
+  Globe,
+  BarChart3,
+  Users,
+} from "lucide-react";
+import { injectSchema, productsPageSchema } from "../utils/schemaMarkup";
+import { Button } from "../components/ui/button";
+import Header from "../components/Header";
+import Footer from "../components/Footer";
 
 const ProductsPage = () => {
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const cleanup = injectSchema(productsPageSchema, "products-page-schema");
+    return cleanup;
+  }, []);
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
       <main>
         <section className="bg-gradient-to-b from-[#2563EB] to-[#3B82F6] py-20">
           <div className="max-w-7xl mx-auto px-4 text-center">
-            <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">Our Products</h1>
+            <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
+              Our Products
+            </h1>
             <p className="text-xl text-white/80 max-w-2xl mx-auto">
-              Comprehensive accessibility solutions to make your website compliant and inclusive for everyone.
+              Comprehensive accessibility solutions to make your website
+              compliant and inclusive for everyone.
             </p>
           </div>
         </section>
-        
+
         <section className="py-20">
           <div className="max-w-7xl mx-auto px-4">
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
               {[
-                { to: '/products/checker', icon: Shield, label: 'Free Accessibility Checker', desc: 'Free WCAG & ADA Compliance Checker', badge: 'NEW' },
-                { to: '/products/widget', icon: Zap, label: 'Widget', desc: 'AI-Enhanced Accessibility for Your Website' },
-                { to: '/products/audit', icon: Eye, label: 'Audit', desc: 'Audit for ADA & WCAG accessibility compliance' },
-                { to: '/products/managed', icon: Globe, label: 'Managed Accessibility', desc: 'Redefining Accessibility Excellence' },
-                { to: '/products/monitor', icon: BarChart3, label: 'Accessibility Monitor', desc: 'Analyze, and Export accessibility issues with AI' },
-                { to: '/products/compare', icon: Users, label: 'Compare', desc: 'Discover how Webenablix offers a better solution' },
+                {
+                  to: "/products/checker",
+                  icon: Shield,
+                  label: "Free Accessibility Checker",
+                  desc: "Free WCAG & ADA Compliance Checker",
+                  badge: "NEW",
+                },
+                {
+                  to: "/products/widget",
+                  icon: Zap,
+                  label: "Widget",
+                  desc: "AI-Enhanced Accessibility for Your Website",
+                },
+                {
+                  to: "/products/audit",
+                  icon: Eye,
+                  label: "Audit",
+                  desc: "Audit for ADA & WCAG accessibility compliance",
+                },
+                {
+                  to: "/products/managed",
+                  icon: Globe,
+                  label: "Managed Accessibility",
+                  desc: "Redefining Accessibility Excellence",
+                },
+                {
+                  to: "/products/monitor",
+                  icon: BarChart3,
+                  label: "Accessibility Monitor",
+                  desc: "Analyze, and Export accessibility issues with AI",
+                },
+                {
+                  to: "/products/compare",
+                  icon: Users,
+                  label: "Compare",
+                  desc: "Discover how Webenablix offers a better solution",
+                },
               ].map(({ to, icon: Icon, label, desc, badge }) => (
                 <Link key={to} to={to} className="group">
                   <div className="bg-white rounded-2xl p-8 border border-gray-100 hover:border-[#2563EB] hover:shadow-xl transition-all duration-300">
@@ -37,12 +85,19 @@ const ProductsPage = () => {
                       <Icon className="w-7 h-7 text-[#2563EB] group-hover:text-white transition-colors" />
                     </div>
                     <div className="flex items-center gap-2 mb-2">
-                      <h3 className="text-xl font-bold text-gray-900 group-hover:text-[#2563EB] transition-colors">{label}</h3>
-                      {badge && <span className="px-2 py-0.5 bg-emerald-100 text-emerald-700 text-xs rounded-full font-medium">{badge}</span>}
+                      <h3 className="text-xl font-bold text-gray-900 group-hover:text-[#2563EB] transition-colors">
+                        {label}
+                      </h3>
+                      {badge && (
+                        <span className="px-2 py-0.5 bg-emerald-100 text-emerald-700 text-xs rounded-full font-medium">
+                          {badge}
+                        </span>
+                      )}
                     </div>
                     <p className="text-gray-600 mb-6">{desc}</p>
                     <div className="flex items-center text-[#2563EB] font-medium">
-                      Learn more <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+                      Learn more{" "}
+                      <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
                     </div>
                   </div>
                 </Link>
@@ -50,12 +105,20 @@ const ProductsPage = () => {
             </div>
           </div>
         </section>
-        
+
         <section className="py-20 bg-white">
           <div className="max-w-4xl mx-auto px-4 text-center">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">Not sure which product is right for you?</h2>
-            <p className="text-gray-600 mb-8">Our accessibility experts can help you find the perfect solution for your needs.</p>
-            <Button onClick={() => navigate('/about')} className="bg-[#2563EB] hover:bg-[#1d4ed8] text-white rounded-full px-8 py-4 h-auto font-semibold">
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">
+              Not sure which product is right for you?
+            </h2>
+            <p className="text-gray-600 mb-8">
+              Our accessibility experts can help you find the perfect solution
+              for your needs.
+            </p>
+            <Button
+              onClick={() => navigate("/about")}
+              className="bg-[#2563EB] hover:bg-[#1d4ed8] text-white rounded-full px-8 py-4 h-auto font-semibold"
+            >
               Schedule a Consultation <ArrowRight className="w-5 h-5 ml-2" />
             </Button>
           </div>

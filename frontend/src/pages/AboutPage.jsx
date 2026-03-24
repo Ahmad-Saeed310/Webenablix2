@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   ArrowRight,
@@ -24,6 +24,18 @@ import {
   GraduationCap,
   Briefcase,
 } from "lucide-react";
+import {
+  injectSchema,
+  aboutPageSchema,
+  aboutCompanyStatsSchema,
+  aboutCompanyValuesSchema,
+  aboutCompanyHistorySchema,
+  aboutTeamLeadershipSchema,
+  aboutCompanyRecognitionSchema,
+  aboutCompanyMissionSchema,
+  aboutCultureSchema,
+  aboutCtaSchema,
+} from "../utils/schemaMarkup";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import { Button } from "../components/ui/button";
@@ -235,6 +247,48 @@ const AboutPage = () => {
   const visibleMilestones = expandTimeline
     ? milestones
     : milestones.slice(0, 4);
+
+  useEffect(() => {
+    const cleanup1 = injectSchema(aboutPageSchema, "about-page-schema");
+    const cleanup2 = injectSchema(
+      aboutCompanyStatsSchema,
+      "about-stats-schema",
+    );
+    const cleanup3 = injectSchema(
+      aboutCompanyValuesSchema,
+      "about-values-schema",
+    );
+    const cleanup4 = injectSchema(
+      aboutCompanyHistorySchema,
+      "about-history-schema",
+    );
+    const cleanup5 = injectSchema(
+      aboutTeamLeadershipSchema,
+      "about-team-schema",
+    );
+    const cleanup6 = injectSchema(
+      aboutCompanyRecognitionSchema,
+      "about-recognition-schema",
+    );
+    const cleanup7 = injectSchema(
+      aboutCompanyMissionSchema,
+      "about-mission-schema",
+    );
+    const cleanup8 = injectSchema(aboutCultureSchema, "about-culture-schema");
+    const cleanup9 = injectSchema(aboutCtaSchema, "about-cta-schema");
+
+    return () => {
+      cleanup1();
+      cleanup2();
+      cleanup3();
+      cleanup4();
+      cleanup5();
+      cleanup6();
+      cleanup7();
+      cleanup8();
+      cleanup9();
+    };
+  }, []);
 
   return (
     <div className="min-h-screen bg-white">
@@ -695,7 +749,7 @@ const AboutPage = () => {
             <Button
               variant="outline"
               className="border-white/40 text-white hover:bg-white/10 rounded-full px-8 py-3 h-auto text-base font-semibold"
-              onClick={() => navigate('/about')}
+              onClick={() => navigate("/about")}
             >
               Talk to Sales
             </Button>

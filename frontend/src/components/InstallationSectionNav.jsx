@@ -1,9 +1,17 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React from "react";
+import { Link } from "react-router-dom";
 import {
-  Code2, Globe, Wrench, Sparkles, Layers, ShoppingBag, Briefcase, Tag, Store,
-} from 'lucide-react';
-import { installationsMenu } from '../data/navigation';
+  Code2,
+  Globe,
+  Wrench,
+  Sparkles,
+  Layers,
+  ShoppingBag,
+  Briefcase,
+  Tag,
+  Store,
+} from "lucide-react";
+import { installationsMenu } from "../data/navigation";
 
 const iconMap = {
   code: Code2,
@@ -19,7 +27,7 @@ const iconMap = {
 
 const InstallationSectionNav = () => {
   const displayInstallations = installationsMenu.slice(0, 5);
-  
+
   return (
     <section className="h-screen bg-gradient-to-b from-white to-amber-50 flex flex-col">
       {/* Top Row - Full Width Header */}

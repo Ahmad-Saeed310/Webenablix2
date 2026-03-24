@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   ArrowRight,
@@ -32,6 +32,19 @@ import {
   RefreshCw,
   Tag,
 } from "lucide-react";
+import {
+  injectSchema,
+  agencyPageSchema,
+  agencyPartnerTiersSchema,
+  agencyPartnerBenefitsSchema,
+  agencyPartnerUseCasesSchema,
+  agencyPartnerProcessSchema,
+  agencyPartnerCommissionSchema,
+  agencyPartnerFaqSchema,
+  agencyPartnerMainSchema,
+  agencyPartnerCtaSchema,
+  agencyFullSchema,
+} from "../utils/schemaMarkup";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import { Button } from "../components/ui/button";
@@ -300,353 +313,407 @@ const FaqItem = ({ q, a }) => {
 
 const AgencyPage = () => {
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const cleanup1 = injectSchema(agencyPageSchema, "agency-page-schema");
+    const cleanup2 = injectSchema(
+      agencyPartnerTiersSchema,
+      "agency-tiers-schema",
+    );
+    const cleanup3 = injectSchema(
+      agencyPartnerBenefitsSchema,
+      "agency-benefits-schema",
+    );
+    const cleanup4 = injectSchema(
+      agencyPartnerUseCasesSchema,
+      "agency-usecases-schema",
+    );
+    const cleanup5 = injectSchema(
+      agencyPartnerProcessSchema,
+      "agency-process-schema",
+    );
+    const cleanup6 = injectSchema(
+      agencyPartnerCommissionSchema,
+      "agency-commission-schema",
+    );
+    const cleanup7 = injectSchema(agencyPartnerFaqSchema, "agency-faq-schema");
+    const cleanup8 = injectSchema(
+      agencyPartnerMainSchema,
+      "agency-main-schema",
+    );
+    const cleanup9 = injectSchema(agencyPartnerCtaSchema, "agency-cta-schema");
+    const cleanup10 = injectSchema(agencyFullSchema, "agency-full-schema");
+
+    return () => {
+      cleanup1();
+      cleanup2();
+      cleanup3();
+      cleanup4();
+      cleanup5();
+      cleanup6();
+      cleanup7();
+      cleanup8();
+      cleanup9();
+      cleanup10();
+    };
+  }, []);
+
   return (
-  <div className="min-h-screen bg-white">
-    <Header />
+    <div className="min-h-screen bg-white">
+      <Header />
 
-    {/* ── Hero ──────────────────────────────────────────────────────────────── */}
-    <section className="relative bg-gradient-to-br from-[#0f2460] via-[#1e3a8a] to-[#2563EB] overflow-hidden pt-24 pb-36">
-      <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute -top-24 -right-24 w-[600px] h-[600px] bg-white/5 rounded-full blur-3xl" />
-        <div className="absolute bottom-0 -left-32 w-[400px] h-[400px] bg-blue-400/10 rounded-full blur-3xl" />
-      </div>
-      <div className="relative max-w-6xl mx-auto px-4 text-center">
-        <div className="inline-flex items-center gap-2 bg-white/10 border border-white/20 text-white text-sm px-4 py-1.5 rounded-full mb-6">
-          <Award className="w-4 h-4 text-yellow-300" />
-          Agency &amp; Reseller Partner Programme
+      {/* ── Hero ──────────────────────────────────────────────────────────────── */}
+      <section className="relative bg-gradient-to-br from-[#0f2460] via-[#1e3a8a] to-[#2563EB] overflow-hidden pt-24 pb-36">
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute -top-24 -right-24 w-[600px] h-[600px] bg-white/5 rounded-full blur-3xl" />
+          <div className="absolute bottom-0 -left-32 w-[400px] h-[400px] bg-blue-400/10 rounded-full blur-3xl" />
         </div>
-        <h1 className="text-4xl md:text-6xl font-bold text-white leading-tight mb-6">
-          Grow your agency with
-          <br />
-          <span className="text-blue-200">accessibility revenue.</span>
-        </h1>
-        <p className="text-white/75 text-xl max-w-2xl mx-auto leading-relaxed mb-10">
-          Earn 20–35% recurring commission, offer white-label accessibility to
-          your clients, and become the compliance experts your market needs.
-        </p>
-        <div className="flex flex-wrap gap-4 justify-center">
-          <Button onClick={() => navigate('/register')} className="bg-white text-[#2563EB] hover:bg-blue-50 rounded-full px-8 py-3 h-auto text-base font-semibold shadow-xl">
-            Apply to Partner <ArrowRight className="w-4 h-4 ml-2" />
-          </Button>
-          <Button
-            onClick={() => navigate('/docs')}
-            variant="outline"
-            className="border-white/40 text-white hover:bg-white/10 rounded-full px-8 py-3 h-auto text-base font-semibold"
-          >
-            Download Partner Guide <ExternalLink className="w-4 h-4 ml-2" />
-          </Button>
-        </div>
-
-        {/* Floating stat cards */}
-        <div className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-px bg-white/10 rounded-2xl overflow-hidden border border-white/10">
-          {[
-            { value: "35%", label: "Max Recurring Commission" },
-            { value: "500+", label: "Active Agency Partners" },
-            { value: "$8,400", label: "Avg Annual Partner Earnings" },
-            { value: "1 day", label: "Application Review Time" },
-          ].map((s) => (
-            <div
-              key={s.label}
-              className="bg-white/5 backdrop-blur px-6 py-7 text-center"
+        <div className="relative max-w-6xl mx-auto px-4 text-center">
+          <div className="inline-flex items-center gap-2 bg-white/10 border border-white/20 text-white text-sm px-4 py-1.5 rounded-full mb-6">
+            <Award className="w-4 h-4 text-yellow-300" />
+            Agency &amp; Reseller Partner Programme
+          </div>
+          <h1 className="text-4xl md:text-6xl font-bold text-white leading-tight mb-6">
+            Grow your agency with
+            <br />
+            <span className="text-blue-200">accessibility revenue.</span>
+          </h1>
+          <p className="text-white/75 text-xl max-w-2xl mx-auto leading-relaxed mb-10">
+            Earn 20–35% recurring commission, offer white-label accessibility to
+            your clients, and become the compliance experts your market needs.
+          </p>
+          <div className="flex flex-wrap gap-4 justify-center">
+            <Button
+              onClick={() => navigate("/register")}
+              className="bg-white text-[#2563EB] hover:bg-blue-50 rounded-full px-8 py-3 h-auto text-base font-semibold shadow-xl"
             >
-              <p className="text-3xl font-bold text-white mb-1">{s.value}</p>
-              <p className="text-white/60 text-sm">{s.label}</p>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
+              Apply to Partner <ArrowRight className="w-4 h-4 ml-2" />
+            </Button>
+            <Button
+              onClick={() => navigate("/docs")}
+              variant="outline"
+              className="border-white/40 text-white hover:bg-white/10 rounded-full px-8 py-3 h-auto text-base font-semibold"
+            >
+              Download Partner Guide <ExternalLink className="w-4 h-4 ml-2" />
+            </Button>
+          </div>
 
-    {/* ── Benefits ──────────────────────────────────────────────────────────── */}
-    <section className="py-20 bg-white">
-      <div className="max-w-7xl mx-auto px-4">
-        <div className="text-center mb-14">
-          <p className="text-[#2563EB] font-semibold text-sm mb-3 uppercase tracking-wide">
-            Why Partner With Us
-          </p>
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-            Everything you need to win client business
-          </h2>
-          <p className="text-gray-500 max-w-xl mx-auto">
-            We've built the programme around what agencies actually asked for —
-            commissions that compound, tools that close deals, and support
-            that's there when you need it.
-          </p>
-        </div>
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {benefits.map((b) => {
-            const IC = b.icon;
-            return (
+          {/* Floating stat cards */}
+          <div className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-px bg-white/10 rounded-2xl overflow-hidden border border-white/10">
+            {[
+              { value: "35%", label: "Max Recurring Commission" },
+              { value: "500+", label: "Active Agency Partners" },
+              { value: "$8,400", label: "Avg Annual Partner Earnings" },
+              { value: "1 day", label: "Application Review Time" },
+            ].map((s) => (
               <div
-                key={b.title}
-                className="bg-gray-50 rounded-2xl p-7 border border-gray-100 hover:border-[#2563EB] hover:shadow-md transition-all"
+                key={s.label}
+                className="bg-white/5 backdrop-blur px-6 py-7 text-center"
               >
-                <div
-                  className={`w-11 h-11 ${b.color} rounded-xl flex items-center justify-center mb-5`}
-                >
-                  <IC className="w-5 h-5 text-white" />
-                </div>
-                <h3 className="font-bold text-gray-900 mb-2">{b.title}</h3>
-                <p className="text-gray-500 text-sm leading-relaxed">
-                  {b.desc}
-                </p>
+                <p className="text-3xl font-bold text-white mb-1">{s.value}</p>
+                <p className="text-white/60 text-sm">{s.label}</p>
               </div>
-            );
-          })}
+            ))}
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
 
-    {/* ── Partner Tiers ──────────────────────────────────────────────────────── */}
-    <section className="py-20 bg-gray-50">
-      <div className="max-w-7xl mx-auto px-4">
-        <div className="text-center mb-14">
-          <p className="text-[#2563EB] font-semibold text-sm mb-3 uppercase tracking-wide">
-            Partner Tiers
-          </p>
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-            Pick your level. Grow into the next.
-          </h2>
-          <p className="text-gray-500 max-w-xl mx-auto">
-            All tiers are free to join. You move up automatically as your
-            referral volume grows.
-          </p>
-        </div>
-        <div className="grid sm:grid-cols-2 xl:grid-cols-4 gap-6">
-          {partnerTiers.map((tier) => {
-            const IC = tier.icon;
-            return (
-              <div
-                key={tier.name}
-                className={`bg-white rounded-2xl border-2 ${tier.color} overflow-hidden flex flex-col`}
-              >
-                {/* Header */}
+      {/* ── Benefits ──────────────────────────────────────────────────────────── */}
+      <section className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="text-center mb-14">
+            <p className="text-[#2563EB] font-semibold text-sm mb-3 uppercase tracking-wide">
+              Why Partner With Us
+            </p>
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+              Everything you need to win client business
+            </h2>
+            <p className="text-gray-500 max-w-xl mx-auto">
+              We've built the programme around what agencies actually asked for
+              — commissions that compound, tools that close deals, and support
+              that's there when you need it.
+            </p>
+          </div>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {benefits.map((b) => {
+              const IC = b.icon;
+              return (
                 <div
-                  className={`${tier.headerBg} px-6 pt-6 pb-5 border-b border-gray-100 relative`}
+                  key={b.title}
+                  className="bg-gray-50 rounded-2xl p-7 border border-gray-100 hover:border-[#2563EB] hover:shadow-md transition-all"
                 >
-                  {tier.badge && (
-                    <span className="absolute top-4 right-4 text-xs font-bold bg-[#2563EB] text-white px-2.5 py-1 rounded-full">
-                      {tier.badge}
-                    </span>
-                  )}
                   <div
-                    className={`w-10 h-10 ${tier.iconBg} rounded-xl flex items-center justify-center mb-3`}
+                    className={`w-11 h-11 ${b.color} rounded-xl flex items-center justify-center mb-5`}
                   >
-                    <IC className={`w-5 h-5 ${tier.iconColor}`} />
+                    <IC className="w-5 h-5 text-white" />
                   </div>
-                  <h3 className="font-bold text-gray-900 text-lg mb-1">
-                    {tier.name}
-                  </h3>
-                  <p className="text-gray-500 text-xs">{tier.requirement}</p>
-                </div>
-                {/* Revenue highlight */}
-                <div className="px-6 py-4 border-b border-gray-50 bg-white">
-                  <p className="text-xs text-gray-400 mb-0.5">Commission</p>
-                  <p className="font-bold text-[#2563EB] text-sm">
-                    {tier.revenue}
-                  </p>
-                </div>
-                {/* Perks */}
-                <div className="px-6 py-5 flex-1">
-                  <ul className="space-y-2.5">
-                    {tier.perks.map((perk, i) => (
-                      <li
-                        key={i}
-                        className={`flex items-start gap-2 text-sm ${i === 0 && perk.startsWith("Everything") ? "text-gray-400 italic" : "text-gray-700"}`}
-                      >
-                        {!(i === 0 && perk.startsWith("Everything")) && (
-                          <Check className="w-4 h-4 text-green-500 flex-shrink-0 mt-0.5" />
-                        )}
-                        <span>{perk}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-                <div className="px-6 pb-6">
-                  <Button onClick={() => navigate('/register')} className="w-full bg-[#2563EB] hover:bg-blue-700 text-white rounded-xl h-10 text-sm font-semibold">
-                    Apply Now
-                  </Button>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-    </section>
-
-    {/* ── Who It's For ──────────────────────────────────────────────────────── */}
-    <section className="py-20 bg-white">
-      <div className="max-w-7xl mx-auto px-4">
-        <div className="text-center mb-14">
-          <p className="text-[#2563EB] font-semibold text-sm mb-3 uppercase tracking-wide">
-            Who Partners With Us
-          </p>
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-            Built for agencies of every kind
-          </h2>
-        </div>
-        <div className="grid sm:grid-cols-2 gap-6">
-          {useCases.map((uc) => {
-            const IC = uc.icon;
-            return (
-              <div
-                key={uc.title}
-                className="flex gap-5 bg-gray-50 rounded-2xl p-7 border border-gray-100 hover:border-[#2563EB] hover:shadow-md transition-all"
-              >
-                <div className="w-12 h-12 bg-[#2563EB]/10 rounded-xl flex items-center justify-center flex-shrink-0">
-                  <IC className="w-6 h-6 text-[#2563EB]" />
-                </div>
-                <div>
-                  <h3 className="font-bold text-gray-900 mb-2">{uc.title}</h3>
-                  <p className="text-gray-500 text-sm leading-relaxed mb-3">
-                    {uc.desc}
-                  </p>
-                  <div className="flex flex-wrap gap-2">
-                    {uc.tags.map((tag) => (
-                      <span
-                        key={tag}
-                        className="text-xs bg-blue-50 text-[#2563EB] font-medium px-2.5 py-1 rounded-full"
-                      >
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-    </section>
-
-    {/* ── How It Works ──────────────────────────────────────────────────────── */}
-    <section className="py-20 bg-gray-50">
-      <div className="max-w-4xl mx-auto px-4">
-        <div className="text-center mb-14">
-          <p className="text-[#2563EB] font-semibold text-sm mb-3 uppercase tracking-wide">
-            Getting Started
-          </p>
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-            Up and running in four steps
-          </h2>
-        </div>
-        <div className="relative">
-          {/* connector line */}
-          <div className="absolute left-7 top-10 bottom-10 w-0.5 bg-gray-200 hidden md:block" />
-          <div className="space-y-8">
-            {steps.map((step) => (
-              <div key={step.num} className="flex gap-6 items-start">
-                <div className="w-14 h-14 bg-[#2563EB] text-white rounded-2xl flex items-center justify-center font-bold text-base flex-shrink-0 z-10 shadow-lg shadow-blue-100">
-                  {step.num}
-                </div>
-                <div className="pt-3">
-                  <h3 className="font-bold text-gray-900 mb-1.5">
-                    {step.title}
-                  </h3>
+                  <h3 className="font-bold text-gray-900 mb-2">{b.title}</h3>
                   <p className="text-gray-500 text-sm leading-relaxed">
-                    {step.desc}
+                    {b.desc}
                   </p>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Partner Tiers ──────────────────────────────────────────────────────── */}
+      <section className="py-20 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="text-center mb-14">
+            <p className="text-[#2563EB] font-semibold text-sm mb-3 uppercase tracking-wide">
+              Partner Tiers
+            </p>
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+              Pick your level. Grow into the next.
+            </h2>
+            <p className="text-gray-500 max-w-xl mx-auto">
+              All tiers are free to join. You move up automatically as your
+              referral volume grows.
+            </p>
+          </div>
+          <div className="grid sm:grid-cols-2 xl:grid-cols-4 gap-6">
+            {partnerTiers.map((tier) => {
+              const IC = tier.icon;
+              return (
+                <div
+                  key={tier.name}
+                  className={`bg-white rounded-2xl border-2 ${tier.color} overflow-hidden flex flex-col`}
+                >
+                  {/* Header */}
+                  <div
+                    className={`${tier.headerBg} px-6 pt-6 pb-5 border-b border-gray-100 relative`}
+                  >
+                    {tier.badge && (
+                      <span className="absolute top-4 right-4 text-xs font-bold bg-[#2563EB] text-white px-2.5 py-1 rounded-full">
+                        {tier.badge}
+                      </span>
+                    )}
+                    <div
+                      className={`w-10 h-10 ${tier.iconBg} rounded-xl flex items-center justify-center mb-3`}
+                    >
+                      <IC className={`w-5 h-5 ${tier.iconColor}`} />
+                    </div>
+                    <h3 className="font-bold text-gray-900 text-lg mb-1">
+                      {tier.name}
+                    </h3>
+                    <p className="text-gray-500 text-xs">{tier.requirement}</p>
+                  </div>
+                  {/* Revenue highlight */}
+                  <div className="px-6 py-4 border-b border-gray-50 bg-white">
+                    <p className="text-xs text-gray-400 mb-0.5">Commission</p>
+                    <p className="font-bold text-[#2563EB] text-sm">
+                      {tier.revenue}
+                    </p>
+                  </div>
+                  {/* Perks */}
+                  <div className="px-6 py-5 flex-1">
+                    <ul className="space-y-2.5">
+                      {tier.perks.map((perk, i) => (
+                        <li
+                          key={i}
+                          className={`flex items-start gap-2 text-sm ${i === 0 && perk.startsWith("Everything") ? "text-gray-400 italic" : "text-gray-700"}`}
+                        >
+                          {!(i === 0 && perk.startsWith("Everything")) && (
+                            <Check className="w-4 h-4 text-green-500 flex-shrink-0 mt-0.5" />
+                          )}
+                          <span>{perk}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                  <div className="px-6 pb-6">
+                    <Button
+                      onClick={() => navigate("/register")}
+                      className="w-full bg-[#2563EB] hover:bg-blue-700 text-white rounded-xl h-10 text-sm font-semibold"
+                    >
+                      Apply Now
+                    </Button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Who It's For ──────────────────────────────────────────────────────── */}
+      <section className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="text-center mb-14">
+            <p className="text-[#2563EB] font-semibold text-sm mb-3 uppercase tracking-wide">
+              Who Partners With Us
+            </p>
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+              Built for agencies of every kind
+            </h2>
+          </div>
+          <div className="grid sm:grid-cols-2 gap-6">
+            {useCases.map((uc) => {
+              const IC = uc.icon;
+              return (
+                <div
+                  key={uc.title}
+                  className="flex gap-5 bg-gray-50 rounded-2xl p-7 border border-gray-100 hover:border-[#2563EB] hover:shadow-md transition-all"
+                >
+                  <div className="w-12 h-12 bg-[#2563EB]/10 rounded-xl flex items-center justify-center flex-shrink-0">
+                    <IC className="w-6 h-6 text-[#2563EB]" />
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-gray-900 mb-2">{uc.title}</h3>
+                    <p className="text-gray-500 text-sm leading-relaxed mb-3">
+                      {uc.desc}
+                    </p>
+                    <div className="flex flex-wrap gap-2">
+                      {uc.tags.map((tag) => (
+                        <span
+                          key={tag}
+                          className="text-xs bg-blue-50 text-[#2563EB] font-medium px-2.5 py-1 rounded-full"
+                        >
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* ── How It Works ──────────────────────────────────────────────────────── */}
+      <section className="py-20 bg-gray-50">
+        <div className="max-w-4xl mx-auto px-4">
+          <div className="text-center mb-14">
+            <p className="text-[#2563EB] font-semibold text-sm mb-3 uppercase tracking-wide">
+              Getting Started
+            </p>
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+              Up and running in four steps
+            </h2>
+          </div>
+          <div className="relative">
+            {/* connector line */}
+            <div className="absolute left-7 top-10 bottom-10 w-0.5 bg-gray-200 hidden md:block" />
+            <div className="space-y-8">
+              {steps.map((step) => (
+                <div key={step.num} className="flex gap-6 items-start">
+                  <div className="w-14 h-14 bg-[#2563EB] text-white rounded-2xl flex items-center justify-center font-bold text-base flex-shrink-0 z-10 shadow-lg shadow-blue-100">
+                    {step.num}
+                  </div>
+                  <div className="pt-3">
+                    <h3 className="font-bold text-gray-900 mb-1.5">
+                      {step.title}
+                    </h3>
+                    <p className="text-gray-500 text-sm leading-relaxed">
+                      {step.desc}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Testimonials ──────────────────────────────────────────────────────── */}
+      <section className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="text-center mb-14">
+            <p className="text-[#2563EB] font-semibold text-sm mb-3 uppercase tracking-wide">
+              Partner Stories
+            </p>
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+              What our partners say
+            </h2>
+          </div>
+          <div className="grid md:grid-cols-3 gap-6">
+            {testimonials.map((t) => (
+              <div
+                key={t.name}
+                className="bg-gray-50 rounded-2xl p-7 border border-gray-100 flex flex-col"
+              >
+                <Quote className="w-8 h-8 text-[#2563EB]/20 mb-4" />
+                <p className="text-gray-700 text-sm leading-relaxed flex-1 mb-6">
+                  "{t.quote}"
+                </p>
+                <div className="flex items-center gap-3">
+                  <div
+                    className={`w-10 h-10 ${t.bg} rounded-xl flex items-center justify-center text-white font-bold text-sm flex-shrink-0`}
+                  >
+                    {t.initials}
+                  </div>
+                  <div>
+                    <p className="font-bold text-gray-900 text-sm">{t.name}</p>
+                    <p className="text-gray-400 text-xs">
+                      {t.role} · {t.company}
+                    </p>
+                  </div>
+                  <span className="ml-auto text-xs font-semibold bg-blue-50 text-[#2563EB] px-2.5 py-1 rounded-full whitespace-nowrap">
+                    {t.tier}
+                  </span>
                 </div>
               </div>
             ))}
           </div>
         </div>
-      </div>
-    </section>
+      </section>
 
-    {/* ── Testimonials ──────────────────────────────────────────────────────── */}
-    <section className="py-20 bg-white">
-      <div className="max-w-7xl mx-auto px-4">
-        <div className="text-center mb-14">
-          <p className="text-[#2563EB] font-semibold text-sm mb-3 uppercase tracking-wide">
-            Partner Stories
-          </p>
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-            What our partners say
-          </h2>
+      {/* ── FAQ ───────────────────────────────────────────────────────────────── */}
+      <section className="py-20 bg-gray-50">
+        <div className="max-w-3xl mx-auto px-4">
+          <div className="text-center mb-12">
+            <p className="text-[#2563EB] font-semibold text-sm mb-3 uppercase tracking-wide">
+              FAQ
+            </p>
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">
+              Partner programme questions
+            </h2>
+          </div>
+          <div className="space-y-3">
+            {faqs.map((faq) => (
+              <FaqItem key={faq.q} {...faq} />
+            ))}
+          </div>
         </div>
-        <div className="grid md:grid-cols-3 gap-6">
-          {testimonials.map((t) => (
-            <div
-              key={t.name}
-              className="bg-gray-50 rounded-2xl p-7 border border-gray-100 flex flex-col"
+      </section>
+
+      {/* ── CTA ───────────────────────────────────────────────────────────────── */}
+      <section className="py-20 bg-gradient-to-r from-[#0f2460] to-[#2563EB]">
+        <div className="max-w-4xl mx-auto px-4 text-center">
+          <Award className="w-12 h-12 text-white/30 mx-auto mb-5" />
+          <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+            Join 500+ agency partners earning with Webenablix
+          </h2>
+          <p className="text-white/70 text-lg mb-10 max-w-xl mx-auto">
+            Apply in 5 minutes. Approved in 1 business day. Start earning
+            recurring commissions from your very first referral.
+          </p>
+          <div className="flex flex-wrap gap-4 justify-center">
+            <Button
+              onClick={() => navigate("/register")}
+              className="bg-white text-[#2563EB] hover:bg-blue-50 rounded-full px-8 py-3 h-auto text-base font-semibold shadow-xl"
             >
-              <Quote className="w-8 h-8 text-[#2563EB]/20 mb-4" />
-              <p className="text-gray-700 text-sm leading-relaxed flex-1 mb-6">
-                "{t.quote}"
-              </p>
-              <div className="flex items-center gap-3">
-                <div
-                  className={`w-10 h-10 ${t.bg} rounded-xl flex items-center justify-center text-white font-bold text-sm flex-shrink-0`}
-                >
-                  {t.initials}
-                </div>
-                <div>
-                  <p className="font-bold text-gray-900 text-sm">{t.name}</p>
-                  <p className="text-gray-400 text-xs">
-                    {t.role} · {t.company}
-                  </p>
-                </div>
-                <span className="ml-auto text-xs font-semibold bg-blue-50 text-[#2563EB] px-2.5 py-1 rounded-full whitespace-nowrap">
-                  {t.tier}
-                </span>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-
-    {/* ── FAQ ───────────────────────────────────────────────────────────────── */}
-    <section className="py-20 bg-gray-50">
-      <div className="max-w-3xl mx-auto px-4">
-        <div className="text-center mb-12">
-          <p className="text-[#2563EB] font-semibold text-sm mb-3 uppercase tracking-wide">
-            FAQ
+              Apply Now — It's Free <ArrowRight className="w-4 h-4 ml-2" />
+            </Button>
+            <Button
+              onClick={() => navigate("/about")}
+              variant="outline"
+              className="border-white/40 text-white hover:bg-white/10 rounded-full px-8 py-3 h-auto text-base font-semibold"
+            >
+              Talk to Partner Team
+            </Button>
+          </div>
+          <p className="text-white/40 text-xs mt-6">
+            No fees · No minimums · No lock-in
           </p>
-          <h2 className="text-3xl font-bold text-gray-900 mb-4">
-            Partner programme questions
-          </h2>
         </div>
-        <div className="space-y-3">
-          {faqs.map((faq) => (
-            <FaqItem key={faq.q} {...faq} />
-          ))}
-        </div>
-      </div>
-    </section>
+      </section>
 
-    {/* ── CTA ───────────────────────────────────────────────────────────────── */}
-    <section className="py-20 bg-gradient-to-r from-[#0f2460] to-[#2563EB]">
-      <div className="max-w-4xl mx-auto px-4 text-center">
-        <Award className="w-12 h-12 text-white/30 mx-auto mb-5" />
-        <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-          Join 500+ agency partners earning with Webenablix
-        </h2>
-        <p className="text-white/70 text-lg mb-10 max-w-xl mx-auto">
-          Apply in 5 minutes. Approved in 1 business day. Start earning
-          recurring commissions from your very first referral.
-        </p>
-        <div className="flex flex-wrap gap-4 justify-center">
-          <Button onClick={() => navigate('/register')} className="bg-white text-[#2563EB] hover:bg-blue-50 rounded-full px-8 py-3 h-auto text-base font-semibold shadow-xl">
-            Apply Now — It's Free <ArrowRight className="w-4 h-4 ml-2" />
-          </Button>
-          <Button
-            onClick={() => navigate('/about')}
-            variant="outline"
-            className="border-white/40 text-white hover:bg-white/10 rounded-full px-8 py-3 h-auto text-base font-semibold"
-          >
-            Talk to Partner Team
-          </Button>
-        </div>
-        <p className="text-white/40 text-xs mt-6">
-          No fees · No minimums · No lock-in
-        </p>
-      </div>
-    </section>
-
-    <Footer />
-  </div>
+      <Footer />
+    </div>
   );
 };
 

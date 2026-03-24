@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   ArrowRight,
@@ -35,6 +35,19 @@ import {
   ScanLine,
   Star,
 } from "lucide-react";
+import {
+  injectSchema,
+  monitorPageMainSchema,
+  monitorServiceFeaturesSchema,
+  monitorServiceOfferingSchema,
+  monitorProcessSchema,
+  monitorStatisticsSchema,
+  monitorBenefitsSchema,
+  monitorFaqSchema,
+  monitorExpertiseSchema,
+  monitorTrustSchema,
+  monitorCtaSchema,
+} from "../utils/schemaMarkup";
 import { Button } from "../components/ui/button";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
@@ -325,6 +338,71 @@ const ExportCard = ({ format, description, icon: Icon, color }) => (
 
 const AccessibilityMonitorPage = () => {
   const navigate = useNavigate();
+
+  useEffect(() => {
+    // Inject main monitor product schema
+    const cleanup1 = injectSchema(monitorPageMainSchema, "monitor-main-schema");
+
+    // Inject service features schema
+    const cleanup2 = injectSchema(
+      monitorServiceFeaturesSchema,
+      "monitor-features-schema",
+    );
+
+    // Inject service offerings schema
+    const cleanup3 = injectSchema(
+      monitorServiceOfferingSchema,
+      "monitor-offering-schema",
+    );
+
+    // Inject process schema
+    const cleanup4 = injectSchema(
+      monitorProcessSchema,
+      "monitor-process-schema",
+    );
+
+    // Inject statistics schema
+    const cleanup5 = injectSchema(
+      monitorStatisticsSchema,
+      "monitor-stats-schema",
+    );
+
+    // Inject benefits schema
+    const cleanup6 = injectSchema(
+      monitorBenefitsSchema,
+      "monitor-benefits-schema",
+    );
+
+    // Inject FAQ schema
+    const cleanup7 = injectSchema(monitorFaqSchema, "monitor-faq-schema");
+
+    // Inject expertise schema
+    const cleanup8 = injectSchema(
+      monitorExpertiseSchema,
+      "monitor-expertise-schema",
+    );
+
+    // Inject trust schema
+    const cleanup9 = injectSchema(monitorTrustSchema, "monitor-trust-schema");
+
+    // Inject CTA schema
+    const cleanup10 = injectSchema(monitorCtaSchema, "monitor-cta-schema");
+
+    // Cleanup all schemas on unmount
+    return () => {
+      cleanup1();
+      cleanup2();
+      cleanup3();
+      cleanup4();
+      cleanup5();
+      cleanup6();
+      cleanup7();
+      cleanup8();
+      cleanup9();
+      cleanup10();
+    };
+  }, []);
+
   return (
     <div className="min-h-screen bg-white">
       <Header />
@@ -356,11 +434,14 @@ const AccessibilityMonitorPage = () => {
                   violation and suggests a fix.
                 </p>
                 <div className="flex flex-wrap gap-4">
-                  <Button onClick={() => navigate('/register')} className="bg-white text-[#2563EB] hover:bg-blue-50 rounded-full px-8 py-4 h-auto font-semibold shadow-lg">
+                  <Button
+                    onClick={() => navigate("/register")}
+                    className="bg-white text-[#2563EB] hover:bg-blue-50 rounded-full px-8 py-4 h-auto font-semibold shadow-lg"
+                  >
                     Start Monitoring Free
                   </Button>
                   <Button
-                    onClick={() => navigate('/products/checker')}
+                    onClick={() => navigate("/products/checker")}
                     variant="outline"
                     className="border-white text-white hover:bg-white/10 rounded-full px-8 py-4 h-auto font-semibold"
                   >
@@ -637,7 +718,10 @@ const AccessibilityMonitorPage = () => {
                     </div>
                   ))}
                 </div>
-                <Button onClick={() => navigate('/products/audit')} className="w-full mt-6 bg-[#2563EB] hover:bg-blue-700 text-white rounded-xl py-3 h-auto font-semibold">
+                <Button
+                  onClick={() => navigate("/products/audit")}
+                  className="w-full mt-6 bg-[#2563EB] hover:bg-blue-700 text-white rounded-xl py-3 h-auto font-semibold"
+                >
                   <Download className="w-4 h-4 mr-2" /> Download Sample PDF
                 </Button>
               </div>
@@ -800,11 +884,14 @@ const AccessibilityMonitorPage = () => {
               litigation.
             </p>
             <div className="flex flex-wrap gap-4 justify-center">
-              <Button onClick={() => navigate('/register')} className="bg-white text-[#2563EB] hover:bg-blue-50 rounded-full px-10 py-4 h-auto font-semibold shadow-lg">
+              <Button
+                onClick={() => navigate("/register")}
+                className="bg-white text-[#2563EB] hover:bg-blue-50 rounded-full px-10 py-4 h-auto font-semibold shadow-lg"
+              >
                 Start Free Trial <ArrowRight className="w-5 h-5 ml-2" />
               </Button>
               <Button
-                onClick={() => navigate('/products/checker')}
+                onClick={() => navigate("/products/checker")}
                 variant="outline"
                 className="border-white text-white hover:bg-white/10 rounded-full px-10 py-4 h-auto font-semibold"
               >

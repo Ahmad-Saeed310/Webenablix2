@@ -1,22 +1,27 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Check, ShieldCheck, Search } from 'lucide-react';
-import { Button } from './ui/button';
-import { Input } from './ui/input';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { Check, ShieldCheck, Search } from "lucide-react";
+import { Button } from "./ui/button";
+import { Input } from "./ui/input";
 
+/**
+ * HeroSection Component
+ * Props JSON Schema: {"type":"object","properties":{"onScanRequest":{"type":"function"}},"required":["onScanRequest"]}
+ * State JSON Schema: {"type":"object","properties":{"url":{"type":"string"}}}
+ */
 const HeroSection = ({ onScanRequest }) => {
-  const [url, setUrl] = useState('');
+  const [url, setUrl] = useState("");
   const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!url.trim()) return;
     let normalized = url.trim();
-    if (!/^https?:\/\//i.test(normalized)) normalized = 'https://' + normalized;
+    if (!/^https?:\/\//i.test(normalized)) normalized = "https://" + normalized;
     if (onScanRequest) onScanRequest(normalized);
     // Smooth-scroll to the audit section
-    const el = document.getElementById('audit-section');
-    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    const el = document.getElementById("audit-section");
+    if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
   return (
@@ -32,28 +37,45 @@ const HeroSection = ({ onScanRequest }) => {
         <div className="text-center">
           <div className="inline-flex items-center gap-2 bg-[#1e3a5f]/40 backdrop-blur-sm text-white px-5 py-2.5 rounded-full mb-8">
             <div className="w-7 h-7 bg-white/20 rounded-full flex items-center justify-center">
-              <svg viewBox="0 0 24 24" className="w-4 h-4 text-white" fill="none" stroke="currentColor" strokeWidth="2">
+              <svg
+                viewBox="0 0 24 24"
+                className="w-4 h-4 text-white"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+              >
                 <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z" />
                 <path d="M8 12l2 2 4-4" />
               </svg>
             </div>
-            <span className="text-sm font-medium">Navigate ADA & WCAG compliance</span>
+            <span className="text-sm font-medium">
+              Navigate ADA & WCAG compliance
+            </span>
           </div>
 
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight">
-            Ultimate Web Accessibility<br />Compliance Tool
+            Ultimate Web Accessibility
+            <br />
+            Compliance Tool
           </h1>
 
           <p className="text-lg md:text-xl text-white/90 mb-10 max-w-2xl mx-auto">
-            Navigate ADA & WCAG Compliance with Webenablix's Accessibility Solutions
+            Navigate ADA & WCAG Compliance with Webenablix's Accessibility
+            Solutions
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 flex-wrap">
-            <Button onClick={() => navigate('/products/checker')} className="bg-white text-[#2563EB] hover:bg-gray-100 px-8 py-4 rounded-full text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 h-auto">
+            <Button
+              onClick={() => navigate("/products/checker")}
+              className="bg-white text-[#2563EB] hover:bg-gray-100 px-8 py-4 rounded-full text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 h-auto"
+            >
               Enable Accessibility Today
             </Button>
 
-            <form onSubmit={handleSubmit} className="flex items-center gap-2 bg-white/15 backdrop-blur-sm rounded-full px-2 py-2 shadow-lg border border-white/20">
+            <form
+              onSubmit={handleSubmit}
+              className="flex items-center gap-2 bg-white/15 backdrop-blur-sm rounded-full px-2 py-2 shadow-lg border border-white/20"
+            >
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/60 pointer-events-none" />
                 <Input
@@ -82,7 +104,9 @@ const HeroSection = ({ onScanRequest }) => {
               </div>
               <span className="text-gray-500 text-sm">Check compliance</span>
             </div>
-            <p className="text-gray-600 text-sm">Your website comply with WCAG</p>
+            <p className="text-gray-600 text-sm">
+              Your website comply with WCAG
+            </p>
           </div>
 
           <div className="bg-white/95 backdrop-blur-sm rounded-2xl p-6 shadow-xl">
@@ -93,7 +117,9 @@ const HeroSection = ({ onScanRequest }) => {
                 </div>
                 <div>
                   <span className="text-gray-500 text-xs">Webenablix</span>
-                  <p className="font-semibold text-gray-800">Accessibility Score</p>
+                  <p className="font-semibold text-gray-800">
+                    Accessibility Score
+                  </p>
                 </div>
               </div>
             </div>
@@ -112,7 +138,9 @@ const HeroSection = ({ onScanRequest }) => {
             </div>
             <div className="flex items-center gap-2 text-emerald-600">
               <Check className="w-5 h-5" />
-              <span className="text-sm">Your website is safe against any legal violation.</span>
+              <span className="text-sm">
+                Your website is safe against any legal violation.
+              </span>
             </div>
           </div>
         </div>

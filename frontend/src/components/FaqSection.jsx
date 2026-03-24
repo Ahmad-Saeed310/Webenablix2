@@ -1,16 +1,24 @@
-import React, { useState } from 'react';
-import { ChevronDown } from 'lucide-react';
+import React, { useState } from "react";
+import { ChevronDown } from "lucide-react";
 
+/**
+ * FaqSection Component
+ * Props JSON Schema: {"type":"object","properties":{},"description":"No required props"}
+ * State Schema: {"type":"object","properties":{"openIndex":{"type":"number","minimum":0,"maximum":5}}}
+ * FAQ Items Schema: {"type":"array","minItems":6,"items":{"type":"object","properties":{"question":{"type":"string"},"answer":{"type":"string"}},"required":["question","answer"]}}
+ */
 const FaqItem = ({ question, answer, isOpen, onClick }) => (
   <div className="border border-gray-200 rounded-lg overflow-hidden hover:border-[#2563EB] transition-colors">
     <button
       onClick={onClick}
       className="w-full px-6 py-5 flex items-center justify-between bg-white hover:bg-gray-50 transition-colors"
     >
-      <h3 className="text-lg font-semibold text-gray-900 text-left">{question}</h3>
+      <h3 className="text-lg font-semibold text-gray-900 text-left">
+        {question}
+      </h3>
       <ChevronDown
         className={`w-5 h-5 text-[#2563EB] flex-shrink-0 transition-transform duration-300 ${
-          isOpen ? 'rotate-180' : ''
+          isOpen ? "rotate-180" : ""
         }`}
       />
     </button>
@@ -27,34 +35,34 @@ const FaqSection = () => {
 
   const faqs = [
     {
-      question: 'What is Webenablix?',
+      question: "What is Webenablix?",
       answer:
-        'Webenablix is an AI-powered accessibility platform that automatically scans, monitors, and fixes web accessibility issues. It helps websites comply with WCAG 2.1, WCAG 2.2, and ADA standards, making digital content accessible to everyone, including people with disabilities.',
+        "Webenablix is an AI-powered accessibility platform that automatically scans, monitors, and fixes web accessibility issues. It helps websites comply with WCAG 2.1, WCAG 2.2, and ADA standards, making digital content accessible to everyone, including people with disabilities.",
     },
     {
-      question: 'How does Webenablix work?',
+      question: "How does Webenablix work?",
       answer:
-        'Webenablix uses advanced AI and machine learning algorithms to scan your website and identify accessibility issues. Our widget can be embedded with a single line of code, providing users with accessibility features like text resizing, contrast adjustment, focus enhancement, and more.',
+        "Webenablix uses advanced AI and machine learning algorithms to scan your website and identify accessibility issues. Our widget can be embedded with a single line of code, providing users with accessibility features like text resizing, contrast adjustment, focus enhancement, and more.",
     },
     {
-      question: 'What accessibility standards does Webenablix support?',
+      question: "What accessibility standards does Webenablix support?",
       answer:
-        'We support WCAG 2.1 Level AA, WCAG 2.2, Section 508 of the Americans with Disabilities Act (ADA), and EN 301 549. Our continuous updates ensure you remain compliant with the latest accessibility standards.',
+        "We support WCAG 2.1 Level AA, WCAG 2.2, Section 508 of the Americans with Disabilities Act (ADA), and EN 301 549. Our continuous updates ensure you remain compliant with the latest accessibility standards.",
     },
     {
-      question: 'How long does it take to implement Webenablix?',
+      question: "How long does it take to implement Webenablix?",
       answer:
-        'Implementation is quick and easy. For most websites, you can add Webenablix in under 5 minutes by embedding a single line of JavaScript code. We also provide dedicated support for more complex implementations.',
+        "Implementation is quick and easy. For most websites, you can add Webenablix in under 5 minutes by embedding a single line of JavaScript code. We also provide dedicated support for more complex implementations.",
     },
     {
-      question: 'Does Webenablix require coding knowledge to install?',
+      question: "Does Webenablix require coding knowledge to install?",
       answer:
-        'No, Webenablix is designed to be non-technical. You can install it without any coding knowledge. We provide step-by-step guides for popular platforms like WordPress, Shopify, Wix, and more. For custom implementations, our team is always available to help.',
+        "No, Webenablix is designed to be non-technical. You can install it without any coding knowledge. We provide step-by-step guides for popular platforms like WordPress, Shopify, Wix, and more. For custom implementations, our team is always available to help.",
     },
     {
-      question: 'Can I customize the accessibility widget?',
+      question: "Can I customize the accessibility widget?",
       answer:
-        'Yes, you can fully customize the widget to match your brand. Customize colors, size, position, language, and which accessibility features are available. The widget supports 27+ languages out of the box.',
+        "Yes, you can fully customize the widget to match your brand. Customize colors, size, position, language, and which accessibility features are available. The widget supports 27+ languages out of the box.",
     },
     // {
     //   question: 'What is the cost of Webenablix?',

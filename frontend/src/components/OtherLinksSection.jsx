@@ -1,49 +1,47 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import {
-  BookOpen, Zap, Users, PenTool, Briefcase,
-} from 'lucide-react';
+import React from "react";
+import { Link } from "react-router-dom";
+import { BookOpen, Zap, Users, PenTool, Briefcase } from "lucide-react";
 
 const otherLinks = [
   {
-    name: 'Documentation',
-    href: '/docs',
+    name: "Documentation",
+    href: "/docs",
     icon: BookOpen,
-    color: 'bg-blue-500/20',
-    hoverColor: 'group-hover:bg-blue-500/40',
-    iconColor: 'text-blue-300',
+    color: "bg-blue-500/20",
+    hoverColor: "group-hover:bg-blue-500/40",
+    iconColor: "text-blue-300",
   },
   {
-    name: 'Pricing',
-    href: '/pricing',
+    name: "Pricing",
+    href: "/pricing",
     icon: Zap,
-    color: 'bg-yellow-500/20',
-    hoverColor: 'group-hover:bg-yellow-500/40',
-    iconColor: 'text-yellow-300',
+    color: "bg-yellow-500/20",
+    hoverColor: "group-hover:bg-yellow-500/40",
+    iconColor: "text-yellow-300",
   },
   {
-    name: 'About Us',
-    href: '/about',
+    name: "About Us",
+    href: "/about",
     icon: Users,
-    color: 'bg-green-500/20',
-    hoverColor: 'group-hover:bg-green-500/40',
-    iconColor: 'text-green-300',
+    color: "bg-green-500/20",
+    hoverColor: "group-hover:bg-green-500/40",
+    iconColor: "text-green-300",
   },
   {
-    name: 'Blog',
-    href: '/blogs',
+    name: "Blog",
+    href: "/blogs",
     icon: PenTool,
-    color: 'bg-pink-500/20',
-    hoverColor: 'group-hover:bg-pink-500/40',
-    iconColor: 'text-pink-300',
+    color: "bg-pink-500/20",
+    hoverColor: "group-hover:bg-pink-500/40",
+    iconColor: "text-pink-300",
   },
   {
-    name: 'Agency',
-    href: '/agency',
+    name: "Agency",
+    href: "/agency",
     icon: Briefcase,
-    color: 'bg-purple-500/20',
-    hoverColor: 'group-hover:bg-purple-500/40',
-    iconColor: 'text-purple-300',
+    color: "bg-purple-500/20",
+    hoverColor: "group-hover:bg-purple-500/40",
+    iconColor: "text-purple-300",
   },
 ];
 
@@ -89,12 +87,15 @@ const OtherLinksSection = () => {
                   to={link.href}
                   className="group flex items-center gap-6 p-6 bg-slate-700/40 backdrop-blur-sm border border-slate-600 hover:border-white/30 rounded-2xl transition-all duration-300 hover:bg-slate-700/60"
                 >
-                  <div className={`flex-shrink-0 p-4 ${link.color} ${link.hoverColor} rounded-xl transition-all`}>
+                  <div
+                    className={`flex-shrink-0 p-4 ${link.color} ${link.hoverColor} rounded-xl transition-all`}
+                  >
                     <Icon className={`w-8 h-8 ${link.iconColor}`} />
                   </div>
                   <div className="flex-1">
                     <p className="text-sm text-slate-300">
-                      Explore our comprehensive {link.name.toLowerCase()} section
+                      Explore our comprehensive {link.name.toLowerCase()}{" "}
+                      section
                     </p>
                   </div>
                 </Link>

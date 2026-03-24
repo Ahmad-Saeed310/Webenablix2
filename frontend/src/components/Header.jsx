@@ -1,20 +1,58 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { 
-  Search, User, Menu, X, MapPin, ChevronDown, ChevronRight, LayoutDashboard, LogOut,
-  Package, Building2, Wrench,
-  Shield, Settings, Monitor, BarChart3, Zap,
-  Landmark, Wallet, GraduationCap, ShoppingBag, Cpu, HeartPulse, Car, Home, Users, Film, BadgeCheck,
-  Code2, Globe, Sparkles, Layers, Briefcase, Tag, Store,
-} from 'lucide-react';
-import { Button } from './ui/button';
-import { productsMenu, industriesMenu, installationsMenu } from '../data/navigation';
+import React, { useState, useRef, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import {
+  Search,
+  User,
+  Menu,
+  X,
+  MapPin,
+  ChevronDown,
+  ChevronRight,
+  LayoutDashboard,
+  LogOut,
+  Package,
+  Building2,
+  Wrench,
+  Shield,
+  Settings,
+  Monitor,
+  BarChart3,
+  Zap,
+  Landmark,
+  Wallet,
+  GraduationCap,
+  ShoppingBag,
+  Cpu,
+  HeartPulse,
+  Car,
+  Home,
+  Users,
+  Film,
+  BadgeCheck,
+  Code2,
+  Globe,
+  Sparkles,
+  Layers,
+  Briefcase,
+  Tag,
+  Store,
+} from "lucide-react";
+import { Button } from "./ui/button";
+import {
+  productsMenu,
+  industriesMenu,
+  installationsMenu,
+} from "../data/navigation";
 
 // Read auth from localStorage
 const getStoredUser = () => {
-  try { return JSON.parse(localStorage.getItem('webenablix_user')); } catch { return null; }
+  try {
+    return JSON.parse(localStorage.getItem("webenablix_user"));
+  } catch {
+    return null;
+  }
 };
-const getStoredToken = () => localStorage.getItem('webenablix_token');
+const getStoredToken = () => localStorage.getItem("webenablix_token");
 
 const DropdownMenu = ({ items, isOpen, onClose, type }) => {
   if (!isOpen) return null;
@@ -54,7 +92,12 @@ const DropdownMenu = ({ items, isOpen, onClose, type }) => {
     },
   };
 
-  const fallbackIcon = type === 'industries' ? Building2 : type === 'installations' ? Wrench : Package;
+  const fallbackIcon =
+    type === "industries"
+      ? Building2
+      : type === "installations"
+        ? Wrench
+        : Package;
 
   const getItemIcon = (item) => {
     const byType = itemIconMap[type] || {};
@@ -62,39 +105,55 @@ const DropdownMenu = ({ items, isOpen, onClose, type }) => {
   };
 
   const getColumns = () => {
-    if (type === 'industries') return 'grid-cols-2 lg:grid-cols-3';
-    if (type === 'installations') return 'grid-cols-2 lg:grid-cols-4';
-    return 'grid-cols-1';
+    if (type === "industries") return "grid-cols-2 lg:grid-cols-3";
+    if (type === "installations") return "grid-cols-2 lg:grid-cols-4";
+    return "grid-cols-1";
   };
 
   return (
-    <div className="absolute top-full left-0 mt-2 bg-white rounded-2xl shadow-2xl border border-gray-100 p-4 z-50 min-w-[400px]" style={{ maxWidth: type === 'installations' ? '700px' : type === 'industries' ? '600px' : '350px' }}>
+    <div
+      className="absolute top-full left-0 mt-2 bg-white rounded-2xl shadow-2xl border border-gray-100 p-4 z-50 min-w-[400px]"
+      style={{
+        maxWidth:
+          type === "installations"
+            ? "700px"
+            : type === "industries"
+              ? "600px"
+              : "350px",
+      }}
+    >
       <div className={`grid ${getColumns()} gap-2`}>
-        {items.slice(0, 12).map((item, idx) => (
+        {items.slice(0, 12).map((item, idx) =>
           (() => {
             const ItemIcon = getItemIcon(item);
             return (
-          <Link
-            key={`dropdown-${type}-${idx}`}
-            to={item.href}
-            onClick={onClose}
-            className="flex items-start justify-between gap-3 p-3 rounded-xl hover:bg-gray-50 transition-colors group"
-          >
-            <div className="flex-1">
-              <div className="flex items-center gap-2">
-                <ItemIcon className="w-3.5 h-3.5 text-gray-400 group-hover:text-[#2563EB] transition-colors shrink-0" />
-                <span className="font-medium text-gray-800 group-hover:text-[#2563EB] text-sm">{item.name}</span>
-                {item.isNew && (
-                  <span className="px-2 py-0.5 bg-emerald-100 text-emerald-700 text-xs rounded-full font-medium">NEW</span>
-                )}
-              </div>
-              <p className="text-xs text-gray-500 mt-1 line-clamp-2">{item.description}</p>
-            </div>
-            <ChevronRight className="w-4 h-4 text-gray-300 group-hover:text-[#2563EB] mt-0.5 transition-colors" />
-          </Link>
+              <Link
+                key={`dropdown-${type}-${idx}`}
+                to={item.href}
+                onClick={onClose}
+                className="flex items-start justify-between gap-3 p-3 rounded-xl hover:bg-gray-50 transition-colors group"
+              >
+                <div className="flex-1">
+                  <div className="flex items-center gap-2">
+                    <ItemIcon className="w-3.5 h-3.5 text-gray-400 group-hover:text-[#2563EB] transition-colors shrink-0" />
+                    <span className="font-medium text-gray-800 group-hover:text-[#2563EB] text-sm">
+                      {item.name}
+                    </span>
+                    {item.isNew && (
+                      <span className="px-2 py-0.5 bg-emerald-100 text-emerald-700 text-xs rounded-full font-medium">
+                        NEW
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-xs text-gray-500 mt-1 line-clamp-2">
+                    {item.description}
+                  </p>
+                </div>
+                <ChevronRight className="w-4 h-4 text-gray-300 group-hover:text-[#2563EB] mt-0.5 transition-colors" />
+              </Link>
             );
-          })()
-        ))}
+          })(),
+        )}
       </div>
     </div>
   );
@@ -110,8 +169,8 @@ const NavItem = ({ label, items, type, icon: Icon }) => {
         setIsOpen(false);
       }
     };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   return (
@@ -122,9 +181,16 @@ const NavItem = ({ label, items, type, icon: Icon }) => {
       >
         {Icon && <Icon className="w-4 h-4" />}
         {label}
-        <ChevronDown className={`w-4 h-4 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+        <ChevronDown
+          className={`w-4 h-4 transition-transform ${isOpen ? "rotate-180" : ""}`}
+        />
       </button>
-      <DropdownMenu items={items} isOpen={isOpen} onClose={() => setIsOpen(false)} type={type} />
+      <DropdownMenu
+        items={items}
+        isOpen={isOpen}
+        onClose={() => setIsOpen(false)}
+        type={type}
+      />
     </div>
   );
 };
@@ -132,7 +198,9 @@ const NavItem = ({ label, items, type, icon: Icon }) => {
 const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [showBanner, setShowBanner] = useState(true);
-  const [authUser, setAuthUser] = useState(getStoredToken() ? getStoredUser() : null);
+  const [authUser, setAuthUser] = useState(
+    getStoredToken() ? getStoredUser() : null,
+  );
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const userMenuRef = useRef(null);
   const navigate = useNavigate();
@@ -140,11 +208,11 @@ const Header = () => {
   // Sync auth state when localStorage changes (login/logout from other tabs or same page)
   useEffect(() => {
     const sync = () => setAuthUser(getStoredToken() ? getStoredUser() : null);
-    window.addEventListener('storage', sync);
-    window.addEventListener('webenablix-auth', sync);
+    window.addEventListener("storage", sync);
+    window.addEventListener("webenablix-auth", sync);
     return () => {
-      window.removeEventListener('storage', sync);
-      window.removeEventListener('webenablix-auth', sync);
+      window.removeEventListener("storage", sync);
+      window.removeEventListener("webenablix-auth", sync);
     };
   }, []);
 
@@ -155,29 +223,34 @@ const Header = () => {
         setUserMenuOpen(false);
       }
     };
-    document.addEventListener('mousedown', handler);
-    return () => document.removeEventListener('mousedown', handler);
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
   }, []);
 
   const handleLogout = () => {
-    localStorage.removeItem('webenablix_token');
-    localStorage.removeItem('webenablix_user');
+    localStorage.removeItem("webenablix_token");
+    localStorage.removeItem("webenablix_user");
     setAuthUser(null);
     setUserMenuOpen(false);
-    window.dispatchEvent(new Event('webenablix-auth'));
-    navigate('/');
+    window.dispatchEvent(new Event("webenablix-auth"));
+    navigate("/");
   };
 
   const initials = authUser?.name
-    ? authUser.name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase()
-    : 'U';
+    ? authUser.name
+        .split(" ")
+        .map((w) => w[0])
+        .join("")
+        .slice(0, 2)
+        .toUpperCase()
+    : "U";
 
   const simpleNavItems = [
-    { name: 'Docs', href: '/docs' },
-    { name: 'Pricing', href: '/pricing' },
-    { name: 'About us', href: '/about' },
-    { name: 'Blogs', href: '/blogs' },
-    { name: 'Agency', href: '/agency' }
+    { name: "Docs", href: "/docs" },
+    { name: "Pricing", href: "/pricing" },
+    { name: "About us", href: "/about" },
+    { name: "Blogs", href: "/blogs" },
+    { name: "Agency", href: "/agency" },
   ];
 
   return (
@@ -185,10 +258,16 @@ const Header = () => {
       {showBanner && (
         <div className="bg-[#2563EB] text-white py-2.5 px-4 text-center text-sm relative">
           <span>Enhance accessibility audits & fixes with Webenablix AI</span>
-          <button className="ml-4 px-4 py-1 bg-white text-[#2563EB] rounded-full text-sm font-medium hover:bg-gray-100 transition-colors" onClick={() => navigate('/products/checker')}>
+          <button
+            className="ml-4 px-4 py-1 bg-white text-[#2563EB] rounded-full text-sm font-medium hover:bg-gray-100 transition-colors"
+            onClick={() => navigate("/products/checker")}
+          >
             Try Free Scan
           </button>
-          <button onClick={() => setShowBanner(false)} className="absolute right-4 top-1/2 -translate-y-1/2 text-white/70 hover:text-white">
+          <button
+            onClick={() => setShowBanner(false)}
+            className="absolute right-4 top-1/2 -translate-y-1/2 text-white/70 hover:text-white"
+          >
             <X size={16} />
           </button>
         </div>
@@ -200,20 +279,47 @@ const Header = () => {
             <nav className="bg-white rounded-full px-6 py-2.5 flex items-center justify-between shadow-lg">
               <Link to="/" className="flex items-center gap-2">
                 <div className="w-8 h-8 bg-[#2563EB] rounded-lg flex items-center justify-center">
-                  <svg viewBox="0 0 24 24" className="w-5 h-5 text-white" fill="none" stroke="currentColor" strokeWidth="2">
+                  <svg
+                    viewBox="0 0 24 24"
+                    className="w-5 h-5 text-white"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                  >
                     <circle cx="12" cy="12" r="10" />
                     <path d="M8 12l2 2 4-4" />
                   </svg>
                 </div>
-                <span className="text-xl font-bold text-[#1e293b]">Webenablix</span>
+                <span className="text-xl font-bold text-[#1e293b]">
+                  Webenablix
+                </span>
               </Link>
 
               <div className="hidden lg:flex items-center gap-1">
-                <NavItem label="Products" items={productsMenu} type="products" icon={Package} />
-                <NavItem label="Industries" items={industriesMenu} type="industries" icon={Building2} />
-                <NavItem label="Installation" items={installationsMenu} type="installations" icon={Wrench} />
+                <NavItem
+                  label="Products"
+                  items={productsMenu}
+                  type="products"
+                  icon={Package}
+                />
+                <NavItem
+                  label="Industries"
+                  items={industriesMenu}
+                  type="industries"
+                  icon={Building2}
+                />
+                <NavItem
+                  label="Installation"
+                  items={installationsMenu}
+                  type="installations"
+                  icon={Wrench}
+                />
                 {simpleNavItems.map((item) => (
-                  <Link key={item.name} to={item.href} className="px-3 py-2 text-sm text-gray-600 hover:text-[#2563EB] transition-colors font-medium">
+                  <Link
+                    key={item.name}
+                    to={item.href}
+                    className="px-3 py-2 text-sm text-gray-600 hover:text-[#2563EB] transition-colors font-medium"
+                  >
                     {item.name}
                   </Link>
                 ))}
@@ -233,22 +339,41 @@ const Header = () => {
                       onClick={() => setUserMenuOpen(!userMenuOpen)}
                       className="flex items-center gap-2 bg-[#2563EB] hover:bg-[#1d4ed8] text-white rounded-full pl-2 pr-4 py-1.5 text-sm font-medium transition-colors"
                     >
-                      <span className="w-7 h-7 rounded-full bg-white/20 flex items-center justify-center text-xs font-bold">{initials}</span>
-                      <span className="hidden sm:inline max-w-[100px] truncate">{authUser.name?.split(' ')[0]}</span>
-                      <ChevronDown size={14} className={`transition-transform ${userMenuOpen ? 'rotate-180' : ''}`} />
+                      <span className="w-7 h-7 rounded-full bg-white/20 flex items-center justify-center text-xs font-bold">
+                        {initials}
+                      </span>
+                      <span className="hidden sm:inline max-w-[100px] truncate">
+                        {authUser.name?.split(" ")[0]}
+                      </span>
+                      <ChevronDown
+                        size={14}
+                        className={`transition-transform ${userMenuOpen ? "rotate-180" : ""}`}
+                      />
                     </button>
                     {userMenuOpen && (
                       <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-xl border border-gray-100 py-1 z-50">
                         <div className="px-4 py-2 border-b border-gray-100">
-                          <p className="text-sm font-semibold text-gray-800 truncate">{authUser.name}</p>
-                          <p className="text-xs text-gray-400 truncate">{authUser.email}</p>
-                          <span className="mt-1 inline-block px-2 py-0.5 bg-blue-100 text-blue-700 text-xs rounded-full capitalize">{authUser.plan || 'Free'}</span>
+                          <p className="text-sm font-semibold text-gray-800 truncate">
+                            {authUser.name}
+                          </p>
+                          <p className="text-xs text-gray-400 truncate">
+                            {authUser.email}
+                          </p>
+                          <span className="mt-1 inline-block px-2 py-0.5 bg-blue-100 text-blue-700 text-xs rounded-full capitalize">
+                            {authUser.plan || "Free"}
+                          </span>
                         </div>
                         <button
-                          onClick={() => { setUserMenuOpen(false); navigate('/dashboard'); }}
+                          onClick={() => {
+                            setUserMenuOpen(false);
+                            navigate("/dashboard");
+                          }}
                           className="w-full flex items-center gap-2 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
                         >
-                          <LayoutDashboard size={15} className="text-blue-500" />
+                          <LayoutDashboard
+                            size={15}
+                            className="text-blue-500"
+                          />
                           My Dashboard
                         </button>
                         <button
@@ -262,13 +387,19 @@ const Header = () => {
                     )}
                   </div>
                 ) : (
-                  <Button onClick={() => navigate('/login')} className="bg-[#2563EB] hover:bg-[#1d4ed8] text-white rounded-full px-5 py-2 flex items-center gap-2 text-sm font-medium">
+                  <Button
+                    onClick={() => navigate("/login")}
+                    className="bg-[#2563EB] hover:bg-[#1d4ed8] text-white rounded-full px-5 py-2 flex items-center gap-2 text-sm font-medium"
+                  >
                     <User size={16} />
                     <span className="hidden sm:inline">Login/Signup</span>
                   </Button>
                 )}
 
-                <button className="lg:hidden p-2 text-gray-500" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
+                <button
+                  className="lg:hidden p-2 text-gray-500"
+                  onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                >
                   {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
                 </button>
               </div>
@@ -280,24 +411,43 @@ const Header = () => {
           <div className="lg:hidden bg-white border-b shadow-lg max-h-[70vh] overflow-y-auto">
             <div className="px-4 py-4 space-y-4">
               <div>
-                <p className="text-xs font-semibold text-gray-400 uppercase mb-2 px-4">Products</p>
+                <p className="text-xs font-semibold text-gray-400 uppercase mb-2 px-4">
+                  Products
+                </p>
                 {productsMenu.map((item, idx) => (
-                  <Link key={`mob-prod-${idx}`} to={item.href} className="block px-4 py-2 text-gray-600 hover:bg-gray-50 rounded-lg" onClick={() => setMobileMenuOpen(false)}>
+                  <Link
+                    key={`mob-prod-${idx}`}
+                    to={item.href}
+                    className="block px-4 py-2 text-gray-600 hover:bg-gray-50 rounded-lg"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
                     {item.name}
                   </Link>
                 ))}
               </div>
               <div>
-                <p className="text-xs font-semibold text-gray-400 uppercase mb-2 px-4">Industries</p>
+                <p className="text-xs font-semibold text-gray-400 uppercase mb-2 px-4">
+                  Industries
+                </p>
                 {industriesMenu.slice(0, 6).map((item, idx) => (
-                  <Link key={`mob-ind-${idx}`} to={item.href} className="block px-4 py-2 text-gray-600 hover:bg-gray-50 rounded-lg" onClick={() => setMobileMenuOpen(false)}>
+                  <Link
+                    key={`mob-ind-${idx}`}
+                    to={item.href}
+                    className="block px-4 py-2 text-gray-600 hover:bg-gray-50 rounded-lg"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
                     {item.name}
                   </Link>
                 ))}
               </div>
               <div className="border-t pt-4">
                 {simpleNavItems.map((item, idx) => (
-                  <Link key={`mob-nav-${idx}`} to={item.href} className="block px-4 py-2 text-gray-600 hover:bg-gray-50 rounded-lg" onClick={() => setMobileMenuOpen(false)}>
+                  <Link
+                    key={`mob-nav-${idx}`}
+                    to={item.href}
+                    className="block px-4 py-2 text-gray-600 hover:bg-gray-50 rounded-lg"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
                     {item.name}
                   </Link>
                 ))}

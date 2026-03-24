@@ -1,9 +1,14 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React from "react";
+import { Link } from "react-router-dom";
 import {
-  Search, Zap, Shield, Settings, Monitor, BarChart3,
-} from 'lucide-react';
-import { productsMenu } from '../data/navigation';
+  Search,
+  Zap,
+  Shield,
+  Settings,
+  Monitor,
+  BarChart3,
+} from "lucide-react";
+import { productsMenu } from "../data/navigation";
 
 const iconMap = {
   search: Search,

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   ArrowRight,
   BookOpen,
@@ -30,6 +30,20 @@ import {
   Users,
   HelpCircle,
 } from "lucide-react";
+import {
+  injectSchema,
+  docsPageSchema,
+  docsGettingStartedGuideSchema,
+  docsWidgetConfigurationSchema,
+  docsRestApiReferenceSchema,
+  docsMonitorGuideSchema,
+  docsIntegrationsSchema,
+  docsComplianceStandardsSchema,
+  docsSidebarSectionsSchema,
+  docsCodeExamplesSchema,
+  docsApiAuthenticationSchema,
+  docsFaqSchema,
+} from "../utils/schemaMarkup";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import { Button } from "../components/ui/button";
@@ -1185,6 +1199,61 @@ const DocsPage = () => {
     Reference: false,
   });
   const [search, setSearch] = useState("");
+
+  useEffect(() => {
+    const cleanup1 = injectSchema(docsPageSchema, "docs-page-schema");
+    const cleanup2 = injectSchema(
+      docsGettingStartedGuideSchema,
+      "docs-getting-started-schema",
+    );
+    const cleanup3 = injectSchema(
+      docsWidgetConfigurationSchema,
+      "docs-widget-config-schema",
+    );
+    const cleanup4 = injectSchema(
+      docsRestApiReferenceSchema,
+      "docs-rest-api-schema",
+    );
+    const cleanup5 = injectSchema(
+      docsMonitorGuideSchema,
+      "docs-monitor-schema",
+    );
+    const cleanup6 = injectSchema(
+      docsIntegrationsSchema,
+      "docs-integrations-schema",
+    );
+    const cleanup7 = injectSchema(
+      docsComplianceStandardsSchema,
+      "docs-compliance-schema",
+    );
+    const cleanup8 = injectSchema(
+      docsSidebarSectionsSchema,
+      "docs-sidebar-schema",
+    );
+    const cleanup9 = injectSchema(
+      docsCodeExamplesSchema,
+      "docs-code-examples-schema",
+    );
+    const cleanup10 = injectSchema(
+      docsApiAuthenticationSchema,
+      "docs-api-auth-schema",
+    );
+    const cleanup11 = injectSchema(docsFaqSchema, "docs-faq-schema");
+
+    return () => {
+      cleanup1();
+      cleanup2();
+      cleanup3();
+      cleanup4();
+      cleanup5();
+      cleanup6();
+      cleanup7();
+      cleanup8();
+      cleanup9();
+      cleanup10();
+      cleanup11();
+    };
+  }, []);
 
   const toggleSection = (title) =>
     setOpenSections((prev) => ({ ...prev, [title]: !prev[title] }));

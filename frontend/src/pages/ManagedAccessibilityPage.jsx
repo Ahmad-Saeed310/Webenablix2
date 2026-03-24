@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   ArrowRight,
@@ -27,6 +27,23 @@ import {
   Gavel,
   Lightbulb,
 } from "lucide-react";
+import {
+  injectSchema,
+  managedPageMainSchema,
+  managedServiceFeaturesSchema,
+  managedServiceOfferingSchema,
+  managedEssentialPlanSchema,
+  managedProfessionalPlanSchema,
+  managedServiceProcessSchema,
+  managedServiceStatisticsSchema,
+  managedServiceBenefitsSchema,
+  managedServiceTestimonialsSchema,
+  managedServiceModulesSchema,
+  managedServiceFaqSchema,
+  managedServiceExpertiseSchema,
+  managedServiceTrustSchema,
+  managedServiceCtaSchema,
+} from "../utils/schemaMarkup";
 import { Button } from "../components/ui/button";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
@@ -173,6 +190,107 @@ const ManagedAccessibilityPage = () => {
   const [activeTab, setActiveTab] = useState(0);
   const navigate = useNavigate();
 
+  useEffect(() => {
+    // Inject main managed service schema
+    const cleanup1 = injectSchema(managedPageMainSchema, "managed-main-schema");
+
+    // Inject service features schema
+    const cleanup2 = injectSchema(
+      managedServiceFeaturesSchema,
+      "managed-features-schema",
+    );
+
+    // Inject service offerings schema
+    const cleanup3 = injectSchema(
+      managedServiceOfferingSchema,
+      "managed-offering-schema",
+    );
+
+    // Inject essential plan details
+    const cleanup4 = injectSchema(
+      managedEssentialPlanSchema,
+      "managed-essential-schema",
+    );
+
+    // Inject professional plan details
+    const cleanup5 = injectSchema(
+      managedProfessionalPlanSchema,
+      "managed-professional-schema",
+    );
+
+    // Inject process schema
+    const cleanup6 = injectSchema(
+      managedServiceProcessSchema,
+      "managed-process-schema",
+    );
+
+    // Inject statistics schema
+    const cleanup7 = injectSchema(
+      managedServiceStatisticsSchema,
+      "managed-stats-schema",
+    );
+
+    // Inject benefits schema
+    const cleanup8 = injectSchema(
+      managedServiceBenefitsSchema,
+      "managed-benefits-schema",
+    );
+
+    // Inject testimonials schema
+    const cleanup9 = injectSchema(
+      managedServiceTestimonialsSchema,
+      "managed-testimonials-schema",
+    );
+
+    // Inject service modules schema
+    const cleanup10 = injectSchema(
+      managedServiceModulesSchema,
+      "managed-modules-schema",
+    );
+
+    // Inject FAQ schema
+    const cleanup11 = injectSchema(
+      managedServiceFaqSchema,
+      "managed-faq-schema",
+    );
+
+    // Inject expertise schema
+    const cleanup12 = injectSchema(
+      managedServiceExpertiseSchema,
+      "managed-expertise-schema",
+    );
+
+    // Inject trust schema
+    const cleanup13 = injectSchema(
+      managedServiceTrustSchema,
+      "managed-trust-schema",
+    );
+
+    // Inject CTA schema
+    const cleanup14 = injectSchema(
+      managedServiceCtaSchema,
+      "managed-cta-schema",
+    );
+
+    // Cleanup all schemas on unmount
+    return () => {
+      cleanup1();
+      cleanup2();
+      cleanup3();
+      cleanup4();
+      cleanup5();
+      cleanup6();
+      cleanup7();
+      cleanup8();
+      cleanup9();
+      cleanup10();
+      cleanup11();
+      cleanup12();
+      cleanup13();
+      cleanup14();
+    };
+  }, []);
+
   const tabs = [
     {
       label: "Audit & Remediation",
@@ -254,11 +372,14 @@ const ManagedAccessibilityPage = () => {
                   legal documentation, and staff training.
                 </p>
                 <div className="flex flex-wrap gap-4">
-                  <Button onClick={() => navigate('/register')} className="bg-white text-[#2563EB] hover:bg-blue-50 rounded-full px-8 py-4 h-auto font-semibold shadow-lg">
+                  <Button
+                    onClick={() => navigate("/register")}
+                    className="bg-white text-[#2563EB] hover:bg-blue-50 rounded-full px-8 py-4 h-auto font-semibold shadow-lg"
+                  >
                     Schedule a Consultation
                   </Button>
                   <Button
-                    onClick={() => navigate('/pricing')}
+                    onClick={() => navigate("/pricing")}
                     variant="outline"
                     className="border-white text-white hover:bg-white/10 rounded-full px-8 py-4 h-auto font-semibold"
                   >
@@ -534,7 +655,7 @@ const ManagedAccessibilityPage = () => {
                 description="For small sites that need a solid compliance foundation"
                 cta="Get Started"
                 highlighted={false}
-                onCtaClick={() => navigate('/register')}
+                onCtaClick={() => navigate("/register")}
                 features={[
                   "Up to 50 pages monitored",
                   "Annual manual audit",
@@ -552,7 +673,7 @@ const ManagedAccessibilityPage = () => {
                 description="For growing businesses with ongoing compliance needs"
                 cta="Start Free Trial"
                 highlighted={true}
-                onCtaClick={() => navigate('/register')}
+                onCtaClick={() => navigate("/register")}
                 features={[
                   "Up to 500 pages monitored",
                   "Semi-annual manual audit",
@@ -571,7 +692,7 @@ const ManagedAccessibilityPage = () => {
                 description="For large enterprises, government, and regulated industries"
                 cta="Contact Sales"
                 highlighted={false}
-                onCtaClick={() => navigate('/about')}
+                onCtaClick={() => navigate("/about")}
                 features={[
                   "Unlimited pages",
                   "Quarterly manual audits",
@@ -687,11 +808,14 @@ const ManagedAccessibilityPage = () => {
               compliance posture and recommend the right plan — no obligations.
             </p>
             <div className="flex flex-wrap gap-4 justify-center">
-              <Button onClick={() => navigate('/register')} className="bg-white text-[#2563EB] hover:bg-blue-50 rounded-full px-10 py-4 h-auto font-semibold shadow-lg">
+              <Button
+                onClick={() => navigate("/register")}
+                className="bg-white text-[#2563EB] hover:bg-blue-50 rounded-full px-10 py-4 h-auto font-semibold shadow-lg"
+              >
                 Book Free Consultation <ArrowRight className="w-5 h-5 ml-2" />
               </Button>
               <Button
-                onClick={() => navigate('/pricing')}
+                onClick={() => navigate("/pricing")}
                 variant="outline"
                 className="border-white text-white hover:bg-white/10 rounded-full px-10 py-4 h-auto font-semibold"
               >

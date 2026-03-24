@@ -1,45 +1,64 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { ChevronLeft, ChevronRight, Clock, Calendar, Tag, ArrowRight } from 'lucide-react';
-import Header from '../components/Header';
-import Footer from '../components/Footer';
+import React, { useState, useRef, useEffect } from "react";
+import { Link } from "react-router-dom";
+import {
+  ChevronLeft,
+  ChevronRight,
+  Clock,
+  Calendar,
+  Tag,
+  ArrowRight,
+} from "lucide-react";
+import {
+  injectSchema,
+  blogsPageSchema,
+  blogsCategoryGuideSchema,
+  blogsFeaturedPostsSchema,
+  blogAuthorExpertiseSchema,
+  blogContentGuidanceSchema,
+  blogAudienceGuidanceSchema,
+  blogSearchabilitySchema,
+  blogSubscriptionCtaSchema,
+} from "../utils/schemaMarkup";
+import Header from "../components/Header";
+import Footer from "../components/Footer";
 
-const API_URL = import.meta.env.VITE_BACKEND_URL || '';
+const API_URL = import.meta.env.VITE_BACKEND_URL || "";
 
 // Normalize a DB blog row to the same shape as BLOG_POSTS entries
 export const normalizeApiPost = (b) => ({
   id: b.id,
   slug: b.slug || b.id,
   title: b.title,
-  excerpt: b.excerpt || '',
-  category: b.category || '',
-  categoryColor: b.category_color || 'blue',
-  readTime: b.read_time || '',
-  date: b.date || '',
-  author: b.author || '',
-  authorRole: b.author_role || '',
-  image: b.feature_image_url || b.image_url || '',
+  excerpt: b.excerpt || "",
+  category: b.category || "",
+  categoryColor: b.category_color || "blue",
+  readTime: b.read_time || "",
+  date: b.date || "",
+  author: b.author || "",
+  authorRole: b.author_role || "",
+  image: b.feature_image_url || b.image_url || "",
   images: Array.isArray(b.additional_images) ? b.additional_images : [],
-  metaTitle: b.meta_title || '',
-  metaDescription: b.meta_description || '',
-  content: b.content || '',
+  metaTitle: b.meta_title || "",
+  metaDescription: b.meta_description || "",
+  content: b.content || "",
   is_featured: b.is_featured,
 });
 
 // ── Blog Data ─────────────────────────────────────────────────────────────────
 export const BLOG_POSTS = [
   {
-    id: 'wcag-2-2-guide',
-    title: 'WCAG 2.2: What\'s New and How to Comply',
+    id: "wcag-2-2-guide",
+    title: "WCAG 2.2: What's New and How to Comply",
     excerpt:
-      'The latest update to the Web Content Accessibility Guidelines introduces four new success criteria. We break down each change and what it means for your website.',
-    category: 'Compliance',
-    categoryColor: 'blue',
-    readTime: '8 min read',
-    date: 'Feb 12, 2026',
-    author: 'Sarah Mitchell',
-    authorRole: 'Accessibility Lead',
-    image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&q=80',
+      "The latest update to the Web Content Accessibility Guidelines introduces four new success criteria. We break down each change and what it means for your website.",
+    category: "Compliance",
+    categoryColor: "blue",
+    readTime: "8 min read",
+    date: "Feb 12, 2026",
+    author: "Sarah Mitchell",
+    authorRole: "Accessibility Lead",
+    image:
+      "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&q=80",
     content: `
 ## What is WCAG 2.2?
 
@@ -85,17 +104,18 @@ Webenablix's automated scanner now fully supports WCAG 2.2 Level AA checks. Run 
     `,
   },
   {
-    id: 'ada-compliance-2026',
-    title: 'ADA Compliance in 2026: What Every Business Must Know',
+    id: "ada-compliance-2026",
+    title: "ADA Compliance in 2026: What Every Business Must Know",
     excerpt:
-      'U.S. courts continue to see a surge in web accessibility lawsuits. Here\'s what changed, what\'s coming, and how you can protect your business today.',
-    category: 'Legal',
-    categoryColor: 'red',
-    readTime: '6 min read',
-    date: 'Jan 28, 2026',
-    author: 'James Harlow',
-    authorRole: 'Legal & Compliance Writer',
-    image: 'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=800&q=80',
+      "U.S. courts continue to see a surge in web accessibility lawsuits. Here's what changed, what's coming, and how you can protect your business today.",
+    category: "Legal",
+    categoryColor: "red",
+    readTime: "6 min read",
+    date: "Jan 28, 2026",
+    author: "James Harlow",
+    authorRole: "Legal & Compliance Writer",
+    image:
+      "https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=800&q=80",
     content: `
 ## The Legal Landscape for Web Accessibility in 2026
 
@@ -131,17 +151,18 @@ Beyond avoiding lawsuits, accessible websites see measurable business benefits: 
     `,
   },
   {
-    id: 'screen-reader-ux',
-    title: 'Designing for Screen Readers: A Developer\'s Practical Guide',
+    id: "screen-reader-ux",
+    title: "Designing for Screen Readers: A Developer's Practical Guide",
     excerpt:
-      'Most accessibility issues faced by screen reader users are invisible to sighted developers. This guide walks through the most impactful patterns and anti-patterns.',
-    category: 'Development',
-    categoryColor: 'green',
-    readTime: '10 min read',
-    date: 'Jan 14, 2026',
-    author: 'Priya Nair',
-    authorRole: 'Frontend Engineer',
-    image: 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=800&q=80',
+      "Most accessibility issues faced by screen reader users are invisible to sighted developers. This guide walks through the most impactful patterns and anti-patterns.",
+    category: "Development",
+    categoryColor: "green",
+    readTime: "10 min read",
+    date: "Jan 14, 2026",
+    author: "Priya Nair",
+    authorRole: "Frontend Engineer",
+    image:
+      "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=800&q=80",
     content: `
 ## Understanding How Screen Readers Work
 
@@ -192,17 +213,18 @@ Never rely solely on automated scanners — they catch roughly 30–40% of real 
     `,
   },
   {
-    id: 'color-contrast-guide',
-    title: 'Color Contrast Demystified: Meeting WCAG AA and AAA',
+    id: "color-contrast-guide",
+    title: "Color Contrast Demystified: Meeting WCAG AA and AAA",
     excerpt:
-      'Contrast ratios, large text rules, UI components — color contrast is more nuanced than it looks. A complete, visual breakdown for designers and developers.',
-    category: 'Design',
-    categoryColor: 'purple',
-    readTime: '7 min read',
-    date: 'Dec 30, 2025',
-    author: 'Carlos Reyes',
-    authorRole: 'UX Designer',
-    image: 'https://images.unsplash.com/photo-1561736778-92e52a7769ef?w=800&q=80',
+      "Contrast ratios, large text rules, UI components — color contrast is more nuanced than it looks. A complete, visual breakdown for designers and developers.",
+    category: "Design",
+    categoryColor: "purple",
+    readTime: "7 min read",
+    date: "Dec 30, 2025",
+    author: "Carlos Reyes",
+    authorRole: "UX Designer",
+    image:
+      "https://images.unsplash.com/photo-1561736778-92e52a7769ef?w=800&q=80",
     content: `
 ## Why Color Contrast Matters
 
@@ -250,17 +272,18 @@ Where L1 is the lighter color and L2 the darker. Tools like the WebAIM Contrast 
     `,
   },
   {
-    id: 'accessibility-roi',
-    title: 'The ROI of Accessibility: Real Numbers, Real Impact',
+    id: "accessibility-roi",
+    title: "The ROI of Accessibility: Real Numbers, Real Impact",
     excerpt:
-      'Accessibility isn\'t just a compliance checkbox. Companies that invest in it see measurable gains in SEO, conversion, and customer retention. Here\'s the data.',
-    category: 'Business',
-    categoryColor: 'orange',
-    readTime: '5 min read',
-    date: 'Dec 15, 2025',
-    author: 'Amanda Torres',
-    authorRole: 'Growth Strategist',
-    image: 'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=800&q=80',
+      "Accessibility isn't just a compliance checkbox. Companies that invest in it see measurable gains in SEO, conversion, and customer retention. Here's the data.",
+    category: "Business",
+    categoryColor: "orange",
+    readTime: "5 min read",
+    date: "Dec 15, 2025",
+    author: "Amanda Torres",
+    authorRole: "Growth Strategist",
+    image:
+      "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=800&q=80",
     content: `
 ## The Business Case for Accessibility
 
@@ -303,17 +326,18 @@ Use Webenablix's free checker to get a baseline score today. Even a 10-point imp
     `,
   },
   {
-    id: 'keyboard-navigation-tips',
-    title: 'Keyboard Navigation: Making Every Feature Reachable',
+    id: "keyboard-navigation-tips",
+    title: "Keyboard Navigation: Making Every Feature Reachable",
     excerpt:
-      'Millions of users rely entirely on keyboards to browse the web. This guide covers skip links, focus traps, custom widgets, and everything in between.',
-    category: 'Development',
-    categoryColor: 'green',
-    readTime: '9 min read',
-    date: 'Nov 28, 2025',
-    author: 'Priya Nair',
-    authorRole: 'Frontend Engineer',
-    image: 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=800&q=80',
+      "Millions of users rely entirely on keyboards to browse the web. This guide covers skip links, focus traps, custom widgets, and everything in between.",
+    category: "Development",
+    categoryColor: "green",
+    readTime: "9 min read",
+    date: "Nov 28, 2025",
+    author: "Priya Nair",
+    authorRole: "Frontend Engineer",
+    image:
+      "https://images.unsplash.com/photo-1518770660439-4636190af475?w=800&q=80",
     content: `
 ## Who Uses Keyboard Navigation?
 
@@ -380,11 +404,11 @@ Unplug your mouse. Spend 15 minutes using your product with only the keyboard. Y
 
 // ── Category color map ────────────────────────────────────────────────────────
 const CATEGORY_COLORS = {
-  blue:   { bg: 'bg-blue-100',   text: 'text-blue-700'   },
-  red:    { bg: 'bg-red-100',    text: 'text-red-700'    },
-  green:  { bg: 'bg-green-100',  text: 'text-green-700'  },
-  purple: { bg: 'bg-purple-100', text: 'text-purple-700' },
-  orange: { bg: 'bg-orange-100', text: 'text-orange-700' },
+  blue: { bg: "bg-blue-100", text: "text-blue-700" },
+  red: { bg: "bg-red-100", text: "text-red-700" },
+  green: { bg: "bg-green-100", text: "text-green-700" },
+  purple: { bg: "bg-purple-100", text: "text-purple-700" },
+  orange: { bg: "bg-orange-100", text: "text-orange-700" },
 };
 
 // ── Card ──────────────────────────────────────────────────────────────────────
@@ -401,7 +425,9 @@ const BlogCard = ({ post }) => {
           alt={post.title}
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
         />
-        <span className={`absolute top-3 left-3 px-3 py-1 text-xs font-semibold rounded-full ${cc.bg} ${cc.text}`}>
+        <span
+          className={`absolute top-3 left-3 px-3 py-1 text-xs font-semibold rounded-full ${cc.bg} ${cc.text}`}
+        >
           {post.category}
         </span>
       </div>
@@ -409,7 +435,9 @@ const BlogCard = ({ post }) => {
         <h3 className="font-bold text-gray-900 text-base leading-snug group-hover:text-blue-600 transition-colors line-clamp-2">
           {post.title}
         </h3>
-        <p className="text-sm text-gray-500 line-clamp-3 leading-relaxed">{post.excerpt}</p>
+        <p className="text-sm text-gray-500 line-clamp-3 leading-relaxed">
+          {post.excerpt}
+        </p>
         <div className="flex items-center justify-between text-xs text-gray-400 pt-1 border-t border-gray-100 mt-auto">
           <div className="flex items-center gap-1">
             <Calendar className="h-3.5 w-3.5" />
@@ -442,6 +470,50 @@ const BlogsPage = () => {
       .catch(() => {});
   }, []);
 
+  // Inject page schema for SEO
+  useEffect(() => {
+    const cleanup1 = injectSchema(blogsPageSchema, "blogs-page-schema");
+    const cleanup2 = injectSchema(
+      blogsCategoryGuideSchema,
+      "blogs-category-schema",
+    );
+    const cleanup3 = injectSchema(
+      blogsFeaturedPostsSchema,
+      "blogs-featured-schema",
+    );
+    const cleanup4 = injectSchema(
+      blogAuthorExpertiseSchema,
+      "blogs-authors-schema",
+    );
+    const cleanup5 = injectSchema(
+      blogContentGuidanceSchema,
+      "blogs-content-schema",
+    );
+    const cleanup6 = injectSchema(
+      blogAudienceGuidanceSchema,
+      "blogs-audience-schema",
+    );
+    const cleanup7 = injectSchema(
+      blogSearchabilitySchema,
+      "blogs-search-schema",
+    );
+    const cleanup8 = injectSchema(
+      blogSubscriptionCtaSchema,
+      "blogs-subscribe-schema",
+    );
+
+    return () => {
+      cleanup1();
+      cleanup2();
+      cleanup3();
+      cleanup4();
+      cleanup5();
+      cleanup6();
+      cleanup7();
+      cleanup8();
+    };
+  }, []);
+
   // Merge: DB posts (featured first) then static posts
   const allPosts = [...apiPosts, ...BLOG_POSTS];
 
@@ -450,13 +522,13 @@ const BlogsPage = () => {
   useEffect(() => {
     const update = () => {
       if (trackRef.current) {
-        const card = trackRef.current.querySelector('a');
+        const card = trackRef.current.querySelector("a");
         if (card) setCardWidth(card.offsetWidth + 24);
       }
     };
     update();
-    window.addEventListener('resize', update);
-    return () => window.removeEventListener('resize', update);
+    window.addEventListener("resize", update);
+    return () => window.removeEventListener("resize", update);
   }, []);
 
   // Featured post: first explicitly featured, otherwise first post
@@ -471,7 +543,6 @@ const BlogsPage = () => {
 
       <main className="pt-24 pb-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-
           {/* ── Page Header ──────────────────────────────────────── */}
           <div className="text-center mb-14">
             <span className="inline-flex items-center gap-2 px-4 py-1.5 bg-blue-50 text-blue-700 rounded-full text-sm font-medium mb-4">
@@ -481,7 +552,8 @@ const BlogsPage = () => {
               Accessibility Knowledge Hub
             </h1>
             <p className="text-lg text-gray-500 max-w-2xl mx-auto">
-              Expert guides, compliance updates, and development tips to keep your website accessible and inclusive.
+              Expert guides, compliance updates, and development tips to keep
+              your website accessible and inclusive.
             </p>
           </div>
 
@@ -503,19 +575,25 @@ const BlogsPage = () => {
                 </span>
               </div>
               <div className="flex flex-col justify-center p-8 lg:p-12">
-                <span className={`self-start px-3 py-1 text-xs font-semibold rounded-full mb-4 ${CATEGORY_COLORS[featured.categoryColor]?.bg} ${CATEGORY_COLORS[featured.categoryColor]?.text}`}>
+                <span
+                  className={`self-start px-3 py-1 text-xs font-semibold rounded-full mb-4 ${CATEGORY_COLORS[featured.categoryColor]?.bg} ${CATEGORY_COLORS[featured.categoryColor]?.text}`}
+                >
                   {featured.category}
                 </span>
                 <h2 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-4 group-hover:text-blue-600 transition-colors leading-snug">
                   {featured.title}
                 </h2>
-                <p className="text-gray-500 leading-relaxed mb-6">{featured.excerpt}</p>
+                <p className="text-gray-500 leading-relaxed mb-6">
+                  {featured.excerpt}
+                </p>
                 <div className="flex items-center gap-6 text-sm text-gray-400">
                   <div className="flex items-center gap-1.5">
-                    <Calendar className="h-4 w-4" />{featured.date}
+                    <Calendar className="h-4 w-4" />
+                    {featured.date}
                   </div>
                   <div className="flex items-center gap-1.5">
-                    <Clock className="h-4 w-4" />{featured.readTime}
+                    <Clock className="h-4 w-4" />
+                    {featured.readTime}
                   </div>
                 </div>
                 <div className="mt-6 inline-flex items-center gap-2 text-blue-600 font-semibold text-sm group-hover:gap-3 transition-all">
@@ -527,7 +605,9 @@ const BlogsPage = () => {
 
           {/* ── Carousel Section ─────────────────────────────────── */}
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-bold text-gray-900">Latest Articles</h2>
+            <h2 className="text-2xl font-bold text-gray-900">
+              Latest Articles
+            </h2>
             <div className="flex items-center gap-2">
               <button
                 onClick={() => setRestIndex((i) => Math.max(0, i - 1))}
@@ -568,7 +648,7 @@ const BlogsPage = () => {
                 key={i}
                 onClick={() => setRestIndex(i)}
                 className={`h-2 rounded-full transition-all duration-300 ${
-                  i === restIndex ? 'bg-blue-600 w-6' : 'bg-gray-300 w-2'
+                  i === restIndex ? "bg-blue-600 w-6" : "bg-gray-300 w-2"
                 }`}
                 aria-label={`Go to slide ${i + 1}`}
               />
@@ -577,22 +657,40 @@ const BlogsPage = () => {
 
           {/* ── All Topics ───────────────────────────────────────── */}
           <div className="mt-20">
-            <h2 className="text-2xl font-bold text-gray-900 mb-8 text-center">Browse by Topic</h2>
+            <h2 className="text-2xl font-bold text-gray-900 mb-8 text-center">
+              Browse by Topic
+            </h2>
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
-              {['Compliance', 'Legal', 'Development', 'Design', 'Business'].map((topic) => {
-                const colorKey = { Compliance: 'blue', Legal: 'red', Development: 'green', Design: 'purple', Business: 'orange' }[topic];
-                const cc = CATEGORY_COLORS[colorKey];
-                const count = allPosts.filter((p) => p.category === topic).length;
-                return (
-                  <div key={topic} className={`rounded-2xl p-5 text-center border ${cc.bg} border-transparent`}>
-                    <div className={`text-2xl font-bold ${cc.text}`}>{count}</div>
-                    <div className={`text-sm font-medium mt-1 ${cc.text}`}>{topic}</div>
-                  </div>
-                );
-              })}
+              {["Compliance", "Legal", "Development", "Design", "Business"].map(
+                (topic) => {
+                  const colorKey = {
+                    Compliance: "blue",
+                    Legal: "red",
+                    Development: "green",
+                    Design: "purple",
+                    Business: "orange",
+                  }[topic];
+                  const cc = CATEGORY_COLORS[colorKey];
+                  const count = allPosts.filter(
+                    (p) => p.category === topic,
+                  ).length;
+                  return (
+                    <div
+                      key={topic}
+                      className={`rounded-2xl p-5 text-center border ${cc.bg} border-transparent`}
+                    >
+                      <div className={`text-2xl font-bold ${cc.text}`}>
+                        {count}
+                      </div>
+                      <div className={`text-sm font-medium mt-1 ${cc.text}`}>
+                        {topic}
+                      </div>
+                    </div>
+                  );
+                },
+              )}
             </div>
           </div>
-
         </div>
       </main>
 

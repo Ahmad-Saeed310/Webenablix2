@@ -1,6 +1,21 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./App.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import {
+  injectSchema,
+  organizationSchema,
+  homePageSchema,
+  faqPageSchema,
+  breadcrumbSchema,
+  homePageLandingSchema,
+  homePageHeroOfferSchema,
+  homePageProductsSchema,
+  homePageFeaturesSchema,
+  homePageTrustSchema,
+  homePageWhyAccessibilitySchema,
+  homePageGettingStartedSchema,
+  homePageCtaSchema,
+} from "./utils/schemaMarkup";
 import AccessibilityWidget from "./components/AccessibilityWidget";
 import ScrollToTop from "./components/ScrollToTop";
 import Header from "./components/Header";
@@ -40,13 +55,71 @@ import AdminPage from "./pages/AdminPage";
 const HomePage = () => {
   const [showCookieConsent, setShowCookieConsent] = useState(true);
   const [showReportModal, setShowReportModal] = useState(false);
-  const [heroScanUrl, setHeroScanUrl] = useState('');
+  const [heroScanUrl, setHeroScanUrl] = useState("");
+
+  // Inject page-level schemas for SEO
+  useEffect(() => {
+    // Basic schemas
+    const cleanupHome = injectSchema(homePageSchema, "homepage-schema");
+    const cleanupFaq = injectSchema(faqPageSchema, "faq-schema");
+    const cleanupBreadcrumb = injectSchema(
+      breadcrumbSchema,
+      "breadcrumb-schema",
+    );
+
+    // Comprehensive homepage schemas
+    const cleanupLanding = injectSchema(
+      homePageLandingSchema,
+      "homepage-landing-schema",
+    );
+    const cleanupOffer = injectSchema(
+      homePageHeroOfferSchema,
+      "homepage-offer-schema",
+    );
+    const cleanupProducts = injectSchema(
+      homePageProductsSchema,
+      "homepage-products-schema",
+    );
+    const cleanupFeatures = injectSchema(
+      homePageFeaturesSchema,
+      "homepage-features-schema",
+    );
+    const cleanupTrust = injectSchema(
+      homePageTrustSchema,
+      "homepage-trust-schema",
+    );
+    const cleanupWhy = injectSchema(
+      homePageWhyAccessibilitySchema,
+      "homepage-why-schema",
+    );
+    const cleanupGetting = injectSchema(
+      homePageGettingStartedSchema,
+      "homepage-getting-started-schema",
+    );
+    const cleanupCta = injectSchema(homePageCtaSchema, "homepage-cta-schema");
+
+    return () => {
+      cleanupHome();
+      cleanupFaq();
+      cleanupBreadcrumb();
+      cleanupLanding();
+      cleanupOffer();
+      cleanupProducts();
+      cleanupFeatures();
+      cleanupTrust();
+      cleanupWhy();
+      cleanupGetting();
+      cleanupCta();
+    };
+  }, []);
 
   return (
     <div className="min-h-screen bg-white">
       <Header />
       <main>
-        <HeroSection onScanRequest={(url) => setHeroScanUrl(url + '?t=' + Date.now())} />
+        <HeroSection
+          onScanRequest={(url) => setHeroScanUrl(url + "?t=" + Date.now())}
+        />
         <FeaturesSection />
         <AuditSection externalUrl={heroScanUrl} />
         <WhyAccessibilitySection />
@@ -69,6 +142,12 @@ const HomePage = () => {
 };
 
 function App() {
+  // Inject main organization schema on app init
+  useEffect(() => {
+    const cleanup = injectSchema(organizationSchema, "organization-schema");
+    return cleanup;
+  }, []);
+
   return (
     <BrowserRouter>
       <ScrollToTop />
@@ -84,13 +163,22 @@ function App() {
         <Route path="/products/widget" element={<WidgetPage />} />
         <Route path="/products/audit" element={<AuditPage />} />
         <Route path="/products/checker" element={<FreeCheckerPage />} />
-        <Route path="/products/managed" element={<ManagedAccessibilityPage />} />
-        <Route path="/products/monitor" element={<AccessibilityMonitorPage />} />
+        <Route
+          path="/products/managed"
+          element={<ManagedAccessibilityPage />}
+        />
+        <Route
+          path="/products/monitor"
+          element={<AccessibilityMonitorPage />}
+        />
         <Route path="/products/compare" element={<ComparePage />} />
         <Route path="/industries" element={<IndustriesPage />} />
         <Route path="/industries/:industry" element={<IndustryDetailPage />} />
         <Route path="/installation" element={<InstallationsPage />} />
-        <Route path="/installation/:platform" element={<InstallationDetailPage />} />
+        <Route
+          path="/installation/:platform"
+          element={<InstallationDetailPage />}
+        />
         <Route path="/docs" element={<DocsPage />} />
         <Route path="/about" element={<AboutPage />} />
         <Route path="/blogs" element={<BlogsPage />} />

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import {
   ArrowRight,
@@ -21,6 +21,25 @@ import { Button } from "../components/ui/button";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import { installationsData } from "../data/installations";
+import {
+  injectSchema,
+  installationEmbedPageSchema,
+  installationEmbedProcessSchema,
+  installationEmbedBenefitsSchema,
+  installationEmbedTipsSchema,
+  installationEmbedFaqSchema,
+  installationMethodsSchema,
+  webenablixWidgetSchema,
+  installationEmbedCtaSchema,
+  installationWordPressPageSchema,
+  installationWordPressProcessSchema,
+  installationWordPressPluginBenefitsSchema,
+  installationWordPressTipsSchema,
+  installationWordPressFaqSchema,
+  installationWordPressCachingSchema,
+  installationWordPressCompatibilitySchema,
+  installationWordPressCtaSchema,
+} from "../utils/schemaMarkup";
 
 // ─── Code block with copy button ─────────────────────────────────────────────
 
@@ -139,6 +158,98 @@ const PlatformBadge = ({ icon, name, accentBg }) => {
 const InstallationDetailPage = () => {
   const { platform } = useParams();
   const data = installationsData[platform];
+
+  useEffect(() => {
+    if (platform === "embed") {
+      const cleanup1 = injectSchema(
+        installationEmbedPageSchema,
+        "install-embed-page-schema",
+      );
+      const cleanup2 = injectSchema(
+        installationEmbedProcessSchema,
+        "install-embed-process-schema",
+      );
+      const cleanup3 = injectSchema(
+        installationEmbedBenefitsSchema,
+        "install-embed-benefits-schema",
+      );
+      const cleanup4 = injectSchema(
+        installationEmbedTipsSchema,
+        "install-embed-tips-schema",
+      );
+      const cleanup5 = injectSchema(
+        installationEmbedFaqSchema,
+        "install-embed-faq-schema",
+      );
+      const cleanup6 = injectSchema(
+        installationMethodsSchema,
+        "install-methods-schema",
+      );
+      const cleanup7 = injectSchema(
+        webenablixWidgetSchema,
+        "webenablix-widget-schema",
+      );
+      const cleanup8 = injectSchema(
+        installationEmbedCtaSchema,
+        "install-embed-cta-schema",
+      );
+
+      return () => {
+        cleanup1();
+        cleanup2();
+        cleanup3();
+        cleanup4();
+        cleanup5();
+        cleanup6();
+        cleanup7();
+        cleanup8();
+      };
+    } else if (platform === "wordpress") {
+      const cleanup1 = injectSchema(
+        installationWordPressPageSchema,
+        "install-wordpress-page-schema",
+      );
+      const cleanup2 = injectSchema(
+        installationWordPressProcessSchema,
+        "install-wordpress-process-schema",
+      );
+      const cleanup3 = injectSchema(
+        installationWordPressPluginBenefitsSchema,
+        "install-wordpress-benefits-schema",
+      );
+      const cleanup4 = injectSchema(
+        installationWordPressTipsSchema,
+        "install-wordpress-tips-schema",
+      );
+      const cleanup5 = injectSchema(
+        installationWordPressFaqSchema,
+        "install-wordpress-faq-schema",
+      );
+      const cleanup6 = injectSchema(
+        installationWordPressCachingSchema,
+        "install-wordpress-caching-schema",
+      );
+      const cleanup7 = injectSchema(
+        installationWordPressCompatibilitySchema,
+        "install-wordpress-compat-schema",
+      );
+      const cleanup8 = injectSchema(
+        installationWordPressCtaSchema,
+        "install-wordpress-cta-schema",
+      );
+
+      return () => {
+        cleanup1();
+        cleanup2();
+        cleanup3();
+        cleanup4();
+        cleanup5();
+        cleanup6();
+        cleanup7();
+        cleanup8();
+      };
+    }
+  }, [platform]);
 
   if (!data) {
     return (

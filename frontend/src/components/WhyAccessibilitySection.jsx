@@ -1,8 +1,13 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Check, Heart, ArrowRight } from 'lucide-react';
-import { Button } from './ui/button';
+import React from "react";
+import { useNavigate } from "react-router-dom";
+import { Check, Heart, ArrowRight } from "lucide-react";
+import { Button } from "./ui/button";
 
+/**
+ * WhyAccessibilitySection Component
+ * Props JSON Schema: {"type":"object","properties":{},"description":"No required props"}
+ * Content Items Schema: {"type":"array","items":{"type":"object","properties":{"icon":{"type":"object"},"title":{"type":"string"},"description":{"type":"string"}}}}
+ */
 const WhyAccessibilitySection = () => {
   const navigate = useNavigate();
   return (
@@ -10,11 +15,20 @@ const WhyAccessibilitySection = () => {
       <div className="max-w-7xl mx-auto px-4">
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
           <div>
-            <span className="text-[#2563EB] font-semibold text-sm uppercase tracking-wide">WHY ACCESSIBILITY?</span>
+            <span className="text-[#2563EB] font-semibold text-sm uppercase tracking-wide">
+              WHY ACCESSIBILITY?
+            </span>
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mt-4 leading-tight">
-              Web accessibility is<br />the right thing to do<br />and good for business
+              Web accessibility is
+              <br />
+              the right thing to do
+              <br />
+              and good for business
             </h2>
-            <Button onClick={() => navigate('/products/checker')} className="mt-8 bg-[#2563EB] hover:bg-[#1d4ed8] text-white rounded-full px-8 py-4 h-auto font-semibold flex items-center gap-2">
+            <Button
+              onClick={() => navigate("/products/checker")}
+              className="mt-8 bg-[#2563EB] hover:bg-[#1d4ed8] text-white rounded-full px-8 py-4 h-auto font-semibold flex items-center gap-2"
+            >
               TRY WEBENABLIX NOW
               <ArrowRight className="w-5 h-5" />
             </Button>
@@ -26,8 +40,13 @@ const WhyAccessibilitySection = () => {
                 <Heart className="w-6 h-6 text-[#2563EB]" />
               </div>
               <div>
-                <h3 className="text-xl font-bold text-gray-900 mb-2">Inclusivity for everyone</h3>
-                <p className="text-gray-600">Make your website accessible to all users regardless of their abilities.</p>
+                <h3 className="text-xl font-bold text-gray-900 mb-2">
+                  Inclusivity for everyone
+                </h3>
+                <p className="text-gray-600">
+                  Make your website accessible to all users regardless of their
+                  abilities.
+                </p>
               </div>
             </div>
 
@@ -36,8 +55,12 @@ const WhyAccessibilitySection = () => {
                 <Check className="w-6 h-6 text-[#2563EB]" />
               </div>
               <div>
-                <h3 className="text-xl font-bold text-gray-900 mb-2">Comply with legislation</h3>
-                <p className="text-gray-600">Meet ADA, WCAG 2.1 and Section 508 requirements.</p>
+                <h3 className="text-xl font-bold text-gray-900 mb-2">
+                  Comply with legislation
+                </h3>
+                <p className="text-gray-600">
+                  Meet ADA, WCAG 2.1 and Section 508 requirements.
+                </p>
               </div>
             </div>
           </div>

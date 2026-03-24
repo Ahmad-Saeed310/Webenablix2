@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
   ArrowRight,
@@ -26,6 +26,22 @@ import {
   CheckCircle2,
   XCircle,
 } from "lucide-react";
+import {
+  injectSchema,
+  comparePageMainSchema,
+  compareWebenablixDetailedSchema,
+  compareScanningSectionSchema,
+  compareRemediationSectionSchema,
+  compareReportingSectionSchema,
+  compareLegalSectionSchema,
+  compareSupportSectionSchema,
+  comparePricingSectionSchema,
+  compareAdvantagesSchema,
+  compareScoresSchema,
+  compareCompetitorsSchema,
+  compareFaqSchema,
+  compareCTASchema,
+} from "../utils/schemaMarkup";
 import { Button } from "../components/ui/button";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
@@ -472,6 +488,94 @@ const ScoreBar = ({ value, color }) => (
 const ComparePage = () => {
   const [openCategory, setOpenCategory] = useState(null);
 
+  useEffect(() => {
+    // Inject main comparison page schema
+    const cleanup1 = injectSchema(comparePageMainSchema, "compare-main-schema");
+
+    // Inject Webenablix detailed schema
+    const cleanup2 = injectSchema(
+      compareWebenablixDetailedSchema,
+      "compare-webenablix-schema",
+    );
+
+    // Inject scanning comparison schema
+    const cleanup3 = injectSchema(
+      compareScanningSectionSchema,
+      "compare-scanning-schema",
+    );
+
+    // Inject remediation comparison schema
+    const cleanup4 = injectSchema(
+      compareRemediationSectionSchema,
+      "compare-remediation-schema",
+    );
+
+    // Inject reporting comparison schema
+    const cleanup5 = injectSchema(
+      compareReportingSectionSchema,
+      "compare-reporting-schema",
+    );
+
+    // Inject legal comparison schema
+    const cleanup6 = injectSchema(
+      compareLegalSectionSchema,
+      "compare-legal-schema",
+    );
+
+    // Inject support comparison schema
+    const cleanup7 = injectSchema(
+      compareSupportSectionSchema,
+      "compare-support-schema",
+    );
+
+    // Inject pricing comparison schema
+    const cleanup8 = injectSchema(
+      comparePricingSectionSchema,
+      "compare-pricing-schema",
+    );
+
+    // Inject competitive advantages schema
+    const cleanup9 = injectSchema(
+      compareAdvantagesSchema,
+      "compare-advantages-schema",
+    );
+
+    // Inject scores schema
+    const cleanup10 = injectSchema(
+      compareScoresSchema,
+      "compare-scores-schema",
+    );
+
+    // Inject competitors schema
+    const cleanup11 = injectSchema(
+      compareCompetitorsSchema,
+      "compare-competitors-schema",
+    );
+
+    // Inject FAQ schema
+    const cleanup12 = injectSchema(compareFaqSchema, "compare-faq-schema");
+
+    // Inject CTA schema
+    const cleanup13 = injectSchema(compareCTASchema, "compare-cta-schema");
+
+    // Cleanup all schemas on unmount
+    return () => {
+      cleanup1();
+      cleanup2();
+      cleanup3();
+      cleanup4();
+      cleanup5();
+      cleanup6();
+      cleanup7();
+      cleanup8();
+      cleanup9();
+      cleanup10();
+      cleanup11();
+      cleanup12();
+      cleanup13();
+    };
+  }, []);
+
   return (
     <div className="min-h-screen bg-white">
       <Header />
@@ -498,11 +602,14 @@ const ComparePage = () => {
               protection, support, and pricing.
             </p>
             <div className="flex flex-wrap gap-4 justify-center">
-              <Button onClick={() => navigate('/register')} className="bg-white text-[#2563EB] hover:bg-blue-50 rounded-full px-8 py-4 h-auto font-semibold shadow-lg">
+              <Button
+                onClick={() => navigate("/register")}
+                className="bg-white text-[#2563EB] hover:bg-blue-50 rounded-full px-8 py-4 h-auto font-semibold shadow-lg"
+              >
                 Start Free Trial <ArrowRight className="w-5 h-5 ml-2" />
               </Button>
               <Button
-                onClick={() => navigate('/register')}
+                onClick={() => navigate("/register")}
                 variant="outline"
                 className="border-white text-white hover:bg-white/10 rounded-full px-8 py-4 h-auto font-semibold"
               >
@@ -882,11 +989,14 @@ const ComparePage = () => {
               accessibility program in the market.
             </p>
             <div className="flex flex-wrap gap-4 justify-center">
-              <Button onClick={() => navigate('/register')} className="bg-white text-[#2563EB] hover:bg-blue-50 rounded-full px-10 py-4 h-auto font-semibold shadow-lg">
+              <Button
+                onClick={() => navigate("/register")}
+                className="bg-white text-[#2563EB] hover:bg-blue-50 rounded-full px-10 py-4 h-auto font-semibold shadow-lg"
+              >
                 Start Free Trial <ArrowRight className="w-5 h-5 ml-2" />
               </Button>
               <Button
-                onClick={() => navigate('/register')}
+                onClick={() => navigate("/register")}
                 variant="outline"
                 className="border-white text-white hover:bg-white/10 rounded-full px-10 py-4 h-auto font-semibold"
               >

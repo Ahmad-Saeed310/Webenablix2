@@ -1,9 +1,20 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React from "react";
+import { Link } from "react-router-dom";
 import {
-  Landmark, Wallet, GraduationCap, ShoppingBag, Cpu, HeartPulse, Car, Home, Users, Film, BadgeCheck, Building2,
-} from 'lucide-react';
-import { industriesMenu } from '../data/navigation';
+  Landmark,
+  Wallet,
+  GraduationCap,
+  ShoppingBag,
+  Cpu,
+  HeartPulse,
+  Car,
+  Home,
+  Users,
+  Film,
+  BadgeCheck,
+  Building2,
+} from "lucide-react";
+import { industriesMenu } from "../data/navigation";
 
 const iconMap = {
   landmark: Landmark,
@@ -21,7 +32,7 @@ const iconMap = {
 
 const IndustriesSectionNav = () => {
   const displayIndustries = industriesMenu.slice(0, 5);
-  
+
   return (
     <section className="h-screen bg-gradient-to-b from-slate-900 to-slate-800 flex flex-col">
       {/* Top Row - Full Width Header */}
