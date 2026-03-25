@@ -1399,12 +1399,16 @@ export const auditExpertiseSchema = {
   description:
     "Team of certified accessibility professionals with expertise in WCAG compliance and accessibility auditing",
   url: "https://www.webenablix.com/products/audit",
+  numberOfEmployees: {
+    "@type": "QuantitativeValue",
+    value: "100",
+  },
   member: [
     {
       "@type": "Person",
       name: "Certified Accessibility Auditors",
       jobTitle: "Accessibility Expert",
-      expertise: [
+      knowsAbout: [
         "WCAG 2.1 AA Compliance",
         "ARIA Implementation",
         "Assistive Technology Testing",
@@ -1412,21 +1416,11 @@ export const auditExpertiseSchema = {
         "Remediation Planning",
         "Legal Compliance Documentation",
       ],
-      numberOfEmployees: 100,
     },
   ],
   award: [
-    {
-      "@type": "Award",
-      name: "ISO/IEC 40500 Certified",
-      description: "International standard for web content accessibility",
-    },
-    {
-      "@type": "Award",
-      name: "IAAP Certified",
-      description:
-        "International Association of Accessibility Professionals certification",
-    },
+    "ISO/IEC 40500 Certified - International standard for web content accessibility",
+    "IAAP Certified - International Association of Accessibility Professionals certification",
   ],
   aggregateRating: {
     "@type": "AggregateRating",
@@ -1445,7 +1439,7 @@ export const auditStatisticsSchema = {
   "@type": "NewsArticle",
   headline: "Webenablix Audit Service Impact Metrics",
   description: "Key statistics about Webenablix audit services",
-  body: "Webenablix has completed over 50,000 accessibility audits with 99.9% average client satisfaction. Our team of 100+ certified experts provides audits with 48-hour average turnaround time.",
+  articleBody: "Webenablix has completed over 50,000 accessibility audits with 99.9% average client satisfaction. Our team of 100+ certified experts provides audits with 48-hour average turnaround time.",
 };
 
 /**
@@ -1956,7 +1950,7 @@ export const widgetStatisticsSchema = {
   "@type": "NewsArticle",
   headline: "Webenablix Widget Impact Metrics",
   description: "Key statistics about Webenablix Widget adoption and impact",
-  body: "Webenablix Widget is installed on millions of websites globally. Over 1 billion people with disabilities rely on accessibility tools. The market of people with disabilities has $490 billion in spending power in the US alone. Over 4,600 ADA web accessibility lawsuits are filed annually, making accessible design essential.",
+  articleBody: "Webenablix Widget is installed on millions of websites globally. Over 1 billion people with disabilities rely on accessibility tools. The market of people with disabilities has $490 billion in spending power in the US alone. Over 4,600 ADA web accessibility lawsuits are filed annually, making accessible design essential.",
 };
 
 /**
@@ -2297,7 +2291,6 @@ export const managedServiceOfferingSchema = {
       name: "Essential Plan",
       price: "499",
       priceCurrency: "USD",
-      billingDuration: "P1M",
       description: "For small sites that need a solid compliance foundation",
       availability: "https://schema.org/InStock",
       url: "https://www.webenablix.com/register",
@@ -2307,7 +2300,6 @@ export const managedServiceOfferingSchema = {
       name: "Professional Plan",
       price: "1299",
       priceCurrency: "USD",
-      billingDuration: "P1M",
       description:
         "For growing businesses with ongoing compliance needs. Most popular choice.",
       availability: "https://schema.org/InStock",
@@ -2336,21 +2328,9 @@ export const managedEssentialPlanSchema = {
   name: "Managed Accessibility - Essential Plan",
   price: "499",
   priceCurrency: "USD",
-  billingDuration: "P1M",
-  description: "Essential managed accessibility service for small websites",
+  description: "Essential managed accessibility service for small websites. Includes: Up to 50 pages monitored, Annual manual audit, Automated daily scans, Email & Slack alerts, Accessibility statement, Email support (48 h SLA).",
   url: "https://www.webenablix.com/register",
   availability: "https://schema.org/InStock",
-  includes: {
-    "@type": "ItemList",
-    itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Up to 50 pages monitored" },
-      { "@type": "ListItem", position: 2, name: "Annual manual audit" },
-      { "@type": "ListItem", position: 3, name: "Automated daily scans" },
-      { "@type": "ListItem", position: 4, name: "Email & Slack alerts" },
-      { "@type": "ListItem", position: 5, name: "Accessibility statement" },
-      { "@type": "ListItem", position: 6, name: "Email support (48 h SLA)" },
-    ],
-  },
 };
 
 /**
@@ -2363,32 +2343,10 @@ export const managedProfessionalPlanSchema = {
   name: "Managed Accessibility - Professional Plan",
   price: "1299",
   priceCurrency: "USD",
-  billingDuration: "P1M",
   description:
-    "Professional managed accessibility service with advanced features. Most popular choice.",
+    "Professional managed accessibility service with advanced features. Most popular choice. Includes: Up to 500 pages monitored, Semi-annual manual audit, Automated real-time scans, VPAT / ACR document, Dedicated account manager, Remediation support (40 h / mo), Priority support (4 h SLA), Quarterly compliance certificate.",
   url: "https://www.webenablix.com/register",
   availability: "https://schema.org/InStock",
-  includes: {
-    "@type": "ItemList",
-    itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Up to 500 pages monitored" },
-      { "@type": "ListItem", position: 2, name: "Semi-annual manual audit" },
-      { "@type": "ListItem", position: 3, name: "Automated real-time scans" },
-      { "@type": "ListItem", position: 4, name: "VPAT / ACR document" },
-      { "@type": "ListItem", position: 5, name: "Dedicated account manager" },
-      {
-        "@type": "ListItem",
-        position: 6,
-        name: "Remediation support (40 h / mo)",
-      },
-      { "@type": "ListItem", position: 7, name: "Priority support (4 h SLA)" },
-      {
-        "@type": "ListItem",
-        position: 8,
-        name: "Quarterly compliance certificate",
-      },
-    ],
-  },
 };
 
 /**
@@ -2445,7 +2403,7 @@ export const managedServiceStatisticsSchema = {
   "@type": "NewsArticle",
   headline: "Managed Accessibility Service Impact Metrics",
   description: "Key statistics about Webenablix Managed Accessibility Services",
-  body: "Webenablix managed clients achieve 98% client satisfaction rate with 2,400+ managed sites worldwide. Zero successful ADA lawsuits have been filed against our managed clients. Average time to full compliance is 6 weeks.",
+  articleBody: "Webenablix managed clients achieve 98% client satisfaction rate with 2,400+ managed sites worldwide. Zero successful ADA lawsuits have been filed against our managed clients. Average time to full compliance is 6 weeks.",
 };
 
 /**
@@ -2699,7 +2657,7 @@ export const managedServiceExpertiseSchema = {
       "@type": "Person",
       name: "Accessibility Specialists",
       jobTitle: "Certified Accessibility Professional",
-      expertise: [
+      knowsAbout: [
         "WCAG Audit & Compliance",
         "Remediation Strategy",
         "Legal Documentation",
@@ -2709,16 +2667,8 @@ export const managedServiceExpertiseSchema = {
     },
   ],
   award: [
-    {
-      "@type": "Award",
-      name: "CPACC Certified",
-      description: "Certified Professional in Accessibility Core Competencies",
-    },
-    {
-      "@type": "Award",
-      name: "IAAP Member",
-      description: "International Association of Accessibility Professionals",
-    },
+    "CPACC Certified - Certified Professional in Accessibility Core Competencies",
+    "IAAP Member - International Association of Accessibility Professionals",
   ],
   aggregateRating: {
     "@type": "AggregateRating",
@@ -3003,7 +2953,7 @@ export const monitorStatisticsSchema = {
   "@type": "NewsArticle",
   headline: "Webenablix Accessibility Monitor Impact",
   description: "Key statistics about Webenablix Monitor service",
-  body: "Webenablix Monitor tracks 350,000+ websites worldwide with 99.9% uptime SLA. Average scan time of 2 minutes with real-time notifications prevent accessibility regressions. Over 4,600 ADA lawsuits are filed annually, making continuous monitoring critical.",
+  articleBody: "Webenablix Monitor tracks 350,000+ websites worldwide with 99.9% uptime SLA. Average scan time of 2 minutes with real-time notifications prevent accessibility regressions. Over 4,600 ADA lawsuits are filed annually, making continuous monitoring critical.",
 };
 
 /**
@@ -3217,7 +3167,7 @@ export const monitorExpertiseSchema = {
       "@type": "Person",
       name: "Accessibility Engineers",
       jobTitle: "Platform Engineers",
-      expertise: [
+      knowsAbout: [
         "WCAG Scanning & Analysis",
         "Web Accessibility Standards",
         "Real-time Monitoring Systems",
@@ -3227,16 +3177,8 @@ export const monitorExpertiseSchema = {
     },
   ],
   award: [
-    {
-      "@type": "Award",
-      name: "WCAG 2.1 & 2.2 Certified",
-      description: "Continuously updated for latest accessibility standards",
-    },
-    {
-      "@type": "Award",
-      name: "99.9% Uptime SLA",
-      description: "Enterprise-grade monitoring infrastructure",
-    },
+    "WCAG 2.1 & 2.2 Certified - Continuously updated for latest accessibility standards",
+    "99.9% Uptime SLA - Enterprise-grade monitoring infrastructure",
   ],
   aggregateRating: {
     "@type": "AggregateRating",
@@ -3331,34 +3273,58 @@ export const monitorPageFullSchema = {
  */
 export const comparePageMainSchema = {
   "@context": "https://schema.org",
-  "@type": "ComparisonChart",
+  "@type": "WebPage",
   name: "Webenablix vs. Other Accessibility Platforms",
   url: "https://www.webenablix.com/compare",
   image: "https://www.webenablix.com/compare-hero.png",
   description:
     "Compare Webenablix with other accessibility solutions including accessiBe, AudioEye, and UserWay. See feature-by-feature comparison across scanning, remediation, reporting, legal compliance, support, and pricing.",
-  itemReviewed: [
-    {
-      "@type": "SoftwareApplication",
-      name: "Webenablix",
-      url: "https://www.webenablix.com",
-    },
-    {
-      "@type": "SoftwareApplication",
-      name: "accessiBe",
-      url: "https://www.accessibe.com",
-    },
-    {
-      "@type": "SoftwareApplication",
-      name: "AudioEye",
-      url: "https://www.audioeye.com",
-    },
-    {
-      "@type": "SoftwareApplication",
-      name: "UserWay",
-      url: "https://www.userway.org",
-    },
-  ],
+  mainEntity: {
+    "@type": "ItemList",
+    name: "Accessibility Platform Comparison",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Webenablix",
+        item: {
+          "@type": "SoftwareApplication",
+          name: "Webenablix",
+          url: "https://www.webenablix.com",
+        },
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "accessiBe",
+        item: {
+          "@type": "SoftwareApplication",
+          name: "accessiBe",
+          url: "https://www.accessibe.com",
+        },
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: "AudioEye",
+        item: {
+          "@type": "SoftwareApplication",
+          name: "AudioEye",
+          url: "https://www.audioeye.com",
+        },
+      },
+      {
+        "@type": "ListItem",
+        position: 4,
+        name: "UserWay",
+        item: {
+          "@type": "SoftwareApplication",
+          name: "UserWay",
+          url: "https://www.userway.org",
+        },
+      },
+    ],
+  },
 };
 
 /**
@@ -3559,7 +3525,7 @@ export const compareScoresSchema = {
   headline: "Webenablix Comparison Scores",
   description:
     "Feature category scoring for Webenablix across all comparison dimensions",
-  body: "Webenablix scores 97/100 overall, with 100/100 in Scanning & Detection, 98/100 in Remediation, 96/100 in Reporting & Export, 95/100 in Legal & Compliance, 98/100 in Support & Services, and 94/100 in Pricing & Plans. Customer ratings: 4.9/5 stars.",
+  articleBody: "Webenablix scores 97/100 overall, with 100/100 in Scanning & Detection, 98/100 in Remediation, 96/100 in Reporting & Export, 95/100 in Legal & Compliance, 98/100 in Support & Services, and 94/100 in Pricing & Plans. Customer ratings: 4.9/5 stars.",
 };
 
 /**
@@ -5143,23 +5109,11 @@ export const pricingBasicPlanSchema = {
   "@type": "Offer",
   name: "Basic Protection - Automated Plan",
   description:
-    "Automated accessibility scanning, monitoring, and fixes with self-paced learning",
+    "Automated accessibility scanning, monitoring, and fixes with self-paced learning. Includes: Automated accessibility scanning, Continuous monitoring, Automated fixes, Developer tools, Accessibility Help Desk, Self-paced learning platform, Accessibility widget included, Email support.",
   price: "12",
   priceCurrency: "USD",
-  billingDuration: "P1M",
   availability: "https://schema.org/InStock",
   url: "https://www.webenablix.com/pricing",
-  category: "Automated",
-  features: [
-    "Automated accessibility scanning",
-    "Continuous monitoring",
-    "Automated fixes",
-    "Developer tools",
-    "Accessibility Help Desk",
-    "Self-paced learning platform",
-    "Accessibility widget included",
-    "Email support",
-  ],
 };
 
 export const pricingSelfManagedPlanSchema = {
@@ -5167,27 +5121,9 @@ export const pricingSelfManagedPlanSchema = {
   "@type": "Offer",
   name: "Self-Serviced Protection - Developer Plan",
   description:
-    "Full developer tools, certification, custom training, scanner, and expert audit reports",
-  price: "0",
-  priceCurrency: "USD",
+    "Full developer tools, certification, custom training, scanner, and expert audit reports. Includes: Developer tools & APIs, Certified expert guidance, Custom training programs, Accessibility scanner, Expert audit and reporting, Custom integration support, Priority email & chat support, Team collaboration tools. Contact sales for custom pricing.",
   availability: "https://schema.org/InStock",
   url: "https://www.webenablix.com/pricing",
-  category: "Self-Managed",
-  priceSpecification: {
-    "@type": "PriceSpecification",
-    price: "Custom",
-    description: "Contact sales for custom pricing",
-  },
-  features: [
-    "Developer tools & APIs",
-    "Certified expert guidance",
-    "Custom training programs",
-    "Accessibility scanner",
-    "Expert audit and reporting",
-    "Custom integration support",
-    "Priority email & chat support",
-    "Team collaboration tools",
-  ],
 };
 
 export const pricingManagedPlanSchema = {
@@ -5195,28 +5131,9 @@ export const pricingManagedPlanSchema = {
   "@type": "Offer",
   name: "Maximum Protection - Managed Service",
   description:
-    "Full-service managed accessibility compliance with expert team handling everything",
-  price: "0",
-  priceCurrency: "USD",
+    "Full-service managed accessibility compliance with expert team handling everything. Includes: Automated accessibility scanning & monitoring, Continuous monitoring, Custom-written accessibility fixes, Webenablix Assurance guarantee, Expert audit and reporting, Dedicated account manager, Monthly strategy reviews, SLA support, Expert remediation services. Contact sales for custom pricing.",
   availability: "https://schema.org/InStock",
   url: "https://www.webenablix.com/pricing",
-  category: "Managed",
-  priceSpecification: {
-    "@type": "PriceSpecification",
-    price: "Custom",
-    description: "Contact sales for custom pricing",
-  },
-  features: [
-    "Automated accessibility scanning & monitoring",
-    "Continuous monitoring",
-    "Custom-written accessibility fixes",
-    "Webenablix Assurance guarantee",
-    "Expert audit and reporting",
-    "Dedicated account manager",
-    "Monthly strategy reviews",
-    "SLA support",
-    "Expert remediation services",
-  ],
 };
 
 /**
@@ -5234,81 +5151,51 @@ export const pricingComparisonSchema = {
       "@type": "ListItem",
       position: "1",
       name: "Automated Monitoring",
-      basicPlan: true,
-      selfManagedPlan: true,
-      managedPlan: true,
     },
     {
       "@type": "ListItem",
       position: "2",
       name: "Automated Fixes",
-      basicPlan: true,
-      selfManagedPlan: true,
-      managedPlan: true,
     },
     {
       "@type": "ListItem",
       position: "3",
       name: "Accessibility Help Desk",
-      basicPlan: true,
-      selfManagedPlan: true,
-      managedPlan: true,
     },
     {
       "@type": "ListItem",
       position: "4",
       name: "Developer Tools",
-      basicPlan: true,
-      selfManagedPlan: true,
-      managedPlan: true,
     },
     {
       "@type": "ListItem",
       position: "5",
       name: "Certified Expert Guidance",
-      basicPlan: false,
-      selfManagedPlan: true,
-      managedPlan: true,
     },
     {
       "@type": "ListItem",
       position: "6",
       name: "Custom Training",
-      basicPlan: false,
-      selfManagedPlan: true,
-      managedPlan: true,
     },
     {
       "@type": "ListItem",
       position: "7",
       name: "Expert Audit & Reporting",
-      basicPlan: false,
-      selfManagedPlan: true,
-      managedPlan: true,
     },
     {
       "@type": "ListItem",
       position: "8",
       name: "Custom-Written Fixes",
-      basicPlan: false,
-      selfManagedPlan: false,
-      managedPlan: true,
     },
     {
       "@type": "ListItem",
       position: "9",
       name: "Webenablix Assurance",
-      basicPlan: false,
-      selfManagedPlan: false,
-      managedPlan: true,
     },
     {
       "@type": "ListItem",
       position: "10",
       name: "Dedicated Account Manager",
-      basicPlan: false,
-      selfManagedPlan: false,
-      managedPlan: true,
     },
   ],
 };
@@ -5329,7 +5216,6 @@ export const pricingPlansOverviewSchema = {
       name: "Basic Protection Plan",
       description:
         "$12/month automated accessibility compliance for small websites. Includes continuous monitoring, automated fixes, and learning resources.",
-      targetAudience: "Small businesses, startups, independent developers",
     },
     {
       "@type": "ListItem",
@@ -5337,7 +5223,6 @@ export const pricingPlansOverviewSchema = {
       name: "Self-Serviced Protection Plan",
       description:
         "Custom pricing for developer teams. Includes developer tools, expert guidance, custom training, scanner, and professional audit reports.",
-      targetAudience: "Development teams, digital agencies, enterprise IT",
     },
     {
       "@type": "ListItem",
@@ -5345,7 +5230,6 @@ export const pricingPlansOverviewSchema = {
       name: "Maximum Protection Plan",
       description:
         "Custom pricing fully managed service. Expert team handles scanning, monitoring, fixes, and maintains Webenablix Assurance guarantee.",
-      targetAudience: "Enterprise, large organizations, regulated industries",
     },
   ],
 };
@@ -5654,7 +5538,6 @@ export const aboutCompanyHistorySchema = {
       "@type": "ListItem",
       position: "1",
       name: "2019 - Founded",
-      date: "2019",
       description:
         "Three former WCAG auditors start Webenablix from a co-working space in Austin, TX, frustrated that accessibility compliance required months of manual effort.",
     },
@@ -5662,7 +5545,6 @@ export const aboutCompanyHistorySchema = {
       "@type": "ListItem",
       position: "2",
       name: "2020 - First 1,000 Sites",
-      date: "2020",
       description:
         "The widget and monitor launch in private beta. 1,000 sites go live within 90 days, driven entirely by word-of-mouth from accessibility consultants.",
     },
@@ -5670,7 +5552,6 @@ export const aboutCompanyHistorySchema = {
       "@type": "ListItem",
       position: "3",
       name: "2021 - Series A $8M",
-      date: "2021",
       description:
         "Raised $8M to build the REST API, CMS integrations, and expand to the EU market. Team grows from 6 to 35.",
     },
@@ -5678,7 +5559,6 @@ export const aboutCompanyHistorySchema = {
       "@type": "ListItem",
       position: "4",
       name: "2022 - Enterprise & VPAT",
-      date: "2022",
       description:
         "Launched enterprise-grade VPAT reports, SLA-backed managed remediation, and SOC 2 Type II certification. ARR crosses $5M.",
     },
@@ -5686,7 +5566,6 @@ export const aboutCompanyHistorySchema = {
       "@type": "ListItem",
       position: "5",
       name: "2023 - 10,000 Customers",
-      date: "2023",
       description:
         "Crossed 10,000 active sites protected. Launched the GitHub Actions integration and AI-generated fix suggestions — an industry first.",
     },
@@ -5694,7 +5573,6 @@ export const aboutCompanyHistorySchema = {
       "@type": "ListItem",
       position: "6",
       name: "2024 - WCAG 2.2 & Global Scale",
-      date: "2024",
       description:
         "First accessibility platform to ship full WCAG 2.2 AA automated coverage. Expanded to Asia-Pacific with local support in 8 languages.",
     },
@@ -5702,7 +5580,6 @@ export const aboutCompanyHistorySchema = {
       "@type": "ListItem",
       position: "7",
       name: "2025 - 40,000+ Sites",
-      date: "2025",
       description:
         "Now serving 40,000+ websites across 190 countries. Launched Managed Accessibility bundles and the accessibility developer SDK.",
     },
@@ -5710,7 +5587,6 @@ export const aboutCompanyHistorySchema = {
       "@type": "ListItem",
       position: "8",
       name: "2026 - AI-Native Remediation",
-      date: "2026",
       description:
         "Building AI-native remediation that auto-patches issues directly in your codebase — making manual accessibility fixes a thing of the past.",
     },
@@ -5728,71 +5604,43 @@ export const aboutTeamLeadershipSchema = {
       "@type": "ListItem",
       position: "1",
       name: "Sarah Chen",
-      jobTitle: "Co-founder & CEO",
-      affiliation: "Webenablix",
       description:
-        "Former WCAG lead auditor at Deloitte. Certified IAAP CPACC. Spoke at CSUN Assistive Technology Conference 7 years running.",
-      workLocation: "Austin, TX",
-      expertise: [
-        "WCAG Compliance",
-        "Accessibility Auditing",
-        "Product Strategy",
-      ],
+        "Co-founder & CEO. Former WCAG lead auditor at Deloitte. Certified IAAP CPACC. Spoke at CSUN Assistive Technology Conference 7 years running. Location: Austin, TX. Expertise: WCAG Compliance, Accessibility Auditing, Product Strategy.",
     },
     {
       "@type": "ListItem",
       position: "2",
       name: "Marcus Oyelaran",
-      jobTitle: "Co-founder & CTO",
-      affiliation: "Webenablix",
       description:
-        "Previously Staff Engineer at Cloudflare. Built the edge scanning infrastructure that runs 4M page checks per day.",
-      workLocation: "London, UK",
-      expertise: ["Infrastructure", "Distributed Systems", "Performance"],
+        "Co-founder & CTO. Previously Staff Engineer at Cloudflare. Built the edge scanning infrastructure that runs 4M page checks per day. Location: London, UK. Expertise: Infrastructure, Distributed Systems, Performance.",
     },
     {
       "@type": "ListItem",
       position: "3",
       name: "Priya Nair",
-      jobTitle: "Co-founder & CPO",
-      affiliation: "Webenablix",
       description:
-        "Accessibility researcher & product designer. Contributed to the WCAG 2.2 working group and authored 20+ WCAG technique documents.",
-      workLocation: "Austin, TX",
-      expertise: ["Accessibility Research", "Product Design", "WCAG Standards"],
+        "Co-founder & CPO. Accessibility researcher & product designer. Contributed to the WCAG 2.2 working group and authored 20+ WCAG technique documents. Location: Austin, TX. Expertise: Accessibility Research, Product Design, WCAG Standards.",
     },
     {
       "@type": "ListItem",
       position: "4",
       name: "Daniel Torres",
-      jobTitle: "VP of Engineering",
-      affiliation: "Webenablix",
       description:
-        "12 years in developer tooling. Led infrastructure at HashiCorp before joining Webenablix to scale the API platform.",
-      workLocation: "San Francisco, CA",
-      expertise: ["Engineering Leadership", "API Design", "Scalability"],
+        "VP of Engineering. 12 years in developer tooling. Led infrastructure at HashiCorp before joining Webenablix to scale the API platform. Location: San Francisco, CA. Expertise: Engineering Leadership, API Design, Scalability.",
     },
     {
       "@type": "ListItem",
       position: "5",
       name: "Aisha Kamara",
-      jobTitle: "Head of Compliance",
-      affiliation: "Webenablix",
       description:
-        "Former DOJ accessibility consultant. Expert in ADA, Section 508, EN 301 549, and AODA. Manages VPAT and legal-hold reporting.",
-      workLocation: "Washington, DC",
-      expertise: ["Compliance", "Legal Accessibility", "VPAT"],
+        "Head of Compliance. Former DOJ accessibility consultant. Expert in ADA, Section 508, EN 301 549, and AODA. Manages VPAT and legal-hold reporting. Location: Washington, DC. Expertise: Compliance, Legal Accessibility, VPAT.",
     },
     {
       "@type": "ListItem",
       position: "6",
       name: "James Park",
-      jobTitle: "Head of Customer Success",
-      affiliation: "Webenablix",
       description:
-        "Grew Webenablix's NPS from 54 to 78 in 18 months. Formerly VP of CS at Intercom. Leads a global team of 40 accessibility specialists.",
-      workLocation: "Seoul / Remote",
-      expertise: ["Customer Success", "Team Leadership", "Support Operations"],
+        "Head of Customer Success. Grew Webenablix's NPS from 54 to 78 in 18 months. Formerly VP of CS at Intercom. Leads a global team of 40 accessibility specialists. Location: Seoul / Remote. Expertise: Customer Success, Team Leadership, Support Operations.",
     },
   ],
 };
@@ -5808,42 +5656,36 @@ export const aboutCompanyRecognitionSchema = {
       "@type": "ListItem",
       position: "1",
       name: "G2 Leader",
-      organization: "G2",
-      award: "Leader — Web Accessibility, Spring 2026",
-      rating: "4.9 out of 5 stars",
+      description:
+        "G2 Leader — Web Accessibility, Spring 2026. Rating: 4.9 out of 5 stars.",
     },
     {
       "@type": "ListItem",
       position: "2",
       name: "Capterra Best Ease of Use",
-      organization: "Capterra",
-      award: "Best Ease of Use — Accessibility Software",
-      rating: "4.8 out of 5 stars",
+      description:
+        "Capterra Best Ease of Use — Accessibility Software. Rating: 4.8 out of 5 stars.",
     },
     {
       "@type": "ListItem",
       position: "3",
       name: "W3C WAI Partner",
-      organization: "W3C WAI",
-      award: "Endorsed Implementation Partner",
       description:
-        "Recognized by W3C Web Accessibility Initiative as trusted implementation partner",
+        "W3C WAI Endorsed Implementation Partner. Recognized by W3C Web Accessibility Initiative as trusted implementation partner.",
     },
     {
       "@type": "ListItem",
       position: "4",
       name: "Deloitte Fast 500",
-      organization: "Deloitte",
-      award: "Fastest Growing Tech Company — 2025",
-      description: "Named among North America's fastest-growing tech companies",
+      description:
+        "Deloitte Fastest Growing Tech Company — 2025. Named among North America's fastest-growing tech companies.",
     },
     {
       "@type": "ListItem",
       position: "5",
       name: "Best Accessibility Software",
-      organization: "Software.com",
-      award: "Best Accessibility Software Platform",
-      rating: "4.7 out of 5 stars",
+      description:
+        "Software.com Best Accessibility Software Platform. Rating: 4.7 out of 5 stars.",
     },
   ],
 };
@@ -5854,21 +5696,16 @@ export const aboutCompanyMissionSchema = {
   name: "Webenablix",
   url: "https://www.webenablix.com/about",
   description:
-    "Webenablix is the leading AI-powered web accessibility compliance platform serving 40,000+ websites across 190+ countries",
+    "Webenablix is the leading AI-powered web accessibility compliance platform serving 40,000+ websites across 190+ countries. Mission: To make the web accessible to everyone by making compliance simple, fast, and scalable with AI-powered automation and expert guidance. Vision: A web where over 2 billion people with disabilities can independently access, learn, work, shop, and connect online.",
   foundingDate: "2019-01-01",
   foundingLocation: {
     "@type": "Place",
     name: "Austin, Texas, USA",
   },
-  mission:
-    "To make the web accessible to everyone by making compliance simple, fast, and scalable with AI-powered automation and expert guidance",
-  vision:
-    "A web where over 2 billion people with disabilities can independently access, learn, work, shop, and connect online",
   numberOfEmployees: {
     "@type": "QuantitativeValue",
     value: "150",
   },
-  employees: 6,
   knowsAbout: [
     "Web Accessibility",
     "WCAG 2.1 Compliance",
@@ -5878,7 +5715,7 @@ export const aboutCompanyMissionSchema = {
     "Inclusive Design",
     "AI/Machine Learning",
   ],
-  awards: [
+  award: [
     "G2 Leader — Spring 2026",
     "Capterra Best Ease of Use",
     "W3C WAI Endorsed Partner",
@@ -5890,11 +5727,6 @@ export const aboutCompanyMissionSchema = {
     "https://linkedin.com/company/webenablix",
     "https://github.com/webenablix",
   ],
-  contact: {
-    "@type": "ContactPoint",
-    contactType: "Customer Support",
-    email: "support@webenablix.com",
-  },
 };
 
 export const aboutCultureSchema = {
